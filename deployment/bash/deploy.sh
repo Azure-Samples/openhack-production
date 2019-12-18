@@ -84,6 +84,15 @@ az network front-door backend-pool create \
     --name Frontend \
     --address "wabrez-az-cli-test-frontend.azurewebsites.net"
 
+echo "Creating Frontdoor frontend rule"
+az network front-door routing-rule create \
+    --resource-group $resourceGroupName \
+    --front-door-name $frontDoorName \
+    --frontend-endpoints wabrez-az-cli-test-fd.azurefd.net \
+    --name Frontend \
+    --route-type Forward \
+    --backend-pool Frontend
+
 echo "Creating API Management..."
 az apim create \
     --resource-group $resourceGroupName \

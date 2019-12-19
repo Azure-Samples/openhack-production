@@ -36,4 +36,4 @@ az group deployment create \
   --name "Urlist-$location-$(timestamp)" \
   --resource-group $regionalResourceGroupName \
   --template-file region.json \
-  --parameters "subscriptionId=$subscriptionId location=$location apimName=$apimName appServicePlanName=$appServicePlanName frontendAppName=$frontendAppName backendAppName=$backendAppName appInsightsName=$appInsightsName"
+  --parameters subscriptionId=$subscriptionId location=$location apimName=$apimName appServicePlanName=$appServicePlanName frontendAppName=$frontendAppName backendAppName=$backendAppName appInsightsName=$appInsightsName

@@ -8,15 +8,11 @@
         },
         "frontendHosts": {
             "defaultValue": [
-                "wabrez-westus2-urlist-frontend.azurewebsites.net",
-                "wabrez-eastus-urlist-frontend.azurewebsites.net"
             ],
             "type": "array"
         },
         "backendHosts": {
             "defaultValue": [
-                "wabrez-westus2-urlist-apim.azure-api.net",
-                "wabrez-eastus-urlist-apim.azure-api.net"
             ],
             "type": "array"
         }

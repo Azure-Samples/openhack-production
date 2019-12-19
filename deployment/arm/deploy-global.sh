@@ -30,4 +30,4 @@ az group deployment create \
   --name "Urlist-global-$(timestamp)" \
   --resource-group $resourceGroupName \
   --template-file global.json \
-  --parameters "frontDoorName=$frontDoorName"
+  --parameters frontDoorName=$frontDoorName frontendHosts=$frontendHosts backendHosts=$backendHosts

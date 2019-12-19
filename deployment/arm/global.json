@@ -6,17 +6,19 @@
             "defaultValue": "",
             "type": "string"
         },
-        "backendAppName": {
-            "defaultValue": "",
-            "type": "string"
+        "frontendHosts": {
+            "defaultValue": [
+                "wabrez-westus2-urlist-frontend.azurewebsites.net",
+                "wabrez-eastus-urlist-frontend.azurewebsites.net"
+            ],
+            "type": "array"
         },
-        "frontendAppName": {
-            "defaultValue": "",
-            "type": "string"
-        },
-        "apimName": {
-            "defaultValue": "",
-            "type": "string"
+        "backendHosts": {
+            "defaultValue": [
+                "wabrez-westus2-urlist-apim.azure-api.net",
+                "wabrez-eastus-urlist-apim.azure-api.net"
+            ],
+            "type": "array"
         }
     },
     "resources": [
@@ -120,14 +122,18 @@
                     {
                         "name": "Frontend",
                         "properties": {
-                            "backends": [
+                            "copy": [
                                 {
-                                    "address": "[concat(parameters('frontendAppName'), '.azurewebsites.net')]",
-                                    "httpPort": 80,
-                                    "httpsPort": 443,
-                                    "priority": 1,
-                                    "weight": 50,
-                                    "backendHostHeader": "[concat(parameters('frontendAppName'), '.azurewebsites.net')]"
+                                    "name": "backends",
+                                    "count": "[length(parameters('frontendHosts'))]",
+                                    "input": {
+                                        "address": "[parameters('frontendHosts')[copyIndex('backends')]]",
+                                        "httpPort": 80,
+                                        "httpsPort": 443,
+                                        "priority": 1,
+                                        "weight": 50,
+                                        "backendHostHeader": "[parameters('frontendHosts')[copyIndex('backends')]]"
+                                    }
                                 }
                             ],
                             "healthProbeSettings": {
@@ -141,15 +147,18 @@
                     {
                         "name": "Backend",
                         "properties": {
-                            "backends": [
+                            "copy": [
                                 {
-                                    "address": "[concat(parameters('apimName'), '.azure-api.net')]",
-                                    "httpPort": 80,
-                                    "httpsPort": 443,
-                                    "priority": 1,
-                                    "weight": 50,
-                                    "backendHostHeader": "[concat(parameters('apimName'), '.azure-api.net')]",
-                                    "enabledState": "Enabled"
+                                    "name": "backends",
+                                    "count": "[length(parameters('backendHosts'))]",
+                                    "input": {
+                                        "address": "[parameters('backendHosts')[copyIndex('backends')]]",
+                                        "httpPort": 80,
+                                        "httpsPort": 443,
+                                        "priority": 1,
+                                        "weight": 50,
+                                        "backendHostHeader": "[parameters('backendHosts')[copyIndex('backends')]]"
+                                    }
                                 }
                             ],
                             "healthProbeSettings": {

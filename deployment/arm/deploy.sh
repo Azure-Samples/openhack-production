@@ -3,7 +3,7 @@ parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd "$parent_path"
 
 regions=(westus2 eastus centralus)
-prefix=wabrez
+prefix=prodoh
 appName=urlist
 
 # Convert array to ARM array format
@@ -28,4 +28,4 @@ done
 frontendHosts=$(toArmArray ${frontendHostArray[*]})
 backendHosts=$(toArmArray ${backendHostArray[*]})
 
-bash deploy-global.sh wabrez urlist $frontendHosts $backendHosts
+bash deploy-global.sh $prefix $appName $frontendHosts $backendHosts

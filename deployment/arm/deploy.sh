@@ -2,9 +2,30 @@
 parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd "$parent_path"
 
-frontendHosts='("wabrez-westus2-frontend.azurewebsites.net","wabrez-eastus-frontend.azurewebsites.net")'
-backendendHosts='("wabrez-westus2-apim.azure-api.net","wabrez-eastus-apim.azure-api.net")'
+regions=(westus2 eastus centralus)
+prefix=wabrez
+appName=urlist
 
-bash deploy-region.sh wabrez westus2 urlist
-bash deploy-region.sh wabrez eastus urlist
-bash deploy-global.sh wabrez urlist $frontendHosts $backendendHosts
+# Convert array to ARM array format
+toArmArray() {
+  array=("$@")
+  value=$(printf "\"%s\"", "${array[@]}")
+  value="(${value%?})"
+  printf $value
+}
+
+frontendHostArray=()
+backendHostArray=()
+
+# Deploy scale unit per region
+for region in ${regions[*]}
+do
+  frontendHostArray+=("$prefix-$region-$appName-frontend.azurewebsites.net")
+  backendHostArray+=("$prefix-$region-$appName-apim.azure-api.net")
+  bash deploy-region.sh $prefix $region $appName
+done
+
+frontendHosts=$(toArmArray ${frontendHostArray[*]})
+backendHosts=$(toArmArray ${backendHostArray[*]})
+
+bash deploy-global.sh wabrez urlist $frontendHosts $backendHosts

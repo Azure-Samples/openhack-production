@@ -7,6 +7,7 @@ appName=$2
 env=$3
 # Regions are passed in as additional arguments
 scope="$businessUnit-$appName-$env-gbl"
+regionScope="$businessUnit-$appName-$env"
 resourceGroupName="rg-$scope"
 frontDoorName="fd-$scope"
 
@@ -40,8 +41,8 @@ do
   let counter++
   if [ $counter -gt 3 ]
   then
-    frontendHostArray+=("frontend-$scope-$region.azurewebsites.net")
-    backendHostArray+=("apim-$scope-$region.azure-api.net")
+    frontendHostArray+=("frontend-$regionScope-$region.azurewebsites.net")
+    backendHostArray+=("apim-$regionScope-$region.azure-api.net")
   fi
 done
 

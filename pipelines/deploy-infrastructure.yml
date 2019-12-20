@@ -12,10 +12,11 @@ pool:
   vmImage: "ubuntu-latest"
 
 stages:
-  - stage: Deploy Regional Infrastructure
+  - stage: DeployRegionalInfrastructure
+    displayName: Deploy Regional Infrastructure
     jobs:
-      - job: DeployRegionalInfrastructure
-        displayName: Deploy Regional Infrastructure
+      - job: RegionalMaxtrixDeployment
+        displayName: Regional Matrix Deployment
         strategy:
           matrix:
             westus2:
@@ -33,7 +34,8 @@ stages:
               scriptLocation: "scriptPath"
               scriptPath: "./deployment/arm/deploy-region.sh"
               arguments: "prodoh urlist dev $(region)"
-  - stage: Deploy Global Infrastructure
+  - stage: DeployGlobalInfrastructure
+    displayName: Deploy Global Infrastructure
     jobs:
       - job: DeployGlobalInfrastructure
         displayName: Deploy Global Infrastructure

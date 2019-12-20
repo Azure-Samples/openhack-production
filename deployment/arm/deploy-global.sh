@@ -5,8 +5,7 @@ cd "$parent_path"
 businessUnit=$1
 appName=$2
 env=$3
-frontendHosts=$4
-backendHosts=$5
+# Regions are passed in as additional arguments
 scope="$businessUnit-$appName-$env-gbl"
 resourceGroupName="rg-$scope"
 frontDoorName="fd-$scope"
@@ -22,6 +21,41 @@ echo "Backend Hosts: $backendHosts"
 timestamp() {
   date +"%Y%m%dZ%H%M%S"
 }
+
+# Convert array to ARM array format
+toArmArray() {
+  array=("$@")
+  value=$(printf "\"%s\"", "${array[@]}")
+  value="(${value%?})"
+  printf $value
+}
+
+regions=()
+let counter=0
+
+for region in $@
+do
+  let counter++
+  if [ $counter -gt 3 ]
+  then
+    echo $region
+    regions+=($region)
+  fi
+done
+
+frontendHostArray=()
+backendHostArray=()
+
+# Deploy scale unit per region
+for region in ${regions[*]}
+do
+  frontendHostArray+=("frontend-$scope-$region.azurewebsites.net")
+  backendHostArray+=("apim-$scope-$region.azure-api.net")
+  bash deploy-region.sh $businessUnit $appName $env $region
+done
+
+frontendHosts=$(toArmArray ${frontendHostArray[*]})
+backendHosts=$(toArmArray ${backendHostArray[*]})
 
 echo "Creating global resource Group: $resourceGroupName"
 az group create \

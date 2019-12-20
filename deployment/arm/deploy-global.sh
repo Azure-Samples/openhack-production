@@ -30,28 +30,19 @@ toArmArray() {
   printf $value
 }
 
-regions=()
 let counter=0
+
+frontendHostArray=()
+backendHostArray=()
 
 for region in $@
 do
   let counter++
   if [ $counter -gt 3 ]
   then
-    echo $region
-    regions+=($region)
+    frontendHostArray+=("frontend-$scope-$region.azurewebsites.net")
+    backendHostArray+=("apim-$scope-$region.azure-api.net")
   fi
-done
-
-frontendHostArray=()
-backendHostArray=()
-
-# Deploy scale unit per region
-for region in ${regions[*]}
-do
-  frontendHostArray+=("frontend-$scope-$region.azurewebsites.net")
-  backendHostArray+=("apim-$scope-$region.azure-api.net")
-  bash deploy-region.sh $businessUnit $appName $env $region
 done
 
 frontendHosts=$(toArmArray ${frontendHostArray[*]})

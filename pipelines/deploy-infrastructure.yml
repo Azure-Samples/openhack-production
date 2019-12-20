@@ -13,10 +13,10 @@ pool:
 
 stages:
   - stage: DeployRegionalInfrastructure
-    displayName: Deploy Regional Infrastructure
+    displayName: Deploy Region
     jobs:
       - job: RegionalMaxtrixDeployment
-        displayName: Regional Matrix Deployment
+        displayName: Region
         strategy:
           matrix:
             westus2:
@@ -27,7 +27,7 @@ stages:
               region: centralus
         steps:
           - task: AzureCLI@2
-            displayName: Reginal ARM Template
+            displayName: Deploy ARM Template
             inputs:
               azureSubscription: "PELITTLE TEAM - CSE DWR(d36d0808-a967-4f73-9fdc-32ea232fc81d)"
               scriptType: "bash"
@@ -41,7 +41,7 @@ stages:
         displayName: Deploy Global Infrastructure
         steps:
           - task: AzureCLI@2
-            displayName: Global ARM Template
+            displayName: Deploy ARM Template
             inputs:
               azureSubscription: "PELITTLE TEAM - CSE DWR(d36d0808-a967-4f73-9fdc-32ea232fc81d)"
               scriptType: "bash"

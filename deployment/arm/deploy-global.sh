@@ -2,16 +2,19 @@
 parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd "$parent_path"
 
-prefix=$1
+businessUnit=$1
 appName=$2
-frontendHosts=$3
-backendHosts=$4
-resourceGroupName="$prefix-gbl-$appName-rg"
-frontDoorName="$prefix-gbl-$appName-fd"
+env=$3
+frontendHosts=$4
+backendHosts=$5
+scope="$businessUnit-$appName-$env-gbl"
+resourceGroupName="rg-$scope"
+frontDoorName="fd-$scope"
 
 echo "Resource Group: $resourceGroupName"
-echo "Prefix: $prefix"
+echo "Business Unit: $businessUnit"
 echo "App Name: $appName"
+echo "Environment: $env"
 echo "Front Door: $frontDoorName"
 echo "Frontend Hosts: $frontendHosts"
 echo "Backend Hosts: $backendHosts"

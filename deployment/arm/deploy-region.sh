@@ -2,38 +2,38 @@
 parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd "$parent_path"
 
-prefix=$1
-subscriptionId="d36d0808-a967-4f73-9fdc-32ea232fc81d"
-location=$2
-appName=$3
-fullPrefix="$1-$2-$3"
-regionalResourceGroupName="$fullPrefix-rg"
+businessUnit=$1
+appName=$2
+env=$3
+location=$4
+scope="$businessUnit-$appName-$env-$location"
+resourceGroupName="rg-$scope"
 
-echo "Resource Group: $regionalResourceGroupName"
-echo "Prefix: $prefix"
-echo "Location: $location"
+echo "Resource Group: $resourceGroupName"
+echo "Region Scope: $scope"
+echo "Business Unit: $businessUnit"
 echo "App Name: $appName"
-echo "Prefix: $fullPrefix"
+echo "Environment: $env"
+echo "Location: $location"
 
-frontDoorName="$prefix-gbl-$appName-fd"
-apimName="$fullPrefix-apim"
-appServicePlanName="$fullPrefix-asp"
-frontendAppName="$fullPrefix-frontend"
-backendAppName="$fullPrefix-backend"
-appInsightsName="$fullPrefix-ai"
+apimName="apim-$scope"
+appServicePlanName="asp-$scope"
+frontendAppName="frontend-$scope"
+backendAppName="backend-$scope"
+appInsightsName="ai-$scope"
 
 timestamp() {
   date +"%Y%m%dZ%H%M%S"
 }
 
-echo "Creating Regional Resource Group: $regionalResourceGroupName"
+echo "Creating Regional Resource Group: $resourceGroupName"
 az group create \
-  --name $regionalResourceGroupName \
+  --name $resourceGroupName \
   --location $location
 
-echo "Deploying regional resources to $regionalResourceGroupName"
+echo "Deploying regional resources to $resourceGroupName"
 az group deployment create \
   --name "Urlist-$location-$(timestamp)" \
-  --resource-group $regionalResourceGroupName \
+  --resource-group $resourceGroupName \
   --template-file region.json \
-  --parameters subscriptionId=$subscriptionId location=$location apimName=$apimName appServicePlanName=$appServicePlanName frontendAppName=$frontendAppName backendAppName=$backendAppName appInsightsName=$appInsightsName
+  --parameters location=$location apimName=$apimName appServicePlanName=$appServicePlanName frontendAppName=$frontendAppName backendAppName=$backendAppName appInsightsName=$appInsightsName

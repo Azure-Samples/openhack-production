@@ -2,10 +2,6 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "subscriptionId": {
-            "defaultValue": "",
-            "type": "string"
-        },
         "location": {
             "defaultValue": "",
             "type": "string"
@@ -180,7 +176,7 @@
                 "description": "[parameters('backendAppName')]",
                 "url": "[concat('https://', parameters('backendAppName'), '.azurewebsites.net')]",
                 "protocol": "http",
-                "resourceId": "[concat('https://management.azure.com/subscriptions/', parameters('subscriptionId'), '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Web/sites/', parameters('backendAppName'))]"
+                "resourceId": "[concat('https://management.azure.com', subscription().id, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.Web/sites/', parameters('backendAppName'))]"
             }
         },
         {

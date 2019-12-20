@@ -8,9 +8,10 @@ pool:
 
 stages:
   - stage: DeployRegionalInfrastructure
-    displayName: Deploy Region
+    displayName: Deploy
     jobs:
       - job: RegionalMaxtrixDeployment
+        displayName: Region
         strategy:
           matrix:
             westus2:
@@ -29,9 +30,10 @@ stages:
               scriptPath: "./deployment/arm/deploy-region.sh"
               arguments: "prodoh urlist dev $(region)"
   - stage: DeployGlobalInfrastructure
-    displayName: Deploy Global Infrastructure
+    displayName: Deploy
     jobs:
       - job: DeployGlobalInfrastructure
+        displayName: Global
         steps:
           - task: AzureCLI@2
             displayName: Deploy ARM Template

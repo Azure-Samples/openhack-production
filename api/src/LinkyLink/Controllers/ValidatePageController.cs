@@ -1,29 +1,28 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
+using HtmlAgilityPack;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using OpenGraphNet;
-using System.Linq;
 using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
-using HtmlAgilityPack;
+using OpenGraphNet;
 using LinkyLink.Models;
 
-namespace LinkyLink
+namespace LinkyLink.Controllers
 {
-    public partial class LinkOperations
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ValidatePageController : ControllerBase
     {
-        [FunctionName(nameof(ValidatePage))]
-        public async Task<IActionResult> ValidatePage(
-            [HttpTrigger(AuthorizationLevel.Function, "POST", Route = "validatePage")] HttpRequest req,
-            ILogger log)
+        // POST: api/ValidatePage
+        [HttpPost]
+        public async Task<ActionResult<OpenGraphResult>> Post()
         {
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            string requestBody = await new StreamReader(Request.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
 
             try
@@ -31,43 +30,43 @@ namespace LinkyLink
                 if (data is JArray)
                 {
                     // expecting a JSON array of objects with url(string), id(string)
-                    IEnumerable<OpenGraphResult> result = await GetMultipleGraphResults(req, data, log);
+                    IEnumerable<OpenGraphResult> result = await GetMultipleGraphResults(Request, data);
                     return new OkObjectResult(result);
                 }
                 else if (data is JObject)
                 {
                     // expecting a JSON object with url(string), id(string)
-                    OpenGraphResult result = await GetGraphResult(req, data, log);
+                    OpenGraphResult result = await GetGraphResult(Request, data);
                     return new OkObjectResult(result);
                 }
 
-                log.LogError("Invalid playload");
+                //log.LogError("Invalid playload");
                 ProblemDetails problemDetails = new ProblemDetails
                 {
                     Title = "Could not validate links",
                     Detail = "Payload must be a valid JSON object or array",
                     Status = StatusCodes.Status400BadRequest,
                     Type = "/linkylink/clientissue",
-                    Instance = req.Path
+                    Instance = Request.Path
                 };
                 return new BadRequestObjectResult(problemDetails);
             }
             catch (Exception ex)
             {
-                log.LogError(ex, ex.Message);
+                //log.LogError(ex, ex.Message);
                 ProblemDetails problemDetails = new ProblemDetails
                 {
                     Title = "Could not validate links",
                     Detail = ex.Message,
                     Status = StatusCodes.Status400BadRequest,
                     Type = "/linkylink/clientissue",
-                    Instance = req.Path
+                    Instance = Request.Path
                 };
                 return new BadRequestObjectResult(problemDetails);
             }
         }
 
-        private async Task<OpenGraphResult> GetGraphResult(HttpRequest req, dynamic singleLinkItem, ILogger log)
+        private async Task<OpenGraphResult> GetGraphResult(HttpRequest req, dynamic singleLinkItem)
         {
             string url = singleLinkItem.url, id = singleLinkItem.id;
             if (!string.IsNullOrEmpty(url) && !string.IsNullOrEmpty(id))
@@ -89,18 +88,18 @@ namespace LinkyLink
                     }
                     catch (Exception ex)
                     {
-                        log.LogError(ex, "Processing URL {URL} failed. {Message}", url, ex.Message);
+                        //log.LogError(ex, "Processing URL {URL} failed. {Message}", url, ex.Message);
                     }
                 }
             }
             return new OpenGraphResult { Id = id };
         }
 
-        private async Task<IEnumerable<OpenGraphResult>> GetMultipleGraphResults(HttpRequest req, dynamic multiLinkItem, ILogger log)
+        private async Task<IEnumerable<OpenGraphResult>> GetMultipleGraphResults(HttpRequest req, dynamic multiLinkItem)
         {
-            log.LogInformation("Running batch url validation");
+            //log.LogInformation("Running batch url validation");
             IEnumerable<OpenGraphResult> allResults =
-                await Task.WhenAll((multiLinkItem as JArray).Select(item => GetGraphResult(req, item, log)));
+                await Task.WhenAll((multiLinkItem as JArray).Select(item => GetGraphResult(req, item)));
 
             return allResults;
         }

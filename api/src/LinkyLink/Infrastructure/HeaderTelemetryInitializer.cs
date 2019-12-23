@@ -1,9 +1,9 @@
-using System.Linq;
-using System.Security.Claims;
-using Microsoft.ApplicationInsights.Channel;
+﻿using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Http;
+using System.Linq;
+using System.Security.Claims;
 
 namespace LinkyLink.Infrastructure
 {
@@ -19,7 +19,7 @@ namespace LinkyLink.Infrastructure
         public void Initialize(ITelemetry telemetry)
         {
             var requestTelemetry = telemetry as RequestTelemetry;
-            
+
             if (requestTelemetry == null) return;
 
             var context = _contextAccessor.HttpContext;

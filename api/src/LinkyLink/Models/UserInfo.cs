@@ -1,4 +1,4 @@
-namespace LinkyLink.Models
+﻿namespace LinkyLink.Models
 {
     public struct UserInfo
     {

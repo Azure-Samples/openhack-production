@@ -16,7 +16,7 @@ namespace LinkyLink.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ValidatePageController : ControllerBase
+    public class ValidatePageController : Controller
     {
         // POST: api/ValidatePage
         [HttpPost]
@@ -40,7 +40,6 @@ namespace LinkyLink.Controllers
                     return new OkObjectResult(result);
                 }
 
-                //log.LogError("Invalid playload");
                 ProblemDetails problemDetails = new ProblemDetails
                 {
                     Title = "Could not validate links",
@@ -53,7 +52,6 @@ namespace LinkyLink.Controllers
             }
             catch (Exception ex)
             {
-                //log.LogError(ex, ex.Message);
                 ProblemDetails problemDetails = new ProblemDetails
                 {
                     Title = "Could not validate links",
@@ -88,7 +86,7 @@ namespace LinkyLink.Controllers
                     }
                     catch (Exception ex)
                     {
-                        //log.LogError(ex, "Processing URL {URL} failed. {Message}", url, ex.Message);
+                        // log
                     }
                 }
             }
@@ -97,7 +95,6 @@ namespace LinkyLink.Controllers
 
         private async Task<IEnumerable<OpenGraphResult>> GetMultipleGraphResults(HttpRequest req, dynamic multiLinkItem)
         {
-            //log.LogInformation("Running batch url validation");
             IEnumerable<OpenGraphResult> allResults =
                 await Task.WhenAll((multiLinkItem as JArray).Select(item => GetGraphResult(req, item)));
 

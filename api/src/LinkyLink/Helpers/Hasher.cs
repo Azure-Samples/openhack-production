@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography;
 
-namespace LinkyLink.Infrastructure
+namespace LinkyLink.Helpers
 {
     public class Hasher
     {
@@ -12,8 +12,7 @@ namespace LinkyLink.Infrastructure
         private readonly string _salt;
 
         public Hasher()
-            : this(Environment.GetEnvironmentVariable(HASHER_KEY),
-                    Environment.GetEnvironmentVariable(HASHER_SALT))
+            : this(Environment.GetEnvironmentVariable(HASHER_KEY), Environment.GetEnvironmentVariable(HASHER_SALT))
         { }
 
         public Hasher(string key, string salt)

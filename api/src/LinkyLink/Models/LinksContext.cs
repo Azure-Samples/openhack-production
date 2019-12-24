@@ -6,9 +6,9 @@ using System;
 
 namespace LinkyLink.Models
 {
-    public class linkbundles1 : DbContext
+    public class LinksContext : DbContext
     {
-        public linkbundles1(DbContextOptions<linkbundles1> options)
+        public LinksContext(DbContextOptions<LinksContext> options)
             : base(options) { }
 
         public DbSet<LinkBundle> LinkBundle { get; set; }
@@ -17,7 +17,8 @@ namespace LinkyLink.Models
         {
             modelBuilder.Entity<LinkBundle>().Property(p => p.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<LinkBundle>().OwnsMany<Link>(p => p.Links);
-            modelBuilder.Entity<LinkBundle>().HasPartitionKey(o => o.VanityUrl);
+            modelBuilder.Entity<LinkBundle>().HasPartitionKey(o => o.UserId);
+            modelBuilder.HasDefaultContainer("linkbundles");
             modelBuilder.Entity<LinkBundle>().HasNoDiscriminator();
         }
     }

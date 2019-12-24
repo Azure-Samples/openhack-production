@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29613.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LinkyLink", "LinkyLink.csproj", "{FF187677-9001-4514-A5B9-7C10D4A56935}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LinkyLink.Tests", "..\..\tests\LinkyLink.Tests\LinkyLink.Tests.csproj", "{BC439426-F902-4D71-848F-3BD677F171C0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FF187677-9001-4514-A5B9-7C10D4A56935}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF187677-9001-4514-A5B9-7C10D4A56935}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF187677-9001-4514-A5B9-7C10D4A56935}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF187677-9001-4514-A5B9-7C10D4A56935}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC439426-F902-4D71-848F-3BD677F171C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC439426-F902-4D71-848F-3BD677F171C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC439426-F902-4D71-848F-3BD677F171C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC439426-F902-4D71-848F-3BD677F171C0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {930EDAF9-EE52-49BE-9466-9359554E467A}
+	EndGlobalSection
+EndGlobal

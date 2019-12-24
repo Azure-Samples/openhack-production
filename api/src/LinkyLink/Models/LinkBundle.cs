@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace LinkyLink.Models
 {
@@ -10,6 +12,7 @@ namespace LinkyLink.Models
             Links = new HashSet<Link>();
         }
 
+        [Key]
         public string Id { get; set; }
         public string UserId { get; set; }
         public string VanityUrl { get; set; }

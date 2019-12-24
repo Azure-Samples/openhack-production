@@ -1,24 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using LinkyLink.Helpers;
 using LinkyLink.Models;
-using LinkyLink.Infrastructure;
-using System.Text.RegularExpressions;
-using Newtonsoft.Json;
-using Microsoft.ApplicationInsights;
-using Microsoft.ApplicationInsights.Extensibility;
-using System.Security.Claims;
-using Microsoft.ApplicationInsights.DataContracts;
-using Microsoft.Azure.Cosmos;
-using System.IO;
-using Microsoft.AspNetCore.JsonPatch;
-using System.Drawing.Printing;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Cosmos;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Drawing.Printing;
+using System.IO;
+using System.Linq;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace LinkyLink.Controllers
 {
@@ -26,33 +23,27 @@ namespace LinkyLink.Controllers
     [ApiController]
     public class LinksController : Controller
     {
-        private readonly linkbundles1 _context;
+        private readonly LinksContext _context;
+        protected UserAuth _userAuth;
 
-        protected IHttpContextAccessor _contextAccessor;
-        protected Hasher _hasher;
-        protected TelemetryClient _telemetryClient;
-
-        public LinksController(linkbundles1 context, IHttpContextAccessor contextAccessor, Hasher hasher)
+        public LinksController(LinksContext context, UserAuth userAuth)
         {
             _context = context;
-            _contextAccessor = contextAccessor;
-            _hasher = hasher;
-            TelemetryConfiguration telemetryConfiguration = TelemetryConfiguration.CreateDefault();
-            telemetryConfiguration.TelemetryInitializers.Add(new HeaderTelemetryInitializer(contextAccessor));
-            _telemetryClient = new TelemetryClient(telemetryConfiguration);
+            _userAuth = userAuth;
         }
 
         // GET: api/Links
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<LinkBundle>>> GetLinkBundle()
+        public async Task<ActionResult<IEnumerable<LinkBundle>>> GetLinkBundles()
         {
             return await _context.LinkBundle.ToListAsync();
         }
 
-        // GET: api/Links/{{vanityUrl}}
+        // GET: api/Links/{vanityUrl}
         [HttpGet("{vanityUrl}")]
         public async Task<ActionResult<LinkBundle>> GetLinkBundle(string vanityUrl)
         {
+            // Get links for specified vanityUrl
             var linkBundle = await _context.LinkBundle
                 .SingleAsync(b => b.VanityUrl == vanityUrl.ToLower());
 
@@ -64,24 +55,22 @@ namespace LinkyLink.Controllers
             return linkBundle;
         }
 
-        // GET: api/Links/User/{{userId}}
+        // GET: api/Links/User/{userId}
         [HttpGet("user/{userId}")]
         public async Task<ActionResult<LinkBundle>> GetLinkBundlesForUser(string userId)
         {
-            string userHandle = GetAccountInfo().HashedID;
+            string userHandle = _userAuth.GetUserAccountInfo().HashedID;
             if (string.IsNullOrEmpty(userHandle) || userHandle != userId)
             {
-                //log.LogInformation("Client is not authorized");
-                return new UnauthorizedResult();
+                return Unauthorized();
             }
 
             var linkBundlesForUser = await _context.LinkBundle
-                .Where(s => s.UserId == "")
+                .Where(s => s.UserId == userId)
                 .ToListAsync();
 
             if (!linkBundlesForUser.Any())
             {
-                //log.LogInformation($"No links for user: '{userId}'  found.");
                 return NotFound();
             }
 
@@ -103,20 +92,19 @@ namespace LinkyLink.Controllers
 
             if (!ValidatePayLoad(linkBundle, Request, out ProblemDetails problems))
             {
-                //log.LogError(problems.Detail);
-                return new BadRequestObjectResult(problems);
+                return new  BadRequestObjectResult(problems);
             }
 
-            string handle = GetAccountInfo().HashedID;
+            string handle = _userAuth.GetUserAccountInfo().HashedID;
             linkBundle.UserId = handle;
-            this.EnsureVanityUrl(linkBundle);
+            
+            ValidateVanityUrl(linkBundle);
 
-            const string vanity_regex = @"^([\w\d-])+(/([\w\d-])+)*$";
+            string vanity_regex = @"^([\w\d-])+(/([\w\d-])+)*$";
             Match match = Regex.Match(linkBundle.VanityUrl, vanity_regex, RegexOptions.IgnoreCase);
 
             if (!match.Success)
             {
-                // does not match
                 return new BadRequestResult();
             }
 
@@ -128,7 +116,7 @@ namespace LinkyLink.Controllers
             }
             catch (DbUpdateException)
             {
-                if (LinkBundleExists(linkBundle.VanityUrl))
+                if (LinkBundleExists(linkBundle.Id))
                 {
                     return Conflict();
                 }
@@ -138,67 +126,70 @@ namespace LinkyLink.Controllers
                 }
             }
 
-            //return CreatedAtAction("GetLinkBundle", new { id = linkBundle.Id }, linkBundle);
-            return new CreatedResult($"/{linkBundle.VanityUrl}", linkBundle);
+            return CreatedAtAction("GetLinkBundle", new { vanityUrl = linkBundle.VanityUrl }, linkBundle);
         }
 
-        // DELETE: api/Links/{{vanityUrl}}
+        // DELETE: api/Links/{vanityUrl}
         [HttpDelete("{vanityUrl}")]
         public async Task<ActionResult<LinkBundle>> DeleteLinkBundle(string vanityUrl)
         {
-            string handle = GetAccountInfo().HashedID;
+            string userHandle = _userAuth.GetUserAccountInfo().HashedID;
 
-            //not logged in? Bye...
-            //if (string.IsNullOrEmpty(handle)) return new UnauthorizedResult();
+            if (string.IsNullOrEmpty(userHandle))
+            {
+                return Unauthorized();
+            }
 
             var linkBundle = await _context.LinkBundle
-                .SingleAsync(b => b.VanityUrl == vanityUrl);
+                .SingleAsync(b => b.VanityUrl == vanityUrl.ToLower());
 
             if (linkBundle == null)
             {
                 return NotFound();
             }
 
+            if (!userHandle.Equals(linkBundle.UserId, StringComparison.InvariantCultureIgnoreCase))
+            {
+                return Forbid();
+            }
+
             try
             {
-                string userId = linkBundle.UserId;
-
-                if (!handle.Equals(userId, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    //log.LogWarning($"{userId} is trying to delete {vanityUrl} but is not the owner.");
-                    return new StatusCodeResult(StatusCodes.Status403Forbidden);
-                }
-
                 _context.LinkBundle.Remove(linkBundle);
                 await _context.SaveChangesAsync();
-
             }
             catch (Exception ex)
             {
-                //log.LogError(ex, ex.Message);
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
 
             return NoContent();
         }
 
-        // Patch: api/Links/{{vanityUrl}}
+        // PATCH: api/Links/{vanityUrl}
         [HttpPatch("{vanityUrl}")]
         public async Task<ActionResult<LinkBundle>> PatchLinkBundle(string vanityUrl, JsonPatchDocument<LinkBundle> linkBundle)
         {
-            string handle = GetAccountInfo().HashedID;
-            //if (string.IsNullOrEmpty(handle)) return new UnauthorizedResult();
+            string userHandle = _userAuth.GetUserAccountInfo().HashedID;
+            if (string.IsNullOrEmpty(userHandle))
+            {
+                return Unauthorized();
+            }
 
             var linkBundleEntry = await _context.LinkBundle
                 .SingleAsync(b => b.VanityUrl == vanityUrl.ToLower());
 
             if (linkBundleEntry == null)
             {
-                //log.LogInformation($"Bundle for {vanityUrl} not found.");
                 return NotFound();
             }
 
-            if (linkBundle != null)
+            if (!userHandle.Equals(linkBundleEntry.UserId, StringComparison.InvariantCultureIgnoreCase))
+            {
+                return Forbid();
+            }
+
+            try
             {
                 linkBundle.ApplyTo(linkBundleEntry, ModelState);
 
@@ -207,32 +198,30 @@ namespace LinkyLink.Controllers
                     return BadRequest(ModelState);
                 }
 
-
                 _context.Entry(linkBundleEntry).State = EntityState.Modified;
-               await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
 
-            else
-            {
-                return BadRequest(ModelState);
-            }
             return NoContent();
         }
 
-        private bool LinkBundleExists(string vanityUrl)
+        private bool LinkBundleExists(string id)
         {
-            return _context.LinkBundle.Any(e => e.VanityUrl == vanityUrl);
+            return _context.LinkBundle.Any(e => e.Id == id);
         }
 
         private async Task CreateDatabaseAsync()
         {
-            // TODO - Add logs
             await _context.Database.EnsureCreatedAsync();
         }
 
-        private void EnsureVanityUrl(LinkBundle linkDocument)
+        private void ValidateVanityUrl(LinkBundle linkDocument)
         {
-            const string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             
             if (string.IsNullOrWhiteSpace(linkDocument.VanityUrl))
             {
@@ -271,22 +260,6 @@ namespace LinkyLink.Controllers
                 };
             }
             return isValid;
-        }
-
-        protected UserInfo GetAccountInfo()
-        {
-            var socialIdentity = _contextAccessor.HttpContext.User.Identities.FirstOrDefault();
-
-            if (socialIdentity.Claims.Count() != 0)
-            {
-                var provider = _contextAccessor.HttpContext.Request.Headers["X-MS-CLIENT-PRINCIPAL-IDP"].FirstOrDefault();
-                var email = _contextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-                var userInfo = new UserInfo(provider, _hasher.HashString(email));
-
-                return userInfo;
-            }
-
-            return UserInfo.Empty;
         }
     }
 }

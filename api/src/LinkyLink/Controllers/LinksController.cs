@@ -128,12 +128,12 @@ namespace LinkyLink.Controllers
         [HttpDelete("{vanityUrl}")]
         public async Task<ActionResult<LinkBundle>> DeleteLinkBundle(string vanityUrl)
         {
-            //string userHandle = _linksService.GetUserAccountHash();
+            string userHandle = _linksService.GetUserAccountHash();
 
-            //if (string.IsNullOrEmpty(userHandle))
-            //{
-            //    return Unauthorized();
-            //}
+            if (string.IsNullOrEmpty(userHandle))
+            {
+                return Unauthorized();
+            }
 
             var linkBundle = await _linksService.FindLinkBundle(vanityUrl);
 
@@ -142,10 +142,10 @@ namespace LinkyLink.Controllers
                 return NotFound();
             }
 
-            //if (!userHandle.Equals(linkBundle.UserId, StringComparison.InvariantCultureIgnoreCase))
-            //{
-            //    return Forbid();
-            //}
+            if (!userHandle.Equals(linkBundle.UserId, StringComparison.InvariantCultureIgnoreCase))
+            {
+                return Forbid();
+            }
 
             try
             {

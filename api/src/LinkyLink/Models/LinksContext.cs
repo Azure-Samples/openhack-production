@@ -14,7 +14,7 @@ namespace LinkyLink.Models
         private string cosmosContainerName;
         public LinksContext(DbContextOptions<LinksContext> options, IConfiguration configuration) : base(options)
         {
-            cosmosContainerName = configuration.GetSection("CosmosSettings").GetSection("ContainerName").ToString();
+            cosmosContainerName = configuration.GetSection("ContainerName").ToString();
         }
 
         public DbSet<LinkBundle> LinkBundle { get; set; }

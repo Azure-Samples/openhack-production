@@ -88,8 +88,6 @@ namespace LinkyLink.Controllers
         [HttpPost]
         public async Task<ActionResult<LinkBundle>> PostLinkBundle(LinkBundle linkBundle)
         {
-            await CreateDatabaseAsync();
-
             if (!ValidatePayLoad(linkBundle, Request, out ProblemDetails problems))
             {
                 return new  BadRequestObjectResult(problems);
@@ -212,11 +210,6 @@ namespace LinkyLink.Controllers
         private bool LinkBundleExists(string id)
         {
             return _context.LinkBundle.Any(e => e.Id == id);
-        }
-
-        private async Task CreateDatabaseAsync()
-        {
-            await _context.Database.EnsureCreatedAsync();
         }
 
         private void ValidateVanityUrl(LinkBundle linkDocument)

@@ -2,14 +2,20 @@
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.EntityFrameworkCore.ValueGeneration;
 using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using System;
+using System.Configuration;
 
 namespace LinkyLink.Models
 {
     public class LinksContext : DbContext
     {
-        public LinksContext(DbContextOptions<LinksContext> options)
-            : base(options) { }
+        private string cosmosContainerName;
+        public LinksContext(DbContextOptions<LinksContext> options, IConfiguration configuration) : base(options)
+        {
+            cosmosContainerName = configuration.GetSection("CosmosSettings").GetSection("ContainerName").ToString();
+        }
 
         public DbSet<LinkBundle> LinkBundle { get; set; }
 
@@ -18,7 +24,7 @@ namespace LinkyLink.Models
             modelBuilder.Entity<LinkBundle>().Property(p => p.Id).ValueGeneratedOnAdd();
             modelBuilder.Entity<LinkBundle>().OwnsMany<Link>(p => p.Links);
             modelBuilder.Entity<LinkBundle>().HasPartitionKey(o => o.UserId);
-            modelBuilder.HasDefaultContainer("linkbundles");
+            modelBuilder.HasDefaultContainer(cosmosContainerName);
             modelBuilder.Entity<LinkBundle>().HasNoDiscriminator();
         }
     }

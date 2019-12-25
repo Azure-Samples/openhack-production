@@ -47,6 +47,12 @@ namespace LinkyLink
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetService<LinksContext>();
+                dbContext.Database.EnsureCreated();
+            }
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -61,7 +67,6 @@ namespace LinkyLink
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                //endpoints.MapHealthChecks("/healthcheck");
             });
         }
     }

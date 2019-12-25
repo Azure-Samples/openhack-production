@@ -1,5 +1,6 @@
 ﻿using LinkyLink.Helpers;
 using LinkyLink.Models;
+using LinkyLink.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch;
@@ -21,22 +22,20 @@ namespace LinkyLink.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LinksController : Controller
+    public class LinksController : ControllerBase
     {
-        private readonly LinksContext _context;
-        protected UserAuth _userAuth;
+        private readonly ILinksService _linksService;
 
-        public LinksController(LinksContext context, UserAuth userAuth)
+        public LinksController(ILinksService linksService)
         {
-            _context = context;
-            _userAuth = userAuth;
+            _linksService = linksService;
         }
 
         // GET: api/Links
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<LinkBundle>>> GetLinkBundles()
+        public async Task<IEnumerable<LinkBundle>> GetLinkBundles()
         {
-            return await _context.LinkBundle.ToListAsync();
+            return await _linksService.AllLinkBundles();
         }
 
         // GET: api/Links/{vanityUrl}
@@ -44,8 +43,7 @@ namespace LinkyLink.Controllers
         public async Task<ActionResult<LinkBundle>> GetLinkBundle(string vanityUrl)
         {
             // Get links for specified vanityUrl
-            var linkBundle = await _context.LinkBundle
-                .SingleAsync(b => b.VanityUrl == vanityUrl.ToLower());
+            var linkBundle = await _linksService.FindLinkBundle(vanityUrl);
 
             if (linkBundle == null)
             {
@@ -59,15 +57,14 @@ namespace LinkyLink.Controllers
         [HttpGet("user/{userId}")]
         public async Task<ActionResult<LinkBundle>> GetLinkBundlesForUser(string userId)
         {
-            string userHandle = _userAuth.GetUserAccountInfo().HashedID;
+            string userHandle = _linksService.GetUserAccountHash();
+
             if (string.IsNullOrEmpty(userHandle) || userHandle != userId)
             {
                 return Unauthorized();
             }
 
-            var linkBundlesForUser = await _context.LinkBundle
-                .Where(s => s.UserId == userId)
-                .ToListAsync();
+            var linkBundlesForUser = await _linksService.FindLinkBundlesForUser(userId);
 
             if (!linkBundlesForUser.Any())
             {
@@ -88,16 +85,18 @@ namespace LinkyLink.Controllers
         [HttpPost]
         public async Task<ActionResult<LinkBundle>> PostLinkBundle(LinkBundle linkBundle)
         {
+            // Todo - Check if this condition is really needed
             if (!ValidatePayLoad(linkBundle, Request, out ProblemDetails problems))
             {
-                return new  BadRequestObjectResult(problems);
+                return new BadRequestObjectResult(problems);
             }
 
-            string handle = _userAuth.GetUserAccountInfo().HashedID;
-            linkBundle.UserId = handle;
+            string userHandle = _linksService.GetUserAccountHash();
+            linkBundle.UserId = userHandle;
             
             ValidateVanityUrl(linkBundle);
 
+            // Todo - Move these checks to ValidateVanityUrl
             string vanity_regex = @"^([\w\d-])+(/([\w\d-])+)*$";
             Match match = Regex.Match(linkBundle.VanityUrl, vanity_regex, RegexOptions.IgnoreCase);
 
@@ -106,15 +105,13 @@ namespace LinkyLink.Controllers
                 return new BadRequestResult();
             }
 
-            await _context.LinkBundle.AddAsync(linkBundle);
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _linksService.CreateLinkBundle(linkBundle);
             }
             catch (DbUpdateException)
             {
-                if (LinkBundleExists(linkBundle.Id))
+                if (await _linksService.LinkBundleExists(linkBundle.Id))
                 {
                     return Conflict();
                 }
@@ -131,30 +128,28 @@ namespace LinkyLink.Controllers
         [HttpDelete("{vanityUrl}")]
         public async Task<ActionResult<LinkBundle>> DeleteLinkBundle(string vanityUrl)
         {
-            string userHandle = _userAuth.GetUserAccountInfo().HashedID;
+            //string userHandle = _linksService.GetUserAccountHash();
 
-            if (string.IsNullOrEmpty(userHandle))
-            {
-                return Unauthorized();
-            }
+            //if (string.IsNullOrEmpty(userHandle))
+            //{
+            //    return Unauthorized();
+            //}
 
-            var linkBundle = await _context.LinkBundle
-                .SingleAsync(b => b.VanityUrl == vanityUrl.ToLower());
+            var linkBundle = await _linksService.FindLinkBundle(vanityUrl);
 
             if (linkBundle == null)
             {
                 return NotFound();
             }
 
-            if (!userHandle.Equals(linkBundle.UserId, StringComparison.InvariantCultureIgnoreCase))
-            {
-                return Forbid();
-            }
+            //if (!userHandle.Equals(linkBundle.UserId, StringComparison.InvariantCultureIgnoreCase))
+            //{
+            //    return Forbid();
+            //}
 
             try
             {
-                _context.LinkBundle.Remove(linkBundle);
-                await _context.SaveChangesAsync();
+                await _linksService.RemoveLinkBundle(linkBundle);
             }
             catch (Exception ex)
             {
@@ -168,14 +163,13 @@ namespace LinkyLink.Controllers
         [HttpPatch("{vanityUrl}")]
         public async Task<ActionResult<LinkBundle>> PatchLinkBundle(string vanityUrl, JsonPatchDocument<LinkBundle> linkBundle)
         {
-            string userHandle = _userAuth.GetUserAccountInfo().HashedID;
+            string userHandle = _linksService.GetUserAccountHash();
             if (string.IsNullOrEmpty(userHandle))
             {
                 return Unauthorized();
             }
 
-            var linkBundleEntry = await _context.LinkBundle
-                .SingleAsync(b => b.VanityUrl == vanityUrl.ToLower());
+            var linkBundleEntry = await _linksService.FindLinkBundle(vanityUrl);
 
             if (linkBundleEntry == null)
             {
@@ -196,8 +190,7 @@ namespace LinkyLink.Controllers
                     return BadRequest(ModelState);
                 }
 
-                _context.Entry(linkBundleEntry).State = EntityState.Modified;
-                await _context.SaveChangesAsync();
+                await _linksService.UpdateLinkBundle(linkBundleEntry);
             }
             catch (Exception ex)
             {
@@ -205,11 +198,6 @@ namespace LinkyLink.Controllers
             }
 
             return NoContent();
-        }
-
-        private bool LinkBundleExists(string id)
-        {
-            return _context.LinkBundle.Any(e => e.Id == id);
         }
 
         private void ValidateVanityUrl(LinkBundle linkDocument)

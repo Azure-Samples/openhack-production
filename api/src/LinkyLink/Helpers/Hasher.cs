@@ -33,10 +33,5 @@ namespace LinkyLink.Helpers
                 return Convert.ToBase64String(hashmessage);
             }
         }
-
-        public virtual bool Verify(string data, string hashedData)
-        {
-            return hashedData == HashString(data);
-        }
     }
 }

@@ -17,6 +17,7 @@ using Microsoft.Extensions.Options;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 using LinkyLink.Helpers;
+using LinkyLink.Service;
 
 namespace LinkyLink
 {
@@ -36,6 +37,7 @@ namespace LinkyLink
             services.AddDbContext<LinksContext>(options => options.UseCosmos(configSection["ServiceEndpoint"], configSection["AuthKey"], configSection["DatabaseName"]));
             services.AddControllers().AddNewtonsoftJson();
             services.AddHttpContextAccessor();
+            services.AddTransient<ILinksService, LinksService>();
             services.AddSingleton<Hasher>();
             services.AddSingleton<UserAuth>();
             services.AddMvc().AddJsonOptions(options =>

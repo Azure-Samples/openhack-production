@@ -229,6 +229,7 @@ namespace LinkyLink.Controllers
             bool isValid = (linkDocument != null) && linkDocument.Links.Count() > 0;
             problems = null;
 
+            // Todo - Consider removing this ProblemDetails object
             if (!isValid)
             {
                 problems = new ProblemDetails()

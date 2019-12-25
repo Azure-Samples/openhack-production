@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 
 namespace LinkyLink.Helpers
 {
+    // Todo - Consider merging this class in to UserAuth class
     public class Hasher
     {
         protected const string HASHER_KEY = "HASHER_KEY";

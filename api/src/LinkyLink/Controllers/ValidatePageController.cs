@@ -16,17 +16,18 @@ namespace LinkyLink.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    // Todo - Change the name of the controller
     public class ValidatePageController : Controller
     {
         // POST: api/ValidatePage
         [HttpPost]
         public async Task<ActionResult<OpenGraphResult>> Post()
         {
-            string requestBody = await new StreamReader(Request.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-
             try
             {
+                string requestBody = await new StreamReader(Request.Body).ReadToEndAsync();
+                dynamic data = JsonConvert.DeserializeObject(requestBody);
+
                 if (data is JArray)
                 {
                     // expecting a JSON array of objects with url(string), id(string)
@@ -46,7 +47,6 @@ namespace LinkyLink.Controllers
                     Detail = "Payload must be a valid JSON object or array",
                     Status = StatusCodes.Status400BadRequest,
                     Type = "/linkylink/clientissue",
-                    Instance = Request.Path
                 };
                 return new BadRequestObjectResult(problemDetails);
             }
@@ -58,7 +58,6 @@ namespace LinkyLink.Controllers
                     Detail = ex.Message,
                     Status = StatusCodes.Status400BadRequest,
                     Type = "/linkylink/clientissue",
-                    Instance = Request.Path
                 };
                 return new BadRequestObjectResult(problemDetails);
             }
@@ -86,7 +85,7 @@ namespace LinkyLink.Controllers
                     }
                     catch (Exception ex)
                     {
-                        // log
+                        // Todo - Add logging
                     }
                 }
             }

@@ -1,5 +1,8 @@
 ﻿namespace LinkyLink.Models
 {
+    /// <summary>
+    /// Data model class to represent User Info.
+    /// </summary>
     public struct UserInfo
     {
         public string IDProvider { get; }

@@ -7,6 +7,9 @@ using Xunit;
 
 namespace LinkyLink.Tests
 {
+    /// <summary>
+    /// Tests to validate methods in ValidatePageController class.
+    /// </summary>
     public class ValidatePageControllerTests
     {
         private readonly ValidatePageController _validatePageController;

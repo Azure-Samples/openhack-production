@@ -3,6 +3,9 @@ using Microsoft.Extensions.Configuration;
 
 namespace LinkyLink.Models
 {
+    /// <summary>
+    /// This class coordinates Entity Framework Core functionality (Create, Read, Update, Delete) for the LinkBundle data model.
+    /// </summary>
     public class LinksContext : DbContext
     {
         private string cosmosContainerName;

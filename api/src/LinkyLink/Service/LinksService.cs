@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace LinkyLink.Service
 {
+    /// <summary>
+    /// This class uses Entity Framework Core to perform CRUD operations (Create, Read, Update, Delete) on the database.
+    /// </summary>
     public class LinksService : ILinksService
     {
         private readonly LinksContext _context;

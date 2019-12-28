@@ -16,6 +16,9 @@ namespace LinkyLink.Controllers
     [Route("api/[controller]")]
     [ApiController]
     // Todo - Change the name of the controller
+    /// <summary>
+    /// This class handles API requests to get details of a Link such as title, description and image.
+    /// </summary>
     public class ValidatePageController : Controller
     {
         // POST: api/ValidatePage

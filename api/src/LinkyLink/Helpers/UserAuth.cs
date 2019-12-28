@@ -7,6 +7,9 @@ using System.Security.Cryptography;
 
 namespace LinkyLink.Helpers
 {
+    /// <summary>
+    /// This class handles the user`s identity and hashes the user email address if a user is authenticated.
+    /// </summary>
     public class UserAuth
     {
         protected IHttpContextAccessor _contextAccessor;

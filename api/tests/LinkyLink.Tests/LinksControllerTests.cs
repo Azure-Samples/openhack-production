@@ -12,6 +12,9 @@ using Times = Moq.Times;
 
 namespace LinkyLink.Tests
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class LinksControllerTests
     {
         private readonly Mock<ILinksService> _mockService;

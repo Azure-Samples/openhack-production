@@ -1,16 +1,15 @@
-﻿using System;
+﻿using HtmlAgilityPack;
+using LinkyLink.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using OpenGraphNet;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using HtmlAgilityPack;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using OpenGraphNet;
-using LinkyLink.Models;
 
 namespace LinkyLink.Controllers
 {
@@ -95,7 +94,8 @@ namespace LinkyLink.Controllers
         private async Task<IEnumerable<OpenGraphResult>> GetMultipleGraphResults(HttpRequest req, dynamic multiLinkItem)
         {
             IEnumerable<OpenGraphResult> allResults =
-                await Task.WhenAll((multiLinkItem as JArray).Select(item => GetGraphResult(req, item)));
+                await Task.WhenAll((multiLinkItem as JArray)
+                .Select(item => GetGraphResult(req, item)));
 
             return allResults;
         }

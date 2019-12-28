@@ -1,11 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Microsoft.EntityFrameworkCore.ValueGeneration;
-using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-using System;
-using System.Configuration;
 
 namespace LinkyLink.Models
 {
@@ -14,7 +8,7 @@ namespace LinkyLink.Models
         private string cosmosContainerName;
         public LinksContext(DbContextOptions<LinksContext> options, IConfiguration configuration) : base(options)
         {
-            cosmosContainerName = configuration.GetSection("ContainerName").ToString();
+            cosmosContainerName = configuration.GetSection("CosmosSettings")["ContainerName"];
         }
 
         public DbSet<LinkBundle> LinkBundle { get; set; }

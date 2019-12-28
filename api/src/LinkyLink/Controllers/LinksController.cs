@@ -1,19 +1,12 @@
-﻿using LinkyLink.Helpers;
-using LinkyLink.Models;
+﻿using LinkyLink.Models;
 using LinkyLink.Service;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Drawing.Printing;
-using System.IO;
 using System.Linq;
-using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -31,6 +24,7 @@ namespace LinkyLink.Controllers
             _linksService = linksService;
         }
 
+        // Todo - Remove this method
         // GET: api/Links
         [HttpGet]
         public async Task<IEnumerable<LinkBundle>> GetLinkBundles()
@@ -85,18 +79,25 @@ namespace LinkyLink.Controllers
         [HttpPost]
         public async Task<ActionResult<LinkBundle>> PostLinkBundle(LinkBundle linkBundle)
         {
-            // Todo - Check if this condition is really needed
-            if (!ValidatePayLoad(linkBundle, Request, out ProblemDetails problems))
+            if (linkBundle.Links.Count() == 0)
             {
-                return new BadRequestObjectResult(problems);
+                var problemDetails = new ProblemDetails()
+                {
+                    Title = "Payload is invalid",
+                    Detail = "No links are provided",
+                    Status = StatusCodes.Status400BadRequest,
+                    Type = "/linkylink/clientissue",
+                    Instance = Request.Path
+                };
+
+                return new BadRequestObjectResult(problemDetails);
             }
 
             string userHandle = _linksService.GetUserAccountHash();
             linkBundle.UserId = userHandle;
-            
-            ValidateVanityUrl(linkBundle);
 
-            // Todo - Move these checks to ValidateVanityUrl
+            GenerateVanityUrlIfNotProvided(linkBundle);
+
             string vanity_regex = @"^([\w\d-])+(/([\w\d-])+)*$";
             Match match = Regex.Match(linkBundle.VanityUrl, vanity_regex, RegexOptions.IgnoreCase);
 
@@ -200,7 +201,7 @@ namespace LinkyLink.Controllers
             return NoContent();
         }
 
-        private void ValidateVanityUrl(LinkBundle linkDocument)
+        private void GenerateVanityUrlIfNotProvided(LinkBundle linkDocument)
         {
             string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             
@@ -222,26 +223,6 @@ namespace LinkyLink.Controllers
 
             // force lowercase
             linkDocument.VanityUrl = linkDocument.VanityUrl.ToLower();
-        }
-
-        private static bool ValidatePayLoad(LinkBundle linkDocument, HttpRequest req, out ProblemDetails problems)
-        {
-            bool isValid = (linkDocument != null) && linkDocument.Links.Count() > 0;
-            problems = null;
-
-            // Todo - Consider removing this ProblemDetails object
-            if (!isValid)
-            {
-                problems = new ProblemDetails()
-                {
-                    Title = "Payload is invalid",
-                    Detail = "No links provided",
-                    Status = StatusCodes.Status400BadRequest,
-                    Type = "/linkylink/clientissue",
-                    Instance = req.Path
-                };
-            }
-            return isValid;
         }
     }
 }

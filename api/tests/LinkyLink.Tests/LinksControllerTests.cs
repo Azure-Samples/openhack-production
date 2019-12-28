@@ -1,15 +1,11 @@
-﻿using AutoFixture;
-using FakeItEasy;
-using LinkyLink.Controllers;
+﻿using LinkyLink.Controllers;
 using LinkyLink.Models;
 using LinkyLink.Service;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Moq;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using Xunit;
 using Times = Moq.Times;
@@ -149,7 +145,7 @@ namespace LinkyLink.Tests
             
             LinkBundle linkBundle = new LinkBundle
             {
-                Id = "userhash",
+                UserId = "userhash",
                 VanityUrl = "samplelink",
                 Description = "sampledescription",
                 Links = new List<Link>    
@@ -167,7 +163,7 @@ namespace LinkyLink.Tests
             // Assert
             _mockService.Verify(x => x.CreateLinkBundle(It.IsAny<LinkBundle>()), Times.Once);
             Assert.IsType<CreatedAtActionResult>(result.Result);
-            Assert.Equal(expectedLinkBundle.Id, linkBundle.Id);
+            Assert.Equal(expectedLinkBundle.Description, linkBundle.Description);
             Assert.Equal(expectedLinkBundle.UserId, linkBundle.UserId);
             Assert.Equal(expectedLinkBundle.VanityUrl, linkBundle.VanityUrl);
             Assert.Equal(expectedLinkBundle.Links.Count(), linkBundle.Links.Count);
@@ -279,6 +275,81 @@ namespace LinkyLink.Tests
 
             // Assert
             Assert.IsType<ForbidResult>(result.Result);
+        }
+
+        [Fact]
+        public async Task PatchLinkBundleReturnsUnAuthorizedIfMissingAuth()
+        {
+            // Arrange
+            string vanityUrl = "samplelink";
+
+            JsonPatchDocument<LinkBundle> patchReqDocument = new JsonPatchDocument<LinkBundle>();
+
+            // Act
+            ActionResult<LinkBundle> result = await _linksController.PatchLinkBundle(vanityUrl, patchReqDocument);
+
+            // Assert
+            Assert.IsType<UnauthorizedResult>(result.Result);
+        }
+
+        [Fact]
+        public async Task PatchLinkBundleReturnsForbiddenIfLinkBundleOwnedByOtherUser()
+        {
+            // Arrange 
+            LinkBundle linkBundle = new LinkBundle
+            {
+                UserId = "userhash1",
+                VanityUrl = "samplelink"
+            };
+
+            _mockService.Setup(service => service.GetUserAccountHash())
+                .Returns("userhash");
+
+            _mockService.Setup(service => service.FindLinkBundle(linkBundle.VanityUrl))
+                .ReturnsAsync(linkBundle);
+
+            JsonPatchDocument<LinkBundle> patchReqDocument = new JsonPatchDocument<LinkBundle>();
+
+            // Act
+            ActionResult<LinkBundle> result = await _linksController.PatchLinkBundle(linkBundle.VanityUrl, patchReqDocument);
+
+            // Assert
+            Assert.IsType<ForbidResult>(result.Result);
+        }
+
+        [Fact]
+        public async Task PatchLinkBundleAppliesJsonPathToLinkBundle()
+        {
+            // Arrange 
+            LinkBundle expectedLinkBundle = null;
+
+            LinkBundle linkBundle = new LinkBundle
+            {
+                UserId = "userhash",
+                VanityUrl = "samplelink"
+            };
+
+            _mockService.Setup(service => service.GetUserAccountHash())
+                .Returns(linkBundle.UserId);
+
+            _mockService.Setup(service => service.FindLinkBundle(linkBundle.VanityUrl))
+                .ReturnsAsync(linkBundle);
+
+            _mockService.Setup(r => r.UpdateLinkBundle(It.IsAny<LinkBundle>()))
+                .Callback<LinkBundle>(x => expectedLinkBundle = x);
+
+            string description = "sampledescription";
+            JsonPatchDocument<LinkBundle> patchReqDocument = new JsonPatchDocument<LinkBundle>();
+            patchReqDocument.Add(d => d.Description, description);
+
+            // Act
+            ActionResult<LinkBundle> result = await _linksController.PatchLinkBundle(linkBundle.VanityUrl, patchReqDocument);
+
+            // Assert
+            Assert.IsType<NoContentResult>(result.Result);
+            Assert.Equal(expectedLinkBundle.VanityUrl, linkBundle.VanityUrl);
+            Assert.Equal(expectedLinkBundle.UserId, linkBundle.UserId);
+            Assert.Equal(expectedLinkBundle.Description, description);
         }
     }
 }

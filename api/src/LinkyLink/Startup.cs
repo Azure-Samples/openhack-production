@@ -1,23 +1,12 @@
+using LinkyLink.Helpers;
+using LinkyLink.Models;
+using LinkyLink.Service;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using LinkyLink.Models;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Formatters;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
-using LinkyLink.Helpers;
-using LinkyLink.Service;
 
 namespace LinkyLink
 {
@@ -38,7 +27,6 @@ namespace LinkyLink
             services.AddControllers().AddNewtonsoftJson();
             services.AddHttpContextAccessor();
             services.AddTransient<ILinksService, LinksService>();
-            services.AddSingleton<Hasher>();
             services.AddSingleton<UserAuth>();
             services.AddMvc().AddJsonOptions(options =>
             {

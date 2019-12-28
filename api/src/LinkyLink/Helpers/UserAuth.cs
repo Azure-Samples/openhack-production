@@ -1,38 +1,58 @@
 ﻿using LinkyLink.Models;
 using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
+using System.Security.Cryptography;
 
 namespace LinkyLink.Helpers
 {
     public class UserAuth
     {
         protected IHttpContextAccessor _contextAccessor;
-        protected Hasher _hasher;
 
-        public UserAuth(IHttpContextAccessor contextAccessor, Hasher hasher)
+        public UserAuth(IHttpContextAccessor contextAccessor)
         {
             _contextAccessor = contextAccessor;
-            _hasher = hasher;
         }
 
         public UserInfo GetUserAccountInfo()
         {
-            var socialIdentity = _contextAccessor.HttpContext.User.Identities.FirstOrDefault();
-
-            if (socialIdentity.Claims.Count() != 0)
+            if (_contextAccessor.HttpContext.User.Identity.IsAuthenticated)
             {
-                var provider = _contextAccessor.HttpContext.Request.Headers["X-MS-CLIENT-PRINCIPAL-IDP"].FirstOrDefault();
-                var email = _contextAccessor.HttpContext.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-                if (provider != null && email != null)
+                var socialIdentities = _contextAccessor.HttpContext.User.Identities
+                    .Where(id => !id.AuthenticationType.Equals("WebJobsAuthLevel", StringComparison.InvariantCultureIgnoreCase));
+
+                if (socialIdentities.Any())
                 {
-                    return new UserInfo(provider, _hasher.HashString(email));
+                    var provider = _contextAccessor.HttpContext.Request.Headers["X-MS-CLIENT-PRINCIPAL-IDP"].DefaultIfEmpty(string.Empty).FirstOrDefault();
+                    var primaryIdentity = socialIdentities.First();
+                    var email = primaryIdentity.Claims.SingleOrDefault(c => c.Type == ClaimTypes.Email).Value;
+                    var userInfo = new UserInfo(provider, HashString(email));
+
+                    return userInfo;
                 }
             }
+
             return UserInfo.Empty;
+        }
+
+        private string HashString(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+            {
+                throw new ArgumentException("Email was null or empty", "email");
+            }
+
+            string salt = Environment.GetEnvironmentVariable("AUTH_SALT");
+            if (salt == null) { salt = "HASHER_SALT"; }
+            byte[] keyByte = System.Text.Encoding.UTF8.GetBytes(salt);
+            byte[] messageBytes = System.Text.Encoding.UTF8.GetBytes(email);
+            using (var hmacsha256 = new HMACSHA384(keyByte))
+            {
+                byte[] hashmessage = hmacsha256.ComputeHash(messageBytes);
+                return Convert.ToBase64String(hashmessage);
+            }
         }
     }
 }

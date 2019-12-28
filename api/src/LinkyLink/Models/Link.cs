@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json;
-
-namespace LinkyLink.Models
+﻿namespace LinkyLink.Models
 {
     public class Link
     {

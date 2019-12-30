@@ -8,7 +8,7 @@ namespace LinkyLink.Models
     /// </summary>
     public class LinksContext : DbContext
     {
-        private string cosmosContainerName;
+        private readonly string cosmosContainerName;
         public LinksContext(DbContextOptions<LinksContext> options, IConfiguration configuration) : base(options)
         {
             cosmosContainerName = configuration.GetSection("CosmosSettings")["ContainerName"];

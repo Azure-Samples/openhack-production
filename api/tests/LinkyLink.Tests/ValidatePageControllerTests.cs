@@ -1,7 +1,9 @@
 ﻿using LinkyLink.Controllers;
 using LinkyLink.Models;
+using LinkyLink.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Moq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -13,10 +15,12 @@ namespace LinkyLink.Tests
     public class ValidatePageControllerTests
     {
         private readonly ValidatePageController _validatePageController;
+        private readonly Mock<IOpenGraphService> _mockService;
 
         public ValidatePageControllerTests()
         {
-            _validatePageController = new ValidatePageController();
+            _mockService = new Mock<IOpenGraphService>();
+            _validatePageController = new ValidatePageController(_mockService.Object);
         }
 
         [Fact]

@@ -24,7 +24,7 @@ namespace LinkyLink.Service
 
         public async Task<bool> LinkBundleExists(string id)
         {
-            return await _context.LinkBundle.AnyAsync(e => e.Id == id);
+            return await _context.LinkBundle.AnyAsync(a => a.Id == id);
         }
 
         public async Task<IEnumerable<LinkBundle>> AllLinkBundles()
@@ -41,7 +41,7 @@ namespace LinkyLink.Service
         public async Task<IEnumerable<LinkBundle>> FindLinkBundlesForUser(string userId)
         {
             return await _context.LinkBundle
-                .Where(s => s.UserId == userId)
+                .Where(c => c.UserId == userId)
                 .ToListAsync();
         }
 

@@ -27,6 +27,7 @@ namespace LinkyLink
             services.AddControllers().AddNewtonsoftJson();
             services.AddHttpContextAccessor();
             services.AddTransient<ILinksService, LinksService>();
+            services.AddTransient<IOpenGraphService, OpenGraphService>();
             services.AddSingleton<UserAuth>();
             services.AddMvc().AddJsonOptions(options =>
             {

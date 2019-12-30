@@ -1,26 +1,31 @@
-﻿using HtmlAgilityPack;
-using LinkyLink.Models;
+﻿using LinkyLink.Models;
+using LinkyLink.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using OpenGraphNet;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace LinkyLink.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    // Todo - Change the name of the controller
+    // Todo - Change the name of the controller to something meaningful.
     /// <summary>
     /// This class handles API requests to get details of a Link such as title, description and image.
     /// </summary>
     public class ValidatePageController : Controller
     {
+        private readonly IOpenGraphService _openGraphService;
+
+        public ValidatePageController(IOpenGraphService openGraphService)
+        {
+            _openGraphService = openGraphService;
+        }
+
         // POST: api/ValidatePage
         [HttpPost]
         public async Task<ActionResult<OpenGraphResult>> Post()
@@ -33,13 +38,13 @@ namespace LinkyLink.Controllers
                 if (data is JArray)
                 {
                     // expecting a JSON array of objects with url(string), id(string)
-                    IEnumerable<OpenGraphResult> result = await GetMultipleGraphResults(Request, data);
+                    IEnumerable<OpenGraphResult> result = await _openGraphService.GetMultipleGraphResults(Request, data);
                     return new OkObjectResult(result);
                 }
                 else if (data is JObject)
                 {
                     // expecting a JSON object with url(string), id(string)
-                    OpenGraphResult result = await GetGraphResult(Request, data);
+                    OpenGraphResult result = await _openGraphService.GetGraphResult(Request, data);
                     return new OkObjectResult(result);
                 }
 
@@ -63,44 +68,6 @@ namespace LinkyLink.Controllers
                 };
                 return new BadRequestObjectResult(problemDetails);
             }
-        }
-
-        private async Task<OpenGraphResult> GetGraphResult(HttpRequest req, dynamic singleLinkItem)
-        {
-            string url = singleLinkItem.url, id = singleLinkItem.id;
-            if (!string.IsNullOrEmpty(url) && !string.IsNullOrEmpty(id))
-            {
-                /**
-                    This check is a hack in support of adding our own URLs to lists. Rendered URLs return no Open Graph
-                    metadata and deep links return HTTP 404s when hosting in Blob storage. So we skip the HTTP request.
-                */
-                if (!req.Host.HasValue || !url.Contains(req.Host.Host))
-                {
-                    try
-                    {
-                        OpenGraph graph = await OpenGraph.ParseUrlAsync(url, "Urlist");
-                        HtmlDocument doc = new HtmlDocument();
-                        doc.LoadHtml(graph.OriginalHtml);
-                        var descriptionMetaTag = doc.DocumentNode.SelectSingleNode("//meta[@name='description']");
-                        var titleTag = doc.DocumentNode.SelectSingleNode("//head/title");
-                        return new OpenGraphResult(id, graph, descriptionMetaTag, titleTag);
-                    }
-                    catch (Exception ex)
-                    {
-                        // Todo - Add logging
-                    }
-                }
-            }
-            return new OpenGraphResult { Id = id };
-        }
-
-        private async Task<IEnumerable<OpenGraphResult>> GetMultipleGraphResults(HttpRequest req, dynamic multiLinkItem)
-        {
-            IEnumerable<OpenGraphResult> allResults =
-                await Task.WhenAll((multiLinkItem as JArray)
-                .Select(item => GetGraphResult(req, item)));
-
-            return allResults;
         }
     }
 }

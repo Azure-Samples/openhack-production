@@ -15,6 +15,9 @@ namespace LinkyLink.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    /// <summary>
+    /// This class handles API requests for Link bundles and defines set of actions to peform on Link bundles.
+    /// </summary>
     public class LinksController : ControllerBase
     {
         private readonly ILinksService _linksService;
@@ -36,7 +39,6 @@ namespace LinkyLink.Controllers
         [HttpGet("{vanityUrl}")]
         public async Task<ActionResult<LinkBundle>> GetLinkBundle(string vanityUrl)
         {
-            // Get links for specified vanityUrl
             var linkBundle = await _linksService.FindLinkBundle(vanityUrl);
 
             if (linkBundle == null)
@@ -96,7 +98,7 @@ namespace LinkyLink.Controllers
             string userHandle = _linksService.GetUserAccountHash();
             linkBundle.UserId = userHandle;
 
-            GenerateVanityUrlIfNotProvided(linkBundle);
+            ValidateVanityUrl(linkBundle);
 
             string vanity_regex = @"^([\w\d-])+(/([\w\d-])+)*$";
             Match match = Regex.Match(linkBundle.VanityUrl, vanity_regex, RegexOptions.IgnoreCase);
@@ -120,6 +122,10 @@ namespace LinkyLink.Controllers
                 {
                     throw;
                 }
+            }
+            catch (Exception)
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
 
             return CreatedAtAction("GetLinkBundle", new { vanityUrl = linkBundle.VanityUrl }, linkBundle);
@@ -152,7 +158,7 @@ namespace LinkyLink.Controllers
             {
                 await _linksService.RemoveLinkBundle(linkBundle);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
@@ -193,7 +199,7 @@ namespace LinkyLink.Controllers
 
                 await _linksService.UpdateLinkBundle(linkBundleEntry);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
@@ -201,7 +207,7 @@ namespace LinkyLink.Controllers
             return NoContent();
         }
 
-        private void GenerateVanityUrlIfNotProvided(LinkBundle linkDocument)
+        private void ValidateVanityUrl(LinkBundle linkDocument)
         {
             string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             

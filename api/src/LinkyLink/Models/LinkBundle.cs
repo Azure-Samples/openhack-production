@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace LinkyLink.Models
 {
+    /// <summary>
+    /// Data model class to represent a Link Bundle.
+    /// </summary>
     public class LinkBundle
     {
         public LinkBundle()

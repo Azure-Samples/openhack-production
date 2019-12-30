@@ -1,5 +1,8 @@
 ﻿namespace LinkyLink.Models
 {
+    /// <summary>
+    /// Data model class to represent Links in a Link Bundle.
+    /// </summary>
     public class Link
     {
         public string Id { get; set; }

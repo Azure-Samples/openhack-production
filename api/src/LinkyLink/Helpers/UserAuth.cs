@@ -8,11 +8,11 @@ using System.Security.Cryptography;
 namespace LinkyLink.Helpers
 {
     /// <summary>
-    /// This class handles the user`s identity and hashes the user email address if a user is authenticated.
+    /// This class handles the user`s identity and hashes the user email address if a user is authenticated by Twitter, Facebook, etc.
     /// </summary>
     public class UserAuth
     {
-        protected IHttpContextAccessor _contextAccessor;
+        private readonly IHttpContextAccessor _contextAccessor;
 
         public UserAuth(IHttpContextAccessor contextAccessor)
         {
@@ -42,13 +42,13 @@ namespace LinkyLink.Helpers
 
         private string HashString(string email)
         {
-            if (string.IsNullOrEmpty(email))
+            if (string.IsNullOrWhiteSpace(email))
             {
                 throw new ArgumentException("Email was null or empty", "email");
             }
 
             string salt = Environment.GetEnvironmentVariable("AUTH_SALT");
-            if (salt == null) { salt = "HASHER_SALT"; }
+            if (string.IsNullOrWhiteSpace(salt)) { salt = "HASHER_SALT"; }
             byte[] keyByte = System.Text.Encoding.UTF8.GetBytes(salt);
             byte[] messageBytes = System.Text.Encoding.UTF8.GetBytes(email);
             using (var hmacsha256 = new HMACSHA384(keyByte))

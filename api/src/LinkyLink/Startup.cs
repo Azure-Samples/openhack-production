@@ -1,20 +1,64 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+using LinkyLink.Helpers;
+using LinkyLink.Models;
+using LinkyLink.Service;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using LinkyLink.Infrastructure;
-using Microsoft.ApplicationInsights.Extensibility;
+using Microsoft.Extensions.Hosting;
 
-[assembly: FunctionsStartup(typeof(LinkyLink.Startup))]
 namespace LinkyLink
 {
-    public class Startup : FunctionsStartup
+    public class Startup
     {
-        public override void Configure(IFunctionsHostBuilder builder)
+        public Startup(IConfiguration configuration)
         {
-            builder.Services.AddSingleton<IBlackListChecker>(new EnvironmentBlackListChecker());
-            builder.Services.AddTransient<IHttpContextAccessor, HttpContextAccessor>();
-            builder.Services.AddSingleton<ITelemetryInitializer, HeaderTelemetryInitializer>();
-            builder.Services.AddSingleton<Hasher>();
+            Configuration = configuration;
+        }
+
+        public IConfiguration Configuration { get; }
+
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            IConfigurationSection configSection = Configuration.GetSection("CosmosSettings");
+            services.AddDbContext<LinksContext>(options => options.UseCosmos(configSection["ServiceEndpoint"], configSection["AuthKey"], configSection["DatabaseName"]));
+            services.AddControllers().AddNewtonsoftJson();
+            services.AddHttpContextAccessor();
+            services.AddTransient<ILinksService, LinksService>();
+            services.AddTransient<IOpenGraphService, OpenGraphService>();
+            services.AddSingleton<UserAuth>();
+            services.AddMvc().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.IgnoreNullValues = true;
+            });
+        }
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetService<LinksContext>();
+                dbContext.Database.EnsureCreated();
+            }
+
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+
+            app.UseHttpsRedirection();
+
+            app.UseRouting();
+
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
     }
 }

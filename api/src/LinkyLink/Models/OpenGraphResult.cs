@@ -1,7 +1,6 @@
-using System.Linq;
-using HtmlAgilityPack;
-using Newtonsoft.Json;
+﻿using HtmlAgilityPack;
 using OpenGraphNet;
+using System.Linq;
 
 namespace LinkyLink.Models
 {
@@ -28,16 +27,9 @@ namespace LinkyLink.Models
             Description = HtmlEntity.DeEntitize(graph.Metadata["og:description"].FirstOrDefault()?.Value) ?? descriptionNode?.Attributes["content"].Value;
         }
 
-        [JsonProperty("id", NullValueHandling = NullValueHandling.Ignore)]
         public string Id { get; set; }
-
-        [JsonProperty("title", NullValueHandling = NullValueHandling.Ignore)]
         public string Title { get; set; }
-
-        [JsonProperty("description", NullValueHandling = NullValueHandling.Ignore)]
         public string Description { get; set; }
-
-        [JsonProperty("image", NullValueHandling = NullValueHandling.Ignore)]
         public string Image { get; set; }
     }
 }

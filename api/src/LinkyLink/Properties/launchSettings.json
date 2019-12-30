@@ -14,7 +14,7 @@
       "launchBrowser": true,
       "launchUrl": "api/links",
       "environmentVariables": {
-        "AUTH_SALT": "Arara",
+        "AUTH_SALT": "SampleSalt",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     }

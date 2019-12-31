@@ -39,21 +39,16 @@ stages:
           inputs:
             pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
             
-        - task: AzureRmWebAppDeployment@4
-          inputs:
-            ConnectionType: 'AzureRM'
-            azureSubscription: 'azure'
-            appType: 'webAppLinux'
-            WebAppName: 'hussainmoiz'
-            packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
-
-        - task: AzureRmWebAppDeployment@4
+        - task: AzureRMWebAppDeployment@4
           inputs:
             ConnectionType: 'AzureRM'
             azureSubscription: 'azure'
             appType: 'webApp'
-            WebAppName: 'backend-prodoh-urlist-test-centralus'
+            WebAppName: 'hussainmoiz'
             packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
+
+
+            
 
 
 

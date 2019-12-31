@@ -35,13 +35,17 @@ stages:
             arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
             zipAfterPublish: True
 
+        - task: PublishBuildArtifacts@1
+          inputs:
+            pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
+            artifactName: 'API'
         - task: AzureRmWebAppDeployment@4
           inputs:
             ConnectionType: 'AzureRM'
             azureSubscription: 'azure'
             appType: 'webApp'
             WebAppName: 'frontend-prodoh-urlist-test-eastus'
-            packageForLinux: '$(Build.DefaultWorkingDirectory)/**/*.zip'
+            packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
 
 
         - task: AzureRmWebAppDeployment@4
@@ -50,7 +54,7 @@ stages:
             azureSubscription: 'azure'
             appType: 'apiApp'
             WebAppName: 'backend-prodoh-urlist-test-centralus'
-            packageForLinux: '$(Build.DefaultWorkingDirectory)/**/*.zip'
+            packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
 
 
               

@@ -24,7 +24,7 @@ stages:
           - task: AzureCLI@2
             displayName: Deploy ARM Template
             inputs:
-              azureSubscription: "PELITTLE TEAM - CSE DWR(d36d0808-a967-4f73-9fdc-32ea232fc81d)"
+              azureSubscription: "azure"
               scriptType: "bash"
               scriptLocation: "scriptPath"
               scriptPath: "./deployment/arm/deploy-region.sh"
@@ -38,7 +38,7 @@ stages:
           - task: AzureCLI@2
             displayName: Deploy ARM Template
             inputs:
-              azureSubscription: "PELITTLE TEAM - CSE DWR(d36d0808-a967-4f73-9fdc-32ea232fc81d)"
+              azureSubscription: "azure"
               scriptType: "bash"
               scriptLocation: "scriptPath"
               scriptPath: "./deployment/arm/deploy-global.sh"

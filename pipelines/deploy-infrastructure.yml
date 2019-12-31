@@ -45,7 +45,7 @@ stages:
             azureSubscription: 'azure'
             appType: 'webAppLinux'
             WebAppName: 'hussainmoiz'
-            packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+            packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
 
         - task: AzureRmWebAppDeployment@4
           inputs:

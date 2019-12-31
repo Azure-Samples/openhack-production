@@ -43,9 +43,10 @@ stages:
           inputs:
             ConnectionType: 'AzureRM'
             azureSubscription: 'azure'
-            appType: 'apiApp'
+            appType: 'webApp'
             WebAppName: 'backend-prodoh-urlist-test-centralus'
             packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
+
 
 
               

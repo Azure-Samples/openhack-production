@@ -7,53 +7,23 @@ pool:
   vmImage: "ubuntu-latest"
 
 stages:
-  - stage: DeployRegionalInfrastructure
-    displayName: Regional
-    jobs:
-      - job: RegionalMaxtrixDeployment
-        displayName: Resource Group
-        strategy:
-          matrix:
-            westus2:
-              region: westus2
-            eastus:
-              region: eastus
-            centralus:
-              region: centralus
-        steps:
-          - task: AzureCLI@2
-            displayName: Deploy ARM Template
-            inputs:
-              azureSubscription: "azure"
-              scriptType: "bash"
-              scriptLocation: "scriptPath"
-              scriptPath: "./deployment/arm/deploy-region.sh"
-              arguments: "prodoh urlist test $(region)"
-  - stage: DeployGlobalInfrastructure
-    displayName: Global
-    jobs:
-      - job: DeployGlobalInfrastructure
-        displayName: Resources
-        steps:
-          - task: AzureCLI@2
-            displayName: Deploy ARM Template
-            inputs:
-              azureSubscription: "azure"
-              scriptType: "bash"
-              scriptLocation: "scriptPath"
-              scriptPath: "./deployment/arm/deploy-global.sh"
-              arguments: "prodoh urlist test westus2 eastus centralus"
-
   - stage: BackendAPI
     displayName: API
     jobs:
       - job: DeployGlobalInfrastructure
         displayName: Resources
         steps:
+        - task: UseDotNet@2
+          inputs:
+            version: '3.1.100'
         - task: DotNetCoreCLI@2
           displayName: Build
           inputs:
             command: build
             projects: '**/*.csproj'
-            arguments: '--configuration Release'            
+            arguments: '--configuration Release'   
+
+
+              
+         
 

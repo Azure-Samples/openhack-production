@@ -44,5 +44,16 @@ stages:
               scriptPath: "./deployment/arm/deploy-global.sh"
               arguments: "prodoh urlist test westus2 eastus centralus"
 
-
+  - stage: BackendAPI
+    displayName: API
+    jobs:
+      - job: DeployGlobalInfrastructure
+        displayName: Resources
+        steps:
+        - task: DotNetCoreCLI@2
+          displayName: Build
+          inputs:
+            command: build
+            projects: '**/*.csproj'
+            arguments: '--configuration Release'            
 

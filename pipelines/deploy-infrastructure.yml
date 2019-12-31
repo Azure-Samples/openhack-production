@@ -38,14 +38,13 @@ stages:
         - task: PublishBuildArtifacts@1
           inputs:
             pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
-            artifactName: 'API'
         - task: AzureRmWebAppDeployment@4
           inputs:
             ConnectionType: 'AzureRM'
             azureSubscription: 'azure'
             appType: 'webApp'
             WebAppName: 'frontend-prodoh-urlist-test-eastus'
-            packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+            packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
 
 
         - task: AzureRmWebAppDeployment@4

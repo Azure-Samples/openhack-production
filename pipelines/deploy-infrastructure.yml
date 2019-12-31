@@ -22,18 +22,33 @@ stages:
             command: build
             projects: '**/*.csproj'
             arguments: '--configuration Release'   
-        
-        - task: DotNetCoreCLI@2
-          inputs:
-            command: test
-            projects: '**/*Tests/*.csproj'
-            arguments: '--configuration $(buildConfiguration)'
-        
         - task: DotNetCoreCLI@2
           inputs:
             command: test
             projects: '**/*Tests/*.csproj'
             arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
+
+        - task: DotNetCoreCLI@2
+          inputs:
+            command: publish
+            publishWebProjects: True
+            arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+            zipAfterPublish: True
+        - task: AzureRmWebAppDeployment@4
+          inputs:
+            ConnectionType: 'AzureRM'
+            azureSubscription: 'azure'
+            appType: 'apiApp'
+            WebAppName: 'backend-prodoh-urlist-test-centralus'
+            packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
+
+        - task: AzureRmWebAppDeployment@4
+          inputs:
+            ConnectionType: 'AzureRM'
+            azureSubscription: 'azure'
+            appType: 'webApp'
+            WebAppName: 'frontend-prodoh-urlist-test-eastus'
+            packageForLinux: '$(System.DefaultWorkingDirectory)/**/*.zip'
 
 
               

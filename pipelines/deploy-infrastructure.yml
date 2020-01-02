@@ -25,7 +25,6 @@ stages:
               scriptLocation: "scriptPath"
               scriptPath: "./deployment/arm/deploy-cosmosdb.sh"
               arguments: $(globalArguments)
-    
   - stage: DeployRegionalInfrastructure
     displayName: Regional
     jobs:
@@ -48,7 +47,6 @@ stages:
               scriptLocation: "scriptPath"
               scriptPath: "./deployment/arm/deploy-region.sh"
               arguments: "prodoh urlist dev $(region)"
-
           - task: AzureAppServiceSettings@0
             displayName: Azure App Service Settings
             inputs:

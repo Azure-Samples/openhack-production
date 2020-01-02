@@ -20,4 +20,4 @@ stages:
               scriptType: "bash"
               scriptLocation: "scriptPath"
               scriptPath: "./deployment/arm/deploy-cosmosdb.sh"
-              arguments: "prodoh urlist dev westus2 eastus centralus"
+              arguments: "prodoh urlist test westus2 eastus centralus"

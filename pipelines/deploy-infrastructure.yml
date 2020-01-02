@@ -8,16 +8,16 @@ pool:
 
 stages:
   - stage: DeployCosmosDB
-  displayName: Global
-  jobs:
-    - job: DeployCosmosDB
-      displayName: Deploy Cosmos DB
-      steps:
-        - task: AzureCLI@2
-          displayName: Deploy ARM Template
-          inputs:
-            azureSubscription: "azure"
-            scriptType: "bash"
-            scriptLocation: "scriptPath"
-            scriptPath: "./deployment/arm/deploy-cosmosdb.sh"
-            arguments: "prodoh urlist dev westus2 eastus centralus"
+    displayName: Global
+    jobs:
+      - job: DeployCosmosDB
+        displayName: Deploy Cosmos DB
+        steps:
+          - task: AzureCLI@2
+            displayName: Deploy ARM Template
+            inputs:
+              azureSubscription: "azure"
+              scriptType: "bash"
+              scriptLocation: "scriptPath"
+              scriptPath: "./deployment/arm/deploy-cosmosdb.sh"
+              arguments: "prodoh urlist dev westus2 eastus centralus"

@@ -17,6 +17,10 @@ echo "Business Unit: $businessUnit"
 echo "App Name: $appName"
 echo "Environment: $env"
 
+timestamp() {
+  date +"%Y%m%dZ%H%M%S"
+}
+
 echo "Creating global resource Group: $resourceGroupName"
 az group create \
   --name $resourceGroupName \
@@ -24,6 +28,6 @@ az group create \
 
 echo "Deploying global resources to $resourceGroupName"
 az group deployment create \
-  --name "Urlist-global-123" \
+  --name "Urlist-global-$(timestamp)" \
   --resource-group $resourceGroupName \
   --template-file cosmosdb.json

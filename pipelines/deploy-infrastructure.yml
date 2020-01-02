@@ -47,22 +47,4 @@ stages:
               scriptLocation: "scriptPath"
               scriptPath: "./deployment/arm/deploy-region.sh"
               arguments: "prodoh urlist dev $(region)"
-          - task: AzureAppServiceSettings@0
-            displayName: Azure App Service Settings
-            inputs:
-              azureSubscription: $(azureSubscription)
-              appName: "backend-prodoh-urlist-dev-$(region)"
-              appSettings: |
-                [
-                  {
-                    "name": "CosmosSettings:AccountName",
-                    "value": "tara",
-                    "slotSetting": false
-                  },
-                  {
-                    "name": "CosmosSettings:AuthKey",
-                    "value":"tu", 
-                    "slotSetting": false
-                  }
-                ]
                   

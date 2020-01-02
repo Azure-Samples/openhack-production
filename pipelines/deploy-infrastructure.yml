@@ -53,16 +53,16 @@ stages:
               azureSubscription: $(azureSubscription)
               appName: "backend-prodoh-urlist-dev-$(region)"
               appSettings: |
-                  [
-                    {
-                      "name": "CosmosSettings:AccountName",
-                      "value": "tara",
-                      "slotSetting": false
-                    },
-                    {
-                      "name": "CosmosSettings:AuthKey",
-                      "value":"tu", 
-                      "slotSetting": false
-                    }
-                  ]
+                [
+                  {
+                    "name": "CosmosSettings:AccountName",
+                    "value": "tara",
+                    "slotSetting": false
+                  },
+                  {
+                    "name": "CosmosSettings:AuthKey",
+                    "value":"tu", 
+                    "slotSetting": false
+                  }
+                ]
                   

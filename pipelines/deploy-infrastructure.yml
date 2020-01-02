@@ -6,6 +6,10 @@ pr: none
 pool:
   vmImage: "ubuntu-latest"
 
+  variables:
+    globalArguments: prodoh urlist dev westus2 eastus centralus
+    azureSubscription: azure
+
 stages:
   - stage: DeployCosmosDB
     displayName: Global
@@ -16,8 +20,51 @@ stages:
           - task: AzureCLI@2
             displayName: Deploy ARM Template
             inputs:
-              azureSubscription: "azure"
+              azureSubscription: $(azureSubscription)
               scriptType: "bash"
               scriptLocation: "scriptPath"
               scriptPath: "./deployment/arm/deploy-cosmosdb.sh"
-              arguments: "prodoh urlist test1 westus2 eastus centralus"
+              arguments: $(globalArguments)
+    
+  - stage: DeployRegionalInfrastructure
+    displayName: Regional
+    jobs:
+      - job: RegionalMaxtrixDeployment
+        displayName: Resource Group
+        strategy:
+          matrix:
+            westus2:
+              region: westus2
+            eastus:
+              region: eastus
+            centralus:
+              region: centralus
+          steps:
+            - task: AzureCLI@2
+              displayName: Deploy ARM Template
+              inputs:
+                azureSubscription: $(azureSubscription)
+                scriptType: "bash"
+                scriptLocation: "scriptPath"
+                scriptPath: "./deployment/arm/deploy-region.sh"
+                arguments: "prodoh urlist dev $(region)"
+
+            - task: AzureAppServiceSettings@0
+              displayName: Azure App Service Settings
+              inputs:
+                azureSubscription: $(azureSubscription)
+                appName: "backend-prodoh-urlist-dev-$(region)"
+                appSettings: |
+                    [
+                      {
+                        "name": "CosmosSettings:AccountName",
+                        "value": "tara",
+                        "slotSetting": false
+                      },
+                      {
+                        "name": "CosmosSettings:AuthKey",
+                        "value":"tu", 
+                        "slotSetting": false
+                      }
+                    ]
+                  

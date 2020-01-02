@@ -44,7 +44,9 @@
 				"failoverPriority": 2,
 				"isZoneRedundant": true
 			}
-		]
+		],
+    "resourceId": "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('accountName'))]",
+    "apiVersion": "[providers('Microsoft.DocumentDB', 'databaseAccounts').apiVersions[0]]"
 	},
 	"resources": 
 	[
@@ -69,5 +71,15 @@
 				"enableMultipleWriteLocations": true
 			}
 		}
-	]
+	],
+    "outputs": {
+    "documentEndpoint": {
+      "type": "string",
+      "value": "[reference(variables('resourceId'), variables('apiVersion')).documentEndpoint]"
+    },
+    "accountKey": {
+      "type": "string",
+      "value": "[listKeys(variables('resourceId'), variables('apiVersion')).primaryMasterKey]"
+    }
+  }
 }

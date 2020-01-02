@@ -30,4 +30,5 @@ echo "Deploying global resources to $resourceGroupName"
 az group deployment create \
   --name "Urlist-global-$(timestamp)" \
   --resource-group $resourceGroupName \
-  --template-file cosmosdb.json
+  --template-file cosmosdb.json \
+  --parameters primaryRegion=$primaryRegion secondaryRegion=$secondaryRegion tertiaryRegion=$tertiaryRegion

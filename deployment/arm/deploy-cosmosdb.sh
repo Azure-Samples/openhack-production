@@ -26,5 +26,4 @@ echo "Deploying global resources to $resourceGroupName"
 az group deployment create \
   --name "Urlist-global-123" \
   --resource-group $resourceGroupName \
-  --template-file cosmosdb.json \
-  --parameters primaryRegion=$primaryRegion secondaryRegion=$secondaryRegion tertiaryRegion=$tertiaryRegion
+  --template-file cosmosdb.json

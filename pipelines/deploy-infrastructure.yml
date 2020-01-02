@@ -6,9 +6,9 @@ pr: none
 pool:
   vmImage: "ubuntu-latest"
 
-  variables:
-    globalArguments: prodoh urlist dev westus2 eastus centralus
-    azureSubscription: azure
+variables:
+  globalArguments: prodoh urlist dev westus2 eastus centralus
+  azureSubscription: azure
 
 stages:
   - stage: DeployCosmosDB

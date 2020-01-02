@@ -9,7 +9,6 @@ primaryRegion=$4
 secondaryRegion=$5
 tertiaryRegion=$6
 
-
 scope="$businessUnit-$appName-$env-gbl"
 resourceGroupName="rg-$scope"
 
@@ -18,10 +17,6 @@ echo "Business Unit: $businessUnit"
 echo "App Name: $appName"
 echo "Environment: $env"
 
-timestamp() {
-  date +"%Y%m%dZ%H%M%S"
-}
-
 echo "Creating global resource Group: $resourceGroupName"
 az group create \
   --name $resourceGroupName \
@@ -29,7 +24,7 @@ az group create \
 
 echo "Deploying global resources to $resourceGroupName"
 az group deployment create \
-  --name "Urlist-global-$(timestamp)" \
+  --name "Urlist-global-123" \
   --resource-group $resourceGroupName \
   --template-file cosmosdb.json \
   --parameters primaryRegion=$primaryRegion secondaryRegion=$secondaryRegion tertiaryRegion=$tertiaryRegion

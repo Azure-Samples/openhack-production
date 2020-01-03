@@ -60,7 +60,8 @@ stages:
             displayName: Publish Artifacts
             inputs:
               pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
-              artifactName: drop
+              artifactName: 'drop'
+              publishLocation: 'Container'
              
   - stage: APICD
     displayName: Deploy API to App Service
@@ -81,7 +82,7 @@ stages:
               buildType: 'current'
               downloadType: 'single'
               artifactName: 'drop'
-              downloadPath: '$(Build.ArtifactsDirectory)'
+              downloadPath: '$(Build.ArtifactStagingDirectory)'
              
           - task: AzureRMWebAppDeployment@4
             displayName: Deploy

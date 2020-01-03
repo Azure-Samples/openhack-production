@@ -1,12 +1,33 @@
 trigger:
-  - master
+  branches:
+    include:
+      - master
 
 pr: none
 
 pool:
   vmImage: "ubuntu-latest"
 
+  variables:
+    globalArguments: prodoh urlist dev westus2 eastus centralus
+    azureSubscription: PELITTLE TEAM - CSE DWR(d36d0808-a967-4f73-9fdc-32ea232fc81d)
+
 stages:
+  - stage: DeployCosmosDB
+    displayName: Global
+    jobs:
+      - job: DeployCosmosDB
+        displayName: Deploy Cosmos DB
+        steps:
+          - task: AzureCLI@2
+            displayName: Deploy ARM Template
+            inputs:
+              azureSubscription: $(azureSubscription)
+              scriptType: "bash"
+              scriptLocation: "scriptPath"
+              scriptPath: "./deployment/arm/deploy-cosmosdb.sh"
+              arguments: $(globalArguments)
+
   - stage: DeployRegionalInfrastructure
     displayName: Regional
     jobs:
@@ -24,11 +45,12 @@ stages:
           - task: AzureCLI@2
             displayName: Deploy ARM Template
             inputs:
-              azureSubscription: "PELITTLE TEAM - CSE DWR(d36d0808-a967-4f73-9fdc-32ea232fc81d)"
+              azureSubscription: $(azureSubscription)
               scriptType: "bash"
               scriptLocation: "scriptPath"
               scriptPath: "./deployment/arm/deploy-region.sh"
               arguments: "prodoh urlist dev $(region)"
+
   - stage: DeployGlobalInfrastructure
     displayName: Global
     jobs:
@@ -38,11 +60,11 @@ stages:
           - task: AzureCLI@2
             displayName: Deploy ARM Template
             inputs:
-              azureSubscription: "PELITTLE TEAM - CSE DWR(d36d0808-a967-4f73-9fdc-32ea232fc81d)"
+              azureSubscription: $(azureSubscription)
               scriptType: "bash"
               scriptLocation: "scriptPath"
               scriptPath: "./deployment/arm/deploy-global.sh"
-              arguments: "prodoh urlist dev westus2 eastus centralus"
+              arguments: $(globalArguments)
 
 
 

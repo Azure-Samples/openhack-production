@@ -24,7 +24,7 @@ variables:
 
 stages:
   - stage: APICI
-    displayName: Backend API CI
+    displayName: API CI
     jobs:
       - job: APICI
         displayName: Build Test and Publish
@@ -49,12 +49,12 @@ stages:
               arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
   
           - task: DotNetCoreCLI@2
-            displayName: Publish
+            displayName: Publish packages
             inputs:
               command: publish
-              publishWebProjects: True
-              arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-              zipAfterPublish: True
+              publishWebProjects: false
+              arguments: '--configuration $(BuildConfiguration) --output $(System.ArtifactStagingDirectory)'
+              zipAfterPublish: true
   
           - task: PublishBuildArtifacts@1
             displayName: Publish Artifacts
@@ -67,7 +67,7 @@ stages:
     displayName: Deploy API to App Service
     jobs:
       - job: RegionalMaxtrixDeployment
-        displayName: Deploy App to Region
+        displayName: Deploy API to Region
         strategy:
           matrix:
             westus2:
@@ -92,6 +92,11 @@ stages:
               appType: 'apiApp'
               WebAppName: 'backend-prodoh1-urlist-dev-$(region)'
               packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
+   
+
+
+
+
    
   
   

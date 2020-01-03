@@ -27,4 +27,4 @@ az group deployment create \
   --name "Urlist-global-cosmosdb" \
   --resource-group $resourceGroupName \
   --template-file cosmosdb.json \
-  --parameters primaryRegion=$primaryRegion
+  --parameters primaryRegion=$primaryRegion secondaryRegion=$secondaryRegion tertiaryRegion=$tertiaryRegion

@@ -8,6 +8,20 @@
 			"metadata": {
 				"description": "The primary replica region for the Cosmos DB account."
 			}
+		},
+		"secondaryRegion":{
+			"type":"string",
+            "defaultValue": "eastus",
+			"metadata": {
+			  "description": "The secondary replica region for the Cosmos DB account."
+		  }
+		},
+        "tertiaryRegion":{
+			"type":"string",
+            "defaultValue": "centralus",
+			"metadata": {
+			  "description": "The tertiary replica region for the Cosmos DB account."
+		  }
 		}
     },
 	"variables": {
@@ -18,6 +32,16 @@
 			{
 				"locationName": "[parameters('primaryRegion')]",
 				"failoverPriority": 0,
+				"isZoneRedundant": true
+			}, 
+			{
+				"locationName": "[parameters('secondaryRegion')]",
+				"failoverPriority": 1,
+				"isZoneRedundant": true
+			},
+            {
+				"locationName": "[parameters('tertiaryRegion')]",
+				"failoverPriority": 2,
 				"isZoneRedundant": true
 			}
 		],
@@ -43,8 +67,8 @@
                 },
 				"locations": "[variables('locations')]",
 				"databaseAccountOfferType": "Standard",
-				"enableAutomaticFailover": false,
-				"enableMultipleWriteLocations": false
+				"enableAutomaticFailover": true,
+				"enableMultipleWriteLocations": true
 			}
 		}
 	],

@@ -9,7 +9,7 @@ pool:
   vmImage: "ubuntu-latest"
 
 variables:
-  globalArguments: prodoh urlist dev westus2 eastus centralus
+  globalArguments: prodoh1 urlist dev westus2 eastus centralus
   azureSubscription: azure
 
 stages:

@@ -46,13 +46,13 @@ stages:
               scriptType: "bash"
               scriptLocation: "scriptPath"
               scriptPath: "./deployment/arm/deploy-region.sh"
-              arguments: "prodoh urlist dev $(region)"
+              arguments: "prodoh1 urlist dev $(region)"
           - task: AzureAppServiceSettings@1
             displayName: Azure App Service Settings
             inputs:
-              resourceGroupName: "rg-prodoh-urlist-dev-$(region)"
+              resourceGroupName: "rg-prodoh1-urlist-dev-$(region)"
               azureSubscription: $(azureSubscription)
-              appName: "backend-prodoh-urlist-dev-$(region)"
+              appName: "backend-prodoh1-urlist-dev-$(region)"
               appSettings: |
                 [
                   {

@@ -90,7 +90,7 @@ stages:
               azureSubscription: $(azureSubscription)
               appType: 'apiApp'
               WebAppName: 'backend-prodoh1-urlist-dev-$(region)'
-              packageForLinux: '$(ArtifactStagingDirectory)/**/*.zip'
+              packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
    
   
   

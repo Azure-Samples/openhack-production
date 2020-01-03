@@ -2,9 +2,9 @@ trigger:
   branches:
     include:
       - master
-    paths:
-      include:
-        - deployment/*
+  paths:
+    include:
+      - deployment/*
 
 pr: none
 

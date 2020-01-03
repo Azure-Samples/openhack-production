@@ -5,6 +5,7 @@ trigger:
   paths:
     include:
       - api/*
+      - pipelines/api-pipelines.yml
   
 pr:
   autoCancel: true   

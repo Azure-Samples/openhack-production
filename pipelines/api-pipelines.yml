@@ -22,7 +22,7 @@ variables:
   azureSubscription: azure
 
 stages:
-  - stage: API-CI
+  - stage: APICI
     displayName: Backend API CI
     jobs:
       - job: APICI
@@ -60,11 +60,11 @@ stages:
             inputs:
               pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
              
-  - stage: Backend-API-CD
-    displayName: Deploy App 
+  - stage: APICD
+    displayName: Deploy API to App Service
     jobs:
       - job: RegionalMaxtrixDeployment
-        displayName: Deploy App to Regional App Service
+        displayName: Deploy App to Region
         strategy:
           matrix:
             westus2:

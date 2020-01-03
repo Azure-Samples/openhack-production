@@ -32,17 +32,17 @@
 			{
 				"locationName": "[parameters('primaryRegion')]",
 				"failoverPriority": 0,
-				"isZoneRedundant": true
+				"isZoneRedundant": false
 			}, 
 			{
 				"locationName": "[parameters('secondaryRegion')]",
 				"failoverPriority": 1,
-				"isZoneRedundant": true
+				"isZoneRedundant": false
 			},
             {
 				"locationName": "[parameters('tertiaryRegion')]",
 				"failoverPriority": 2,
-				"isZoneRedundant": true
+				"isZoneRedundant": false
 			}
 		],
     "resourceId": "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('accountName'))]",

@@ -4,7 +4,7 @@
 	"parameters": {
 		"primaryRegion":{
 			"type":"string",
-            "defaultValue": "centralus",
+            "defaultValue": "westus2",
 			"metadata": {
 				"description": "The primary replica region for the Cosmos DB account."
 			}
@@ -18,31 +18,31 @@
 		},
         "tertiaryRegion":{
 			"type":"string",
-            "defaultValue": "westus2",
+            "defaultValue": "centralus",
 			"metadata": {
 			  "description": "The tertiary replica region for the Cosmos DB account."
 		  }
 		}
     },
 	"variables": {
-		"accountName": "[toLower(concat('cosmos-', uniqueString(resourceGroup().id)))]",
+		"accountName": "[toLower(concat('sql-', uniqueString(resourceGroup().id)))]",
         "location": "[resourceGroup().location]",
 		"locations": 
 		[ 
 			{
 				"locationName": "[parameters('primaryRegion')]",
 				"failoverPriority": 0,
-				"isZoneRedundant": false
+				"isZoneRedundant": true
 			}, 
 			{
 				"locationName": "[parameters('secondaryRegion')]",
 				"failoverPriority": 1,
-				"isZoneRedundant": false
+				"isZoneRedundant": true
 			},
             {
 				"locationName": "[parameters('tertiaryRegion')]",
 				"failoverPriority": 2,
-				"isZoneRedundant": false
+				"isZoneRedundant": true
 			}
 		],
     "resourceId": "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('accountName'))]",

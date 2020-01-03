@@ -2,6 +2,10 @@ trigger:
   branches:
     include:
       - master
+  paths:
+    include:
+      - deployment/*
+      - pipelines/deploy-infrastructure.yml
 
 pr: none
 
@@ -9,8 +13,8 @@ pool:
   vmImage: "ubuntu-latest"
 
 variables:
-  globalArguments: prodoh urlist dev westus2 eastus centralus
-  azureSubscription: PELITTLE TEAM - CSE DWR(d36d0808-a967-4f73-9fdc-32ea232fc81d)
+  globalArguments: prodoh1 urlist dev westus2 eastus centralus
+  azureSubscription: azure
 
 stages:
   - stage: DeployCosmosDB
@@ -49,7 +53,7 @@ stages:
               scriptType: "bash"
               scriptLocation: "scriptPath"
               scriptPath: "./deployment/arm/deploy-region.sh"
-              arguments: "prodoh urlist dev $(region)"
+              arguments: "prodoh1 urlist dev $(region)"
 
   - stage: DeployGlobalInfrastructure
     displayName: Global

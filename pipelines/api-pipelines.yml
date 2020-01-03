@@ -5,29 +5,30 @@ trigger:
   paths:
     include:
       - api/*
+      - pipelines/api-pipelines.yml
   
-  pr:
-    autoCancel: true   
-    branches:
-      include:
-      - master
-    paths:
-      include:
-        - api/*
+pr:
+  autoCancel: true   
+  branches:
+    include:
+     - master
+  paths:
+    include:
+      - api/*
 
-  pool:
-    vmImage: "ubuntu-latest"
+pool:
+  vmImage: "ubuntu-latest"
   
-  variables:
-    azureSubscription: PELITTLE TEAM - CSE DWR(d36d0808-a967-4f73-9fdc-32ea232fc81d)
+variables:
+  azureSubscription: PELITTLE TEAM - CSE DWR(d36d0808-a967-4f73-9fdc-32ea232fc81d)
 
-  stages:
-    - stage: API-CI
-      displayName: Backend API CI
-      jobs:
-        - job: Backend-API-CI
-          displayName: Build Test and Publish
-          steps:
+stages:
+  - stage: APICI
+    displayName: API CI
+    jobs:
+      - job: APICI
+        displayName: Build Test and Publish
+        steps:
           - task: UseDotNet@2
             displayName: Dotnet version 3.1.100
             inputs:
@@ -48,10 +49,9 @@ trigger:
               arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
   
           - task: DotNetCoreCLI@2
-            displayName: Publish
+            displayName: Publish packages
             inputs:
               command: publish
-              publishWebProjects: True
               arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
               zipAfterPublish: True
   
@@ -59,29 +59,43 @@ trigger:
             displayName: Publish Artifacts
             inputs:
               pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
+              artifactName: 'drop'
+              publishLocation: 'Container'
              
-      - stage: Backend-API-CD
-        displayName: Deploy App 
-        jobs:
-          - job: RegionalMaxtrixDeployment
-            displayName: Deploy App to Regional App Service
-            strategy:
-              matrix:
-                westus2:
-                  region: westus2
-                eastus:
-                  region: eastus
-                centralus:
-                  region: centralus
-              steps:         
-                - task: AzureRMWebAppDeployment@4
-                  displayName: Deploy
-                  inputs:
-                  ConnectionType: 'AzureRM'
-                  azureSubscription: $(azureSubscription)
-                  appType: 'apiApp'
-                  WebAppName: 'backend-prodoh-urlist-test-$(region)'
-                  packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
+  - stage: APICD
+    displayName: Deploy API to App Service
+    jobs:
+      - job: RegionalMaxtrixDeployment
+        displayName: Deploy API to Region
+        strategy:
+          matrix:
+            westus2:
+              region: westus2
+            eastus:
+              region: eastus
+            centralus:
+              region: centralus
+        steps:    
+          - task: DownloadBuildArtifacts@0
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: 'drop'
+              downloadPath: '$(Build.ArtifactStagingDirectory)'
+             
+          - task: AzureRMWebAppDeployment@4
+            displayName: Deploy
+            inputs:
+              ConnectionType: 'AzureRM'
+              azureSubscription: $(azureSubscription)
+              appType: 'apiApp'
+              WebAppName: 'backend-prodoh-urlist-dev-$(region)'
+              packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
+   
+
+
+
+
    
   
   

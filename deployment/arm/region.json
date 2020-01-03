@@ -288,15 +288,5 @@
                 "resourceId": "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"
             }
         }
-    ],
-     "outputs": {
-        "appServiceName": {
-            "type": "string",
-            "value": "[parameters('backendAppName')]"
-        },
-        "ipAddress": {
-            "type": "string",
-            "value": "whatingodsnamegoeshere"
-        }
-    }
+    ]
 }

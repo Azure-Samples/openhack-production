@@ -7,9 +7,7 @@ appName=$2
 env=$3
 location=$4
 scope="$businessUnit-$appName-$env-$location"
-globalScope="$businessUnit-$appName-$env-glb"
 resourceGroupName="rg-$scope"
-
 
 echo "Resource Group: $resourceGroupName"
 echo "Region Scope: $scope"
@@ -39,12 +37,3 @@ az group deployment create \
   --resource-group $resourceGroupName \
   --template-file region.json \
   --parameters location=$location apimName=$apimName appServicePlanName=$appServicePlanName frontendAppName=$frontendAppName backendAppName=$backendAppName appInsightsName=$appInsightsName
-
-cosmosEndPoint=`az group deployment show -g  rg-$globalScope -n Urlist-global-cosmosdb --query properties.outputs.documentEndpoint.value -o tsv`
-cosmosKey=`az group deployment show -g  rg-$globalScope -n Urlist-global-cosmosdb --query properties.outputs.accountKey.value -o tsv`
-
-echo "Configuring App service settings for $backendAppName"
-az webapp config appsettings set \
--g $resourceGroupName \
--n $backendAppName \
---settings CosmosSettings:ServiceEndpoint=$cosmosEndPoint CosmosSettings:AuthKey=$cosmosKey  

@@ -1,0 +1,85 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"primaryRegion":{
+			"type":"string",
+            "defaultValue": "westus2",
+			"metadata": {
+				"description": "The primary replica region for the Cosmos DB account."
+			}
+		},
+		"secondaryRegion":{
+			"type":"string",
+            "defaultValue": "eastus",
+			"metadata": {
+			  "description": "The secondary replica region for the Cosmos DB account."
+		  }
+		},
+        "tertiaryRegion":{
+			"type":"string",
+            "defaultValue": "centralus",
+			"metadata": {
+			  "description": "The tertiary replica region for the Cosmos DB account."
+		  }
+		}
+    },
+	"variables": {
+		"accountName": "[toLower(concat('cosmos-', uniqueString(resourceGroup().id)))]",
+        "location": "[resourceGroup().location]",
+		"locations": 
+		[ 
+			{
+				"locationName": "[parameters('primaryRegion')]",
+				"failoverPriority": 0,
+				"isZoneRedundant": true
+			}, 
+			{
+				"locationName": "[parameters('secondaryRegion')]",
+				"failoverPriority": 1,
+				"isZoneRedundant": true
+			},
+            {
+				"locationName": "[parameters('tertiaryRegion')]",
+				"failoverPriority": 2,
+				"isZoneRedundant": true
+			}
+		],
+    "resourceId": "[resourceId('Microsoft.DocumentDB/databaseAccounts', variables('accountName'))]",
+    "apiVersion": "[providers('Microsoft.DocumentDB', 'databaseAccounts').apiVersions[0]]"
+	},
+	"resources": 
+	[
+		{
+			"type": "Microsoft.DocumentDB/databaseAccounts",
+			"name": "[variables('accountName')]",
+			"apiVersion": "2019-08-01",
+			"kind": "GlobalDocumentDB",
+			"location": "[variables('location')]",
+            "tags": {
+                "defaultExperience": "Core (SQL)"
+            },
+			"properties": {
+				"consistencyPolicy": {
+                    "defaultConsistencyLevel": "Session",
+                    "maxIntervalInSeconds": 5,
+                    "maxStalenessPrefix": 100
+                },
+				"locations": "[variables('locations')]",
+				"databaseAccountOfferType": "Standard",
+				"enableAutomaticFailover": true,
+				"enableMultipleWriteLocations": true
+			}
+		}
+	],
+    "outputs": {
+    "documentEndpoint": {
+      "type": "string",
+      "value": "[reference(variables('resourceId'), variables('apiVersion')).documentEndpoint]"
+    },
+    "accountKey": {
+      "type": "string",
+      "value": "[listKeys(variables('resourceId'), variables('apiVersion')).primaryMasterKey]"
+    }
+  }
+}

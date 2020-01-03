@@ -5,6 +5,7 @@ trigger:
   paths:
     include:
       - deployment/*
+      - pipelines/deploy-infrastructure.yml
 
 pr: none
 

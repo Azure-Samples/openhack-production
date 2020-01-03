@@ -6,28 +6,28 @@ trigger:
     include:
       - api/*
   
-  pr:
-    autoCancel: true   
-    branches:
-      include:
-      - master
-    paths:
-      include:
-        - api/*
+pr:
+  autoCancel: true   
+  branches:
+    include:
+     - master
+  paths:
+    include:
+      - api/*
 
-  pool:
-    vmImage: "ubuntu-latest"
+pool:
+  vmImage: "ubuntu-latest"
   
-  variables:
-    azureSubscription: azure
+variables:
+  azureSubscription: azure
 
-  stages:
-    - stage: API-CI
-      displayName: Backend API CI
-      jobs:
-        - job: Backend-API-CI
-          displayName: Build Test and Publish
-          steps:
+stages:
+  - stage: API-CI
+    displayName: Backend API CI
+    jobs:
+      - job: APICI
+        displayName: Build Test and Publish
+        steps:
           - task: UseDotNet@2
             displayName: Dotnet version 3.1.100
             inputs:
@@ -60,28 +60,28 @@ trigger:
             inputs:
               pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
              
-      - stage: Backend-API-CD
-        displayName: Deploy App 
-        jobs:
-          - job: RegionalMaxtrixDeployment
-            displayName: Deploy App to Regional App Service
-            strategy:
-              matrix:
-                westus2:
-                  region: westus2
-                eastus:
-                  region: eastus
-                centralus:
-                  region: centralus
-              steps:         
-                - task: AzureRMWebAppDeployment@4
-                  displayName: Deploy
-                  inputs:
-                  ConnectionType: 'AzureRM'
-                  azureSubscription: $(azureSubscription)
-                  appType: 'apiApp'
-                  WebAppName: 'backend-prodoh1-urlist-dev-$(region)'
-                  packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
+  - stage: Backend-API-CD
+    displayName: Deploy App 
+    jobs:
+      - job: RegionalMaxtrixDeployment
+        displayName: Deploy App to Regional App Service
+        strategy:
+          matrix:
+            westus2:
+              region: westus2
+            eastus:
+              region: eastus
+            centralus:
+              region: centralus
+        steps:         
+          - task: AzureRMWebAppDeployment@4
+            displayName: Deploy
+            inputs:
+              ConnectionType: 'AzureRM'
+              azureSubscription: $(azureSubscription)
+              appType: 'apiApp'
+              WebAppName: 'backend-prodoh1-urlist-dev-$(region)'
+              packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
    
   
   

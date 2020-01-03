@@ -9,7 +9,7 @@ pool:
   vmImage: "ubuntu-latest"
 
 variables:
-  globalArguments: prodoh urlist dev westus2 eastus centralus
+  globalArguments: prodoh1 urlist dev westus2 eastus centralus
   azureSubscription: azure
 
 stages:
@@ -49,7 +49,7 @@ stages:
               scriptType: "bash"
               scriptLocation: "scriptPath"
               scriptPath: "./deployment/arm/deploy-region.sh"
-              arguments: "prodoh urlist dev $(region)"
+              arguments: "prodoh1 urlist dev $(region)"
 
   - stage: DeployGlobalInfrastructure
     displayName: Global

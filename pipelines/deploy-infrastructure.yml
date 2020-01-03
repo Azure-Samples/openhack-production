@@ -1,5 +1,7 @@
 trigger:
-  - master
+  branches:
+    include:
+      - master
 
 pr: none
 
@@ -25,6 +27,7 @@ stages:
               scriptLocation: "scriptPath"
               scriptPath: "./deployment/arm/deploy-cosmosdb.sh"
               arguments: $(globalArguments)
+          
   - stage: DeployRegionalInfrastructure
     displayName: Regional
     jobs:
@@ -47,23 +50,5 @@ stages:
               scriptLocation: "scriptPath"
               scriptPath: "./deployment/arm/deploy-region.sh"
               arguments: "prodoh1 urlist dev $(region)"
-          - task: AzureAppServiceSettings@1
-            displayName: Azure App Service Settings
-            inputs:
-              resourceGroupName: "rg-prodoh1-urlist-dev-$(region)"
-              azureSubscription: $(azureSubscription)
-              appName: "backend-prodoh1-urlist-dev-$(region)"
-              appSettings: |
-                [
-                  {
-                    "name": "CosmosSettings:AccountName",
-                    "value": "tara",
-                    "slotSetting": false
-                  },
-                  {
-                    "name": "CosmosSettings:AuthKey",
-                    "value":"tu", 
-                    "slotSetting": false
-                  }
-                ]
+
                   

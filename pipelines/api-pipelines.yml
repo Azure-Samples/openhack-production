@@ -60,6 +60,7 @@ stages:
             displayName: Publish Artifacts
             inputs:
               pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
+              artifactName: drop
              
   - stage: APICD
     displayName: Deploy API to App Service
@@ -74,7 +75,14 @@ stages:
               region: eastus
             centralus:
               region: centralus
-        steps:         
+        steps:    
+          - task: DownloadBuildArtifacts@0
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: 'drop'
+              downloadPath: '$(Build.ArtifactsDirectory)'
+             
           - task: AzureRMWebAppDeployment@4
             displayName: Deploy
             inputs:
@@ -82,7 +90,7 @@ stages:
               azureSubscription: $(azureSubscription)
               appType: 'apiApp'
               WebAppName: 'backend-prodoh1-urlist-dev-$(region)'
-              packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
+              packageForLinux: '$(ArtifactStagingDirectory)/**/*.zip'
    
   
   

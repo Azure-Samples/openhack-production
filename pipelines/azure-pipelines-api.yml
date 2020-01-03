@@ -80,7 +80,7 @@ trigger:
                   ConnectionType: 'AzureRM'
                   azureSubscription: $(azureSubscription)
                   appType: 'apiApp'
-                  WebAppName: 'backend-prodoh1-urlist-dev-$(region)'
+                  WebAppName: 'backend-prodoh-urlist-test-$(region)'
                   packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'
    
   

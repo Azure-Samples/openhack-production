@@ -8,13 +8,13 @@ pr: none
 pool:
   vmImage: "ubuntu-latest"
 
-  variables:
-    globalArguments: prodoh1 urlist dev westus2 eastus centralus
-    azureSubscription: azure
+variables:
+  globalArguments: prodoh urlist dev westus2 eastus centralus
+  azureSubscription: azure
 
 stages:
   - stage: DeployCosmosDB
-    displayName: Global
+    displayName: Global CosmosDB
     jobs:
       - job: DeployCosmosDB
         displayName: Deploy Cosmos DB
@@ -49,7 +49,7 @@ stages:
               scriptType: "bash"
               scriptLocation: "scriptPath"
               scriptPath: "./deployment/arm/deploy-region.sh"
-              arguments: "prodoh1 urlist dev $(region)"
+              arguments: "prodoh urlist dev $(region)"
 
   - stage: DeployGlobalInfrastructure
     displayName: Global

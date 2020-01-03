@@ -8,13 +8,13 @@ pr: none
 pool:
   vmImage: "ubuntu-latest"
 
-  variables:
-    globalArguments: prodoh urlist dev westus2 eastus centralus
-    azureSubscription: PELITTLE TEAM - CSE DWR(d36d0808-a967-4f73-9fdc-32ea232fc81d)
+variables:
+  globalArguments: prodoh urlist dev westus2 eastus centralus
+  azureSubscription: PELITTLE TEAM - CSE DWR(d36d0808-a967-4f73-9fdc-32ea232fc81d)
 
 stages:
   - stage: DeployCosmosDB
-    displayName: Global
+    displayName: Global CosmosDB
     jobs:
       - job: DeployCosmosDB
         displayName: Deploy Cosmos DB

@@ -4,7 +4,7 @@
 	"parameters": {
 		"primaryRegion":{
 			"type":"string",
-            "defaultValue": "westus2",
+            "defaultValue": "centralus",
 			"metadata": {
 				"description": "The primary replica region for the Cosmos DB account."
 			}
@@ -18,7 +18,7 @@
 		},
         "tertiaryRegion":{
 			"type":"string",
-            "defaultValue": "centralus",
+            "defaultValue": "westus2",
 			"metadata": {
 			  "description": "The tertiary replica region for the Cosmos DB account."
 		  }

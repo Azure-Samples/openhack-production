@@ -6,7 +6,7 @@ businessUnit=$1
 appName=$2
 env=$3
 # Regions are passed in as additional arguments
-scope="$businessUnit-$appName-$env-gbl"
+scope="$businessUnit-$appName-$env-glb"
 regionScope="$businessUnit-$appName-$env"
 resourceGroupName="rg-$scope"
 frontDoorName="fd-$scope"

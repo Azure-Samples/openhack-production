@@ -12,6 +12,8 @@ namespace LinkyLink
 {
     public class Startup
     {
+        readonly string _CORSPolicyName = "OHCORSPolicyName";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -29,6 +31,22 @@ namespace LinkyLink
             services.AddTransient<ILinksService, LinksService>();
             services.AddTransient<IOpenGraphService, OpenGraphService>();
             services.AddSingleton<UserAuth>();
+
+            // Add CORS policy to enable all origins
+            // this is added just in case the OH participants
+            // needed to test locally.
+            services.AddCors(options =>
+            {
+                options.AddPolicy(_CORSPolicyName,
+                    builder =>
+                       {
+                   builder.AllowAnyOrigin()
+                               .AllowAnyMethod()
+                               .AllowAnyHeader();
+               });
+            });
+
+
             services.AddMvc().AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.IgnoreNullValues = true;
@@ -48,6 +66,8 @@ namespace LinkyLink
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseCors(_CORSPolicyName);
 
             app.UseHttpsRedirection();
 

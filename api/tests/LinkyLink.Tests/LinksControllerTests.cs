@@ -30,7 +30,7 @@ namespace LinkyLink.Tests
         public async Task GetLinkBundleReturnsNotFoundIfLinkBundleDoesntExists()
         {
             // Arrange 
-            string vanityUrl = "samplelink";
+            string vanityUrl = "samplelink1";
             
             // Act
             ActionResult<LinkBundle> result = await _linksController.GetLinkBundle(vanityUrl);

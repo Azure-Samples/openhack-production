@@ -40,10 +40,10 @@ namespace LinkyLink
                 options.AddPolicy(_CORSPolicyName,
                     builder =>
                        {
-                   builder.AllowAnyOrigin()
+                           builder.AllowAnyOrigin()
                                .AllowAnyMethod()
                                .AllowAnyHeader();
-               });
+                       });
             });
 
 

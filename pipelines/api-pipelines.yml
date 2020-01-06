@@ -15,6 +15,7 @@ pr:
   paths:
     include:
       - api/*
+      - pipelines/api-pipelines.yml
 
 pool:
   vmImage: "ubuntu-latest"
@@ -23,10 +24,10 @@ variables:
   azureSubscription: PELITTLE TEAM - CSE DWR(d36d0808-a967-4f73-9fdc-32ea232fc81d)
 
 stages:
-  - stage: APICI
-    displayName: API CI
+  - stage: BuildStage
+    displayName: Build API
     jobs:
-      - job: APICI
+      - job: BuildJob
         displayName: Build Test and Publish
         steps:
           - task: UseDotNet@2
@@ -56,14 +57,16 @@ stages:
               zipAfterPublish: True
   
           - task: PublishBuildArtifacts@1
+            condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
             displayName: Publish Artifacts
             inputs:
               pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
               artifactName: 'drop'
               publishLocation: 'Container'
              
-  - stage: APICD
-    displayName: Deploy API to App Service
+  - stage: DeployStage
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    displayName: Deploy API
     jobs:
       - job: RegionalMaxtrixDeployment
         displayName: Deploy API to Region
@@ -77,6 +80,7 @@ stages:
               region: centralus
         steps:    
           - task: DownloadBuildArtifacts@0
+            displayName: Download Build Artifacts
             inputs:
               buildType: 'current'
               downloadType: 'single'

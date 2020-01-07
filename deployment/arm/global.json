@@ -15,9 +15,63 @@
             "defaultValue": [
             ],
             "type": "array"
-        }
+        },
+        "cosmosdbName":{
+			"type":"string"
+		},
+        "cosmosdbPrimaryRegion":{
+			"type":"string"
+		},
+		"cosmosdbSecondaryRegion":{
+			"type":"string"
+		},
+        "cosmosdbTertiaryRegion":{
+			"type":"string"
+		}
     },
+    "variables": {
+        "location": "[resourceGroup().location]",
+		"locations": 
+		[ 
+			{
+				"locationName": "[parameters('cosmosdbPrimaryRegion')]",
+				"failoverPriority": 0,
+				"isZoneRedundant": false
+			}, 
+			{
+				"locationName": "[parameters('cosmosdbSecondaryRegion')]",
+				"failoverPriority": 1,
+				"isZoneRedundant": false
+			},
+            {
+				"locationName": "[parameters('cosmosdbTertiaryRegion')]",
+				"failoverPriority": 2,
+				"isZoneRedundant": false
+			}
+		]
+	},
     "resources": [
+        {
+			"type": "Microsoft.DocumentDB/databaseAccounts",
+			"name": "[parameters('cosmosdbName')]",
+			"apiVersion": "2019-08-01",
+			"kind": "GlobalDocumentDB",
+			"location": "[variables('location')]",
+            "tags": {
+                "defaultExperience": "Core (SQL)"
+            },
+			"properties": {
+				"consistencyPolicy": {
+                    "defaultConsistencyLevel": "Session",
+                    "maxIntervalInSeconds": 5,
+                    "maxStalenessPrefix": 100
+                },
+				"locations": "[variables('locations')]",
+				"databaseAccountOfferType": "Standard",
+				"enableAutomaticFailover": true,
+				"enableMultipleWriteLocations": true
+			}
+		},
         {
             "type": "Microsoft.Network/frontdoors",
             "apiVersion": "2019-05-01",

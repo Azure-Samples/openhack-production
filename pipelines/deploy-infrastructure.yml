@@ -13,25 +13,9 @@ pool:
   vmImage: "ubuntu-latest"
 
 variables:
-  globalArguments: prodoh urlist dev westus2 eastus centralus
-  azureSubscription: PELITTLE TEAM - CSE DWR(d36d0808-a967-4f73-9fdc-32ea232fc81d)
+  - group: prodoh-urlist-variable-group
 
 stages:
-  - stage: DeployCosmosDB
-    displayName: Global CosmosDB
-    jobs:
-      - job: DeployCosmosDB
-        displayName: Deploy Cosmos DB
-        steps:
-          - task: AzureCLI@2
-            displayName: Deploy ARM Template
-            inputs:
-              azureSubscription: $(azureSubscription)
-              scriptType: "bash"
-              scriptLocation: "scriptPath"
-              scriptPath: "./deployment/arm/deploy-cosmosdb.sh"
-              arguments: $(globalArguments)
-
   - stage: DeployRegionalInfrastructure
     displayName: Regional
     jobs:
@@ -68,4 +52,4 @@ stages:
               scriptType: "bash"
               scriptLocation: "scriptPath"
               scriptPath: "./deployment/arm/deploy-global.sh"
-              arguments: $(globalArguments)
+              arguments: "prodoh urlist dev westus2 eastus centralus"

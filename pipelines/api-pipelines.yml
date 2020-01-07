@@ -21,7 +21,7 @@ pool:
   vmImage: "ubuntu-latest"
   
 variables:
-  azureSubscription: PELITTLE TEAM - CSE DWR(d36d0808-a967-4f73-9fdc-32ea232fc81d)
+  - group: prodoh-urlist-variable-group
 
 stages:
   - stage: BuildStage
@@ -86,12 +86,33 @@ stages:
               downloadType: 'single'
               artifactName: 'drop'
               downloadPath: '$(Build.ArtifactStagingDirectory)'
-             
+
+          - task: AzureCLI@1
+            displayName: Get Cosmosdb URI and Key
+            inputs:
+              azureSubscription: $(azureSubscription)
+              scriptLocation: inlineScript
+              inlineScript: |
+                set -e
+                
+                COSMOSDB_NAME=`az cosmosdb list -g $(globalResourceGroup) --query [0].name -o tsv`
+                COSMOSDB_URI=`az cosmosdb list -g $(globalResourceGroup) --query [0].documentEndpoint -o tsv`
+                COSMOSDB_KEY=`az cosmosdb keys list -g $(globalResourceGroup) -n $COSMOSDB_NAME --query primaryMasterKey -o tsv`
+              
+                if [[ -z $COSMOSDB_URI || -z $COSMOSDB_KEY ]]; then
+                  echo 'COSMOSDB_URI or COSMOSDB_KEY variable is undefined'
+                  exit 1
+                fi
+
+                echo "##vso[task.setvariable variable=cosmosdbURI]$COSMOSDB_URI"
+                echo "##vso[task.setvariable variable=cosmosdbKey]$COSMOSDB_KEY"
+
           - task: AzureRMWebAppDeployment@4
-            displayName: Deploy
+            displayName: Deploy to App Service
             inputs:
               ConnectionType: 'AzureRM'
               azureSubscription: $(azureSubscription)
               appType: 'apiApp'
               WebAppName: 'backend-prodoh-urlist-dev-$(region)'
-              packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'       
+              packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'  
+              appSettings: -CosmosSettings:ServiceEndpoint $(cosmosdbURI) -CosmosSettings:AuthKey $(cosmosdbKey)

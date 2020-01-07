@@ -363,3 +363,4 @@ MigrationBackup/
 
 .DS_Store
 local.settings.json
+.vscode/launch.json

@@ -81,6 +81,21 @@ echo "Environment: $env"
 echo "Front Door: $frontDoorName"
 echo "Cosmos DB Name: $cosmosdbName"
 
+<<<<<<< HEAD
+=======
+timestamp() {
+  date +"%Y%m%dZ%H%M%S"
+}
+
+# Convert array to ARM array format
+toArmArray() {
+  array=("$@")
+  value=$(printf "\"%s\"", "${array[@]}")
+  value="[${value%?}]"
+  printf $value
+}
+
+>>>>>>> 8257141... Adding FE deployment scripts
 # set -e fails and exit here if just let counter=0 is specified. Workaround is to add || true to the expression
 let counter=0 || true
 
@@ -90,7 +105,21 @@ cosmosdbRegionArray=()
 
 for region in ${regions[@]}
 do
+<<<<<<< HEAD
     frontendHostArray+=("frontend-$regionScope-$region.azurewebsites.net")
+=======
+  let "counter=counter + 1"
+  if [ $counter -gt 3 ]
+  then
+    # construct the storage account name
+    storageActName=$(echo ${businessUnit//-}$region | tr "[:upper:]" "[:lower:]")
+    # fetch the regional primary endpoint for the static website hosted in blob storage
+    primaryEP=$(az storage account show --name $storageActName --query 'primaryEndpoints.web')
+    # the frontendHost needs to be the domain name, using sed to extract that from the URL
+    # also removing the additional quotes az returns with the URL
+    primaryEP=$(echo $primaryEP | sed -e 's|^[^/]*//||' -e 's|/.*$||' -e 's/"//g')
+    frontendHostArray+=("$primaryEP")
+>>>>>>> 8257141... Adding FE deployment scripts
     backendHostArray+=("apim-$regionScope-$region.azure-api.net")
     cosmosdbRegionArray+=("$region")
 done

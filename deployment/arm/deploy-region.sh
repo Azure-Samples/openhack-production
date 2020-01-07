@@ -57,6 +57,9 @@ fi
 
 scope="$businessUnit-$appName-$env-$region"
 resourceGroupName="rg-$scope"
+# Storage account names can only contain lowercase letters and numbers
+# they need to be unique globally!
+storageActName=$(echo "${businessUnit//-}$location" | tr "[:upper:]" "[:lower:]")
 
 echo "Resource Group: $resourceGroupName"
 echo "Region Scope: $scope"
@@ -79,7 +82,15 @@ az group create \
 
 echo "Deploying regional resources to $resourceGroupName"
 az group deployment create \
---name "Urlist-$region-$(timestamp)" \
---resource-group $resourceGroupName \
---template-file region.json \
---parameters location=$region apimName=$apimName appServicePlanName=$appServicePlanName frontendAppName=$frontendAppName backendAppName=$backendAppName appInsightsName=$appInsightsName
+  --name "Urlist-$location-$(timestamp)" \
+  --resource-group $resourceGroupName \
+  --template-file region.json \
+
+  --parameters location=$location apimName=$apimName appServicePlanName=$appServicePlanName frontendAppName=$frontendAppName backendAppName=$backendAppName appInsightsName=$appInsightsName storageActName=$storageActName
+
+echo "Configuring blob storage for static website hosting"
+az storage blob service-properties update \
+  --account-name $storageActName \
+  --static-website \
+  --index-document index.html \
+  --404-document index.html

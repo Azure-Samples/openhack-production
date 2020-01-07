@@ -1,0 +1,83 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - frontend/*
+      - pipelines/frontend-pipelines.yml
+    
+  pr:
+    autoCancel: true   
+    branches:
+      include:
+        - master
+    paths:
+      include:
+        - frontend/*
+        - pipelines/frontend-pipelines.yml
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  - group: prodoh-urlist-variable-group
+
+stages:
+  - stage: BuildStage
+    displayName: Build VUE Frontend
+    jobs:
+      - job: BuildJob
+        displayName: Build Test and Publish
+        steps:
+          - task: Npm@1
+            displayName: setup Npm
+            inputs:
+              command: 'install'
+              workingDir: './'
+          - task: Bash@3
+            displayName: build frontend
+            inputs:
+              targetType: 'inline'
+              script: 'npm run build'
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: 'dist'
+              ArtifactName: 'WebApp'
+              publishLocation: 'Container'
+  - stage: DeployStage
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    displayName: Deploying FE regionally
+    jobs:
+      - job: RegionalMaxtrixDeployment
+        displayName: Deploy FE to Regions
+        strategy:
+          matrix:
+            westus2:
+              region: westus2
+            eastus:
+              region: eastus
+            centralus:
+              region: centralus
+        steps:    
+          - task: DownloadBuildArtifacts@0
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: 'WebApp'
+              downloadPath: 'dist'
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: $(azureSubscription)
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                set -eu
+
+                storageActName=$(echo "$(businessUnit)$(region)" | tr "[:upper:]" "[:lower:]" | tr -d '-')
+                az storage blob upload-batch -s dist -d \$web --account-name $storageActName

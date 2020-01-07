@@ -35,7 +35,7 @@ timestamp() {
 toArmArray() {
   array=("$@")
   value=$(printf "\"%s\"", "${array[@]}")
-  value="(${value%?})"
+  value="[${value%?}]"
   printf $value
 }
 
@@ -60,6 +60,8 @@ done
 frontendHosts=$(toArmArray ${frontendHostArray[*]})
 backendHosts=$(toArmArray ${backendHostArray[*]})
 cosmosdbRegions=$(toArmArray ${cosmosdbRegionArray[*]})
+echo "Frontend Hosts: $frontendHosts"
+echo "Backend Hosts: $backendHosts"
 
 echo "Creating global resource Group: $resourceGroupName"
 az group create \

@@ -35,7 +35,7 @@ timestamp() {
 toArmArray() {
   array=("$@")
   value=$(printf "\"%s\"", "${array[@]}")
-  value="(${value%?})"
+  value="[${value%?}]"
   printf $value
 }
 
@@ -51,7 +51,14 @@ do
   let "counter=counter + 1"
   if [ $counter -gt 3 ]
   then
-    frontendHostArray+=("frontend-$regionScope-$region.azurewebsites.net")
+    # construct the storage account name
+    storageActName=$(echo ${businessUnit//-}$region | tr "[:upper:]" "[:lower:]")
+    # fetch the regional primary endpoint for the static website hosted in blob storage
+    primaryEP=$(az storage account show --name $storageActName --query 'primaryEndpoints.web')
+    # the frontendHost needs to be the domain name, using sed to extract that from the URL
+    # also removing the additional quotes az returns with the URL
+    primaryEP=$(echo $primaryEP | sed -e 's|^[^/]*//||' -e 's|/.*$||' -e 's/"//g')
+    frontendHostArray+=("$primaryEP")
     backendHostArray+=("apim-$regionScope-$region.azure-api.net")
     cosmosdbRegionArray+=("$region")
   fi

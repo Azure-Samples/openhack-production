@@ -3,7 +3,8 @@ parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd "$parent_path"
 
 regions=(westus2 eastus centralus)
-businessUnit=prodoh
+# uncomment -$RANDOM to generate unique business unit names. 
+businessUnit=prodoh #-$RANDOM 
 appName=urlist
 env=dev
 scope="$businessUnit-$appName-$env"
@@ -15,4 +16,4 @@ do
 done
 
 # Deploy global resources
-bash deploy-global.sh $businessUnit $appName $env $frontendHosts $backendHosts ${regions[*]}
+bash deploy-global.sh $businessUnit $appName $env ${regions[*]}

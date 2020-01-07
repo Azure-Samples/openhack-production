@@ -1,0 +1,46 @@
+### Save Bundle
+POST https://localhost:5001/api/links
+Content-Type: application/json
+
+{
+  "links": [
+    {
+      "id": "cjsorrho200023h5poelwd47z",
+      "url": "facebook.com",
+      "title": "Facebook - Log In or Sign Up",
+      "description": "Create an account or log into Facebook. Connect with friends, family and other people you know. Share photos and videos, send messages and get updates.",
+      "image": "//www.facebook.com/images/fb_icon_325x325.png"
+    },
+    {
+      "id": "cjsorr5bs00003h5pzs3iu49c",
+      "url": "microsoft.com",
+      "title": "Microsoft - Official Home Page",
+      "description": "At Microsoft our mission and values are to help people and businesses throughout the world realize their full potential.",
+      "image": ""
+    },
+    {
+      "id": "cjsorrc5d00013h5p3e1f8tgk",
+      "url": "google.com",
+      "title": "Google",
+      "description": "Search the world's information, including webpages, images, videos and more. Google has many special features to help you find exactly what you're looking for.",
+      "image": ""
+    }
+  ],
+  "vanityUrl": "postman-test",
+  "description": "",
+  "userId": "cecilphillip"
+}
+
+
+### Get Bundle for Vanity URL
+GET https://localhost:5001/api/links/postman-test
+
+
+### Validate Page
+POST https://localhost:5001/api/validatePage
+Content-Type: application/json
+
+{
+	"url" : "marketplace.visualstudio.com/items? itemName=sdras vue-vscode-extensionpack",
+	"id" : "1"
+}

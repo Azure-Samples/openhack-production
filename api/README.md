@@ -14,14 +14,14 @@ The backend for this project was built as a serverless API using Azure Functions
 ### Get the prerequisites
 
 - Install the [Azure Functions Core tools](https://docs.microsoft.com/azure/azure-functions/functions-run-local?WT.mc_id=theurlist-github-cephilli#install-the-azure-functions-core-tools) for your operating system
-- Install the [.NET Core SDK](https://dotnet.microsoft.com/download?WT.mc_id=theurlist-github-cephilli). This repo is pinned to use version 2.2.x of the SDK.
+- Install the [.NET Core SDK](https://dotnet.microsoft.com/download?WT.mc_id=theurlist-github-cephilli). This repo is pinned to use version 3.1.x of the SDK.
 - Install [Visual Studio Code](https://code.visualstudio.com/?WT.mc_id=theurlist-github-cephilli) or [Visual Studio Community edition](https://visualstudio.microsoft.com/vs?WT.mc_id=theurlist-github-cephilli)
 - Install the [C# extension for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=ms-vscode.csharp&WT.mc_id=theurlist-github-cephilli)
-- Install the [Azure Functions for VS Code](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurefunctions?WT.mc_id=theurlist-github-cephilli) extension
 
 #### Optional
 
 - Install [Postman](https://www.getpostman.com/)
+- Install [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
 
 ### Run the serverless backend
 

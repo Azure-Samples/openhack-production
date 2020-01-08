@@ -15,12 +15,19 @@ The backend for this project was built as a .Net Core API using .NET Core. All t
 - Install the [.NET Core 3.1 SDK](https://dotnet.microsoft.com/download?WT.mc_id=theurlist-github-cephilli). This repo is pinned to use version 3.1.x of the SDK.
 - Install [Visual Studio](https://visualstudio.microsoft.com/) or [Visual Studio Code](https://code.visualstudio.com/?WT.mc_id=theurlist-github-cephilli) or [Visual Studio Community edition](https://visualstudio.microsoft.com/vs?WT.mc_id=theurlist-github-cephilli)
 - Install the [C# extension for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=ms-vscode.csharp&WT.mc_id=theurlist-github-cephilli)
+- For Windows users, [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
 
 #### Optional
 
 - Install [Postman](https://www.getpostman.com/)
 
 ### Run the ASP.Net Core Web API backend
+
+Set the `ASPNETCORE_ENVIRONMENT` environment variable.  To 
+
+```bash
+export ASPNETCORE_ENVIRONMENT=Development
+```
 
 Navigate into backend folder
 
@@ -33,14 +40,11 @@ Build the project
 ```bash
 dotnet build
 ```
-
-Create a file called `appsettings.Development.json`
+Copy the contents of the `appsettings.sample.json` into the `appsettings.Development.json` file:
 
 ```bash
-echo > appsettings.Development.json
+cp appsettings.sample.json appsettings.Development.json
 ```
-
-Copy the contents of the `appsettings.sample.json` into the `appsettings.Development.json` file.
 
 [Create a Cosmos DB instance](https://docs.microsoft.com/en-us/azure/cosmos-db/how-to-manage-database-account?WT.mc_id=theurlist-github-cephilli) in Azure using the SQL API or use the [CosmosDB Emulator](https://docs.microsoft.com/en-us/azure/cosmos-db/local-emulator)
 

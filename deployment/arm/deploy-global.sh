@@ -39,7 +39,7 @@ toArmArray() {
   printf $value
 }
 
-# set -e exists here if just let counter=0 is specified. Workaround is to add || true to the expression
+# set -e fails and exit here if just let counter=0 is specified. Workaround is to add || true to the expression
 let counter=0 || true
 
 frontendHostArray=()

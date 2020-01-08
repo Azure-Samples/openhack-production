@@ -47,7 +47,7 @@ stages:
             inputs:
               command: test
               projects: '**/*Tests/*.csproj'
-              arguments: -c $(BuildConfiguration) --collect:"XPlat Code Coverage" -- RunConfiguration.DisableAppDomain=true
+              arguments: -c $(BuildConfiguration) --collect:"XPlat Code Coverage"
 
           # Generate the report using ReportGenerator (https://github.com/danielpalme/ReportGenerator)
           # First install the tool on the machine, then run it
@@ -60,7 +60,8 @@ stages:
             displayName: 'Publish code coverage'
             inputs:
               codeCoverageTool: Cobertura
-              summaryFileLocation: $(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml  
+              summaryFileLocation: $(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml 
+              failIfCoverageEmpty: true 
 
           - task: DotNetCoreCLI@2
             displayName: Publish packages

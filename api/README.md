@@ -12,14 +12,13 @@ The backend for this project was built as a .Net Core API using .NET Core. All t
 
 ### Get the prerequisites
 
-- Install the [.NET Core SDK](https://dotnet.microsoft.com/download?WT.mc_id=theurlist-github-cephilli). This repo is pinned to use version 3.1.x of the SDK.
+- Install the [.NET Core 3.1 SDK](https://dotnet.microsoft.com/download?WT.mc_id=theurlist-github-cephilli). This repo is pinned to use version 3.1.x of the SDK.
 - Install [Visual Studio](https://visualstudio.microsoft.com/) or [Visual Studio Code](https://code.visualstudio.com/?WT.mc_id=theurlist-github-cephilli) or [Visual Studio Community edition](https://visualstudio.microsoft.com/vs?WT.mc_id=theurlist-github-cephilli)
 - Install the [C# extension for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=ms-vscode.csharp&WT.mc_id=theurlist-github-cephilli)
 
 #### Optional
 
 - Install [Postman](https://www.getpostman.com/)
-- Install [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
 
 ### Run the ASP.Net Core Web API backend
 
@@ -70,6 +69,12 @@ Alternatively, start a debuging session in `Visual Studio` or `Visual Studio Cod
 
 ![postman](docs/postman_localhost.png)
 
-If everything was setup correctly, your should see a response that resembles the following.
+If everything was setup correctly, you should see a response that resembles the following.
 
 ![postman](docs/postman_response.png)
+
+### API Paths
+
+- The API uses [Swagger](https://swagger.io/) for API Documentation.  You can view the swagger documentation by navigating to: `https://localhost:<port>/swagger`
+
+![swagger](docs/swagger.png)

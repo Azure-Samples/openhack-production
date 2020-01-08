@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using System.Reflection;
 using LinkyLink.Helpers;
 using LinkyLink.Models;
 using LinkyLink.Service;
@@ -67,6 +69,10 @@ namespace LinkyLink
                         Url = new Uri("https://raw.githubusercontent.com/Azure-Samples/openhack-production/master/LICENSE"),
                     }
                 });
+                // Set the comments path for the Swagger JSON and UI.
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);                
             });
         }
 

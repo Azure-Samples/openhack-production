@@ -3,9 +3,9 @@
 [![Build status](https://burkeknowswords.visualstudio.com/The%20Urlist/_apis/build/status/Serverless%20Backend%20Build)](https://burkeknowswords.visualstudio.com/The%20Urlist/_build/latest?definitionId=8)
 [![License](https://img.shields.io/badge/license-MIT-orange.svg)](https://raw.githubusercontent.com/Azure-Samples/openhack-production/master/LICENSE)
 
-The backend for this project was built as a .Net Core API using .NET Core. All the data is stored in a Cosmos DB collection using the SQL API.
+The backend for this project was built as a .Net Core API using .NET Core 3.1. All the data is stored in a Cosmos DB collection using the SQL API.
 
-- [.NET Core](https://dotnet.microsoft.com?WT.mc_id=theurlist-github-cephilli)
+- [.NET Core 3.1](https://dotnet.microsoft.com?WT.mc_id=theurlist-github-cephilli)
 - [Azure Cosmos DB](https://azure.microsoft.com/services/cosmos-db?WT.mc_id=theurlist-github-cephilli)
 
 ## Build and run the backend locally

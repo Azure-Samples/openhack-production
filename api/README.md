@@ -3,9 +3,9 @@
 [![Build status](https://burkeknowswords.visualstudio.com/The%20Urlist/_apis/build/status/Serverless%20Backend%20Build)](https://burkeknowswords.visualstudio.com/The%20Urlist/_build/latest?definitionId=8)
 [![License](https://img.shields.io/badge/license-MIT-orange.svg)](https://raw.githubusercontent.com/Azure-Samples/openhack-production/master/LICENSE)
 
-The backend for this project was built as a .Net Core API using .NET Core 3.1. All the data is stored in a Cosmos DB collection using the SQL API.
+The backend for this project was built as a .Net Core API using .NET Core. All the data is stored in a Cosmos DB collection using the SQL API.
 
-- [.NET Core 3.1](https://dotnet.microsoft.com?WT.mc_id=theurlist-github-cephilli)
+- [.NET Core](https://dotnet.microsoft.com?WT.mc_id=theurlist-github-cephilli)
 - [Azure Cosmos DB](https://azure.microsoft.com/services/cosmos-db?WT.mc_id=theurlist-github-cephilli)
 
 ## Build and run the backend locally
@@ -73,3 +73,15 @@ Alternatively, start a debuging session in `Visual Studio` or `Visual Studio Cod
 If everything was setup correctly, your should see a response that resembles the following.
 
 ![postman](docs/postman_response.png)
+
+### API Paths
+
+| Method  | Path                     | Description                                               |
+|---------|--------------------------|-----------------------------------------------------------|
+| GET     | /api/Links               | List all the LinkBundles                                  |
+| GET     | /api/Links/{vanityUrl}   | List a LinkBundles by Vanity Url                          |
+| GET     | /api/Links/User/{userId} | List all the LinkBundles for a user                       |
+| POST    | /api/Links               | Create one or more LinkBundles                            |
+| DELETE  | /api/Links/{vanityUrl}   | Delete a LinkBundle by Vanity Url                         |
+| PATCH   | /api/Links/{vanityUrl}   | Update a LinkBundle by a Vanity Url                       |
+| POST    | /api/ValidatePage        | Validates & lists details for one or more urls            |

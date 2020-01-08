@@ -47,21 +47,21 @@ stages:
             inputs:
               command: test
               projects: '**/*Tests/*.csproj'
-              arguments: -c $(BuildConfiguration) --collect:"XPlat Code Coverage" --RunConfiguration.DisableAppDomain=true
+              arguments: -c $(BuildConfiguration) --collect:"XPlat Code Coverage" -- RunConfiguration.DisableAppDomain=true
 
-            # Generate the report using ReportGenerator (https://github.com/danielpalme/ReportGenerator)
-            # First install the tool on the machine, then run it
+          # Generate the report using ReportGenerator (https://github.com/danielpalme/ReportGenerator)
+          # First install the tool on the machine, then run it
           - script: |
               dotnet tool install -g dotnet-reportgenerator-globaltool
               reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:"Cobertura"
             displayName: Create Code coverage report
-
+  
           - task: PublishCodeCoverageResults@1
             displayName: 'Publish code coverage'
             inputs:
               codeCoverageTool: Cobertura
-              summaryFileLocation: $(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml
-  
+              summaryFileLocation: $(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml  
+
           - task: DotNetCoreCLI@2
             displayName: Publish packages
             inputs:
@@ -130,5 +130,7 @@ stages:
               appType: 'apiApp'
               WebAppName: 'backend-$(businessUnit)-urlist-dev-$(region)'
               packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'  
-              appSettings: -CosmosSettings:ServiceEndpoint $(cosmosdbURI) -CosmosSettings:AuthKey $(cosmosdbKey) 
+              appSettings: -CosmosSettings:ServiceEndpoint $(cosmosdbURI) -CosmosSettings:AuthKey $(cosmosdbKey)
                 -CosmosSettings:DatabaseName linkylinkdb -CosmosSettings:ContainerName linkbundles
+
+

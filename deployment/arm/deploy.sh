@@ -2,27 +2,64 @@
 parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd "$parent_path"
 
-businessUnit=$1
-appName=$2
-env=$3
-regions=()
+IFS=','
+
+usage() {
+  echo "Arguments:"
+  echo -e "\t-u\t Sets the business unit"
+  echo -e "\t-a\t Sets the app name"
+  echo -e "\t-e\t Sets the environment"
+  echo -e "\t-r\t Sets the region list (Comma delimited values)"
+  echo
+  echo "Example:"
+  echo -e "\tbash deploy.sh -u $(whoami) -a urlist -e test -r westus,eastus,centralus"
+}
+
+while getopts "u:a:e:r:hq" opt
+do
+    case $opt in
+        u) businessUnit=$OPTARG;;
+        a) appName=$OPTARG;;
+        e) env=$OPTARG;;
+        r) regions=($OPTARG);;
+        :) echo "Error: -${OPTARG} requires a value"; exit 2;;
+        *) usage;exit 2;;
+    esac
+done
 
 # Validation
-if [ $# -lt 4 ]
+if [ -z $businessUnit ]
 then
-  echo Location list is required
-  exit
+  echo "Business Unit is required"
+  usage
+  exit 2
+fi
+
+if [ -z $appName ]
+then
+  echo "App name is required"
+  usage
+  exit 2
+fi
+
+if [ -z $env ]
+then
+  echo "Environment is required"
+  usage
+  exit 2
+fi
+
+if [ -z $regions ]
+then
+  echo "Regions is required"
+  usage
+  exit 2
 fi
 
 # Deploy scale unit per region
-for region in $@
+for region in ${regions[@]}
 do
-  let counter++
-  if [ $counter -gt 3 ]
-  then
     bash deploy-region.sh $businessUnit $appName $env $region
-    regions+=($region)
-  fi
 done
 
 # Deploy global resources

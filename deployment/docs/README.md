@@ -48,7 +48,7 @@ The ARM template that composes all the required regional resources for the appli
 ## Script (deploy-region.sh)
 The regional deployment script uses a combination of `businessUnit`, `appName`, `env` and `location` to construct a scoped suffix used as a naming convention for the resource group / resources required for this application.
 
-The paramters are passed into the `region.json` ARM template and deployed through the Azure CLI
+The parameters are passed into the `region.json` ARM template and deployed through the Azure CLI
 
 > This script is used within the Azure pipelines for parallel regional deployment
 

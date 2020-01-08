@@ -61,10 +61,10 @@ The parameters are passed into the `region.json` ARM template and deployed throu
 ### Example
 ```bash
 bash deployment/arm/deploy-region.sh \
-  prodoh \
-  urlist \
-  prod \
-  westus
+  -u prodoh \
+  -a urlist \
+  -e prod \
+  -r westus
 ```
 
 > The script deploys to a single specified region
@@ -85,7 +85,7 @@ The global deployment script that uses a combination of `businessUnit`, `appName
 > This script is used within the Azure pipelines after all regional deployment is completed
 
 ### Parameters
-- businessUnit - Your companie's business unit / team name
+- businessUnit - Your companies' business unit / team name
 - appName - The name of your app
 - env - The environment to deploy (dev, test, prod, etc)
 - locations - The regional azure locations that are deployed
@@ -93,10 +93,10 @@ The global deployment script that uses a combination of `businessUnit`, `appName
 ### Example
 ```bash
 bash deployment/arm/deploy-global.sh \
-  prodoh \
-  urlist \
-  prod \
-  westus eastus centralus
+  -u prodoh \
+  -a urlist \
+  -e prod \
+  -r westus,eastus,centralus
 ```
 
 > This script is used within the Azure pipelines for parallel regional deployment

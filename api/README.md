@@ -1,7 +1,7 @@
 # The Urlist - Backend
 
 [![Build status](https://burkeknowswords.visualstudio.com/The%20Urlist/_apis/build/status/Serverless%20Backend%20Build)](https://burkeknowswords.visualstudio.com/The%20Urlist/_build/latest?definitionId=8)
-[![License](https://img.shields.io/badge/license-MIT-orange.svg)](https://raw.githubusercontent.com/the-urlist/backend-csharp/master/LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-orange.svg)](https://raw.githubusercontent.com/Azure-Samples/openhack-production/master/LICENSE)
 
 The backend for this project was built as a .Net Core API using .NET Core 3.1. All the data is stored in a Cosmos DB collection using the SQL API.
 
@@ -53,7 +53,7 @@ Start the API via the command line
 dotnet run
 ```
 
-![func start](docs/func_start.png)
+![func start](docs/api_start.png)
 
 Alternatively, start a debuging session in `Visual Studio` or `Visual Studio Code`.
 

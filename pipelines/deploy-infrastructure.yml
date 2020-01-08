@@ -37,7 +37,7 @@ stages:
               scriptType: "bash"
               scriptLocation: "scriptPath"
               scriptPath: "./deployment/arm/deploy-region.sh"
-              arguments: "prodoh urlist dev $(region)"
+              arguments: "$(businessUnit) urlist dev $(region)"
 
   - stage: DeployGlobalInfrastructure
     displayName: Global
@@ -52,4 +52,4 @@ stages:
               scriptType: "bash"
               scriptLocation: "scriptPath"
               scriptPath: "./deployment/arm/deploy-global.sh"
-              arguments: "prodoh urlist dev westus2 eastus centralus"
+              arguments: "$(businessUnit) urlist dev westus2 eastus centralus"

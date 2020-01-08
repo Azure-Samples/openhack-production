@@ -1,22 +1,25 @@
 #!/bin/bash
-set -e
+set -eu
+
 parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd "$parent_path"
 
 businessUnit=$1
 appName=$2
 env=$3
-primaryRegion=$4
-secondaryRegion=$5
-tertiaryRegion=$6
 
-if [[ -z $businessUnit || -z $appName || -z $env || -z $primaryRegion || -z $secondaryRegion || -z $tertiaryRegion ]]; then
-  echo 'One or more variables are undefined'
-  exit 1
+if [[ "$#" -ne 6 ]]; then
+    echo "Illegal number of arguments"
+    exit 1
+fi
+
+if [[ -z $businessUnit || -z $appName || -z $env ]]; then
+    echo 'One or more variables are undefined'
+    exit 1
 fi
 
 # Regions are passed in as additional arguments
-scope="$businessUnit-$appName-$env-glb"
+scope="$businessUnit-$appName-$env-gbl"
 regionScope="$businessUnit-$appName-$env"
 resourceGroupName="rg-$scope"
 frontDoorName="fd-$scope"
@@ -28,9 +31,6 @@ echo "App Name: $appName"
 echo "Environment: $env"
 echo "Front Door: $frontDoorName"
 echo "Cosmos DB Name: $cosmosdbName"
-echo "Primary Region: $primaryRegion"
-echo "Secondary Region: $secondaryRegion"
-echo "Tertiary Region: $tertiaryRegion"
 
 timestamp() {
   date +"%Y%m%dZ%H%M%S"
@@ -48,6 +48,7 @@ let counter=0 || true
 
 frontendHostArray=()
 backendHostArray=()
+cosmosdbRegionArray=()
 
 for region in $@
 do
@@ -56,16 +57,18 @@ do
   then
     frontendHostArray+=("frontend-$regionScope-$region.azurewebsites.net")
     backendHostArray+=("apim-$regionScope-$region.azure-api.net")
+    cosmosdbRegionArray+=("$region")
   fi
 done
 
 frontendHosts=$(toArmArray ${frontendHostArray[*]})
 backendHosts=$(toArmArray ${backendHostArray[*]})
+cosmosdbRegions=$(toArmArray ${cosmosdbRegionArray[*]})
 
 echo "Creating global resource Group: $resourceGroupName"
 az group create \
   --name $resourceGroupName \
-  --location $primaryRegion
+  --location centralus
 
 echo "Deploying global resources to $resourceGroupName"
 az group deployment create \
@@ -73,5 +76,4 @@ az group deployment create \
   --resource-group $resourceGroupName \
   --template-file global.json \
   --parameters frontDoorName=$frontDoorName frontendHosts=$frontendHosts backendHosts=$backendHosts \
-      cosmosdbName=$cosmosdbName cosmosdbPrimaryRegion=$primaryRegion \
-      cosmosdbSecondaryRegion=$secondaryRegion cosmosdbTertiaryRegion=$tertiaryRegion
+      cosmosdbName=$cosmosdbName cosmosdbRegions=$cosmosdbRegions

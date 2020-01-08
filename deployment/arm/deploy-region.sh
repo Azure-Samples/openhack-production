@@ -1,5 +1,6 @@
 #!/bin/bash
-set -e
+set -eu
+
 parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd "$parent_path"
 
@@ -8,9 +9,14 @@ appName=$2
 env=$3
 location=$4
 
+if [[ $# -ne 4 ]]; then
+    echo "Illegal number of arguments"
+    exit 1
+fi
+
 if [[ -z $businessUnit || -z $appName || -z $env || -z $location ]]; then
-  echo 'One or more variables are undefined'
-  exit 1
+    echo 'One or more variables are undefined'
+    exit 1
 fi
 
 scope="$businessUnit-$appName-$env-$location"

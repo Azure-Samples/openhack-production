@@ -93,7 +93,7 @@ stages:
               azureSubscription: $(azureSubscription)
               scriptLocation: inlineScript
               inlineScript: |
-                set -e
+                set -eu
                 
                 COSMOSDB_NAME=`az cosmosdb list -g $(globalResourceGroup) --query [0].name -o tsv`
                 COSMOSDB_URI=`az cosmosdb list -g $(globalResourceGroup) --query [0].documentEndpoint -o tsv`
@@ -113,6 +113,6 @@ stages:
               ConnectionType: 'AzureRM'
               azureSubscription: $(azureSubscription)
               appType: 'apiApp'
-              WebAppName: 'backend-prodoh-urlist-dev-$(region)'
+              WebAppName: '$(backendAppName)-$(region)'
               packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'  
               appSettings: -CosmosSettings:ServiceEndpoint $(cosmosdbURI) -CosmosSettings:AuthKey $(cosmosdbKey)

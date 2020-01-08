@@ -59,13 +59,16 @@ Alternatively, start a debuging session in `Visual Studio` or `Visual Studio Cod
 
 ### Try out the API with Postman
 
-- Start up Postman and import the `theurlist_collection.json` file that's in the `backend` folder
+- Start up Postman and import the `theurlist_collection.json` file that's in the `api` folder
 - Next import the `theurlist_localhost_env.json` file. That includes the Localhost environment settings.
 - Set your environment to `Localhost`
+- Turn off Postman SSL Verification
 
-![postman](docs/postman_localhost.png)
+![postman](docs/postman-disable-ssl-verification.png)
 
 - Run `Save Bundle` to add some data to Cosmos DB. The structure (collection, documents, etc.) in the database will be created for you if it does not exsist yet. Next run `Get bundle for vanity url` to retrieve the entry you just created.
+
+![postman](docs/postman_localhost.png)
 
 If everything was setup correctly, your should see a response that resembles the following.
 

@@ -117,4 +117,5 @@ stages:
               appType: 'apiApp'
               WebAppName: 'backend-$(businessUnit)-urlist-dev-$(region)'
               packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'  
-              appSettings: -CosmosSettings:ServiceEndpoint $(cosmosdbURI) -CosmosSettings:AuthKey $(cosmosdbKey)
+              appSettings: -CosmosSettings:ServiceEndpoint $(cosmosdbURI) -CosmosSettings:AuthKey $(cosmosdbKey) 
+                -CosmosSettings:DatabaseName linkylinkdb -CosmosSettings:ContainerName linkbundles

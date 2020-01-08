@@ -25,10 +25,10 @@ A script typically used for setting up new environments for dev/test/qa.  Curren
 ### Example
 ```bash
 bash deployment/arm/deploy.sh 
-  prodoh \
-  urlist \
-  prod \
-  westus eastus centralus
+  -u prodoh \
+  -a urlist \
+  -e prod \
+  -r westus,eastus,centralus
 ```
 
 > The script supports passing 1 or many locations as the last parameter

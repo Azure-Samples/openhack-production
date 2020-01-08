@@ -41,6 +41,6 @@ POST https://localhost:5001/api/validatePage
 Content-Type: application/json
 
 {
-	"url" : "marketplace.visualstudio.com/items? itemName=sdras vue-vscode-extensionpack",
+	"url" : "google.com",
 	"id" : "1"
 }

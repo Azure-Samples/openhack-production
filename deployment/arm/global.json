@@ -17,49 +17,46 @@
             "type": "array"
         },
         "cosmosdbName":{
-			"type":"string"
-		},
+			      "type":"string"
+		    },
         "cosmosdbRegions":{
             "defaultValue": [
             ],
             "type": "array"
         }
     },
-    "variables": {
-        "location": "[resourceGroup().location]"
-	},
     "resources": [
         {
-			"type": "Microsoft.DocumentDB/databaseAccounts",
-			"name": "[parameters('cosmosdbName')]",
-			"apiVersion": "2019-08-01",
-			"kind": "GlobalDocumentDB",
-			"location": "[variables('location')]",
+			      "type": "Microsoft.DocumentDB/databaseAccounts",
+			      "name": "[parameters('cosmosdbName')]",
+			      "apiVersion": "2019-08-01",
+			      "kind": "GlobalDocumentDB",
+			      "location": "[resourceGroup().location]",
             "tags": {
                 "defaultExperience": "Core (SQL)"
             },
-			"properties": {
-				"consistencyPolicy": {
+			      "properties": {
+				        "consistencyPolicy": {
                     "defaultConsistencyLevel": "Session",
                     "maxIntervalInSeconds": 5,
                     "maxStalenessPrefix": 100
                 },
-				"copy": [
+				        "copy": [
                     {
                         "name": "locations",
                         "count": "[length(parameters('cosmosdbRegions'))]",
                         "input": {
                             "locationName": "[parameters('cosmosdbRegions')[copyIndex('locations')]]",
-				            "failoverPriority":"[copyIndex('locations')]",
-				            "isZoneRedundant": false        
+				                    "failoverPriority":"[copyIndex('locations')]",
+				                    "isZoneRedundant": false        
                         }
                     }
                 ],
-				"databaseAccountOfferType": "Standard",
-				"enableAutomaticFailover": true,
-				"enableMultipleWriteLocations": true
-			}
-		},
+				        "databaseAccountOfferType": "Standard",
+				        "enableAutomaticFailover": true,
+				        "enableMultipleWriteLocations": true
+			      }
+		    },
         {
             "type": "Microsoft.Network/frontdoors",
             "apiVersion": "2019-05-01",

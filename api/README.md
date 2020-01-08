@@ -3,19 +3,17 @@
 [![Build status](https://burkeknowswords.visualstudio.com/The%20Urlist/_apis/build/status/Serverless%20Backend%20Build)](https://burkeknowswords.visualstudio.com/The%20Urlist/_build/latest?definitionId=8)
 [![License](https://img.shields.io/badge/license-MIT-orange.svg)](https://raw.githubusercontent.com/the-urlist/backend-csharp/master/LICENSE)
 
-The backend for this project was built as a serverless API using Azure Functions and .NET. All the data is stored in a Cosmos DB collection using the SQL API.
+The backend for this project was built as a .Net Core API using .NET Core 3.1. All the data is stored in a Cosmos DB collection using the SQL API.
 
-- [.NET Core](https://dotnet.microsoft.com?WT.mc_id=theurlist-github-cephilli)
-- [Azure Functions](https://azure.microsoft.com/services/functions/?WT.mc_id=theurlist-github-cephilli)
+- [.NET Core 3.1](https://dotnet.microsoft.com?WT.mc_id=theurlist-github-cephilli)
 - [Azure Cosmos DB](https://azure.microsoft.com/services/cosmos-db?WT.mc_id=theurlist-github-cephilli)
 
 ## Build and run the backend locally
 
 ### Get the prerequisites
 
-- Install the [Azure Functions Core tools](https://docs.microsoft.com/azure/azure-functions/functions-run-local?WT.mc_id=theurlist-github-cephilli#install-the-azure-functions-core-tools) for your operating system
 - Install the [.NET Core SDK](https://dotnet.microsoft.com/download?WT.mc_id=theurlist-github-cephilli). This repo is pinned to use version 3.1.x of the SDK.
-- Install [Visual Studio Code](https://code.visualstudio.com/?WT.mc_id=theurlist-github-cephilli) or [Visual Studio Community edition](https://visualstudio.microsoft.com/vs?WT.mc_id=theurlist-github-cephilli)
+- Install [Visual Studio](https://visualstudio.microsoft.com/) or [Visual Studio Code](https://code.visualstudio.com/?WT.mc_id=theurlist-github-cephilli) or [Visual Studio Community edition](https://visualstudio.microsoft.com/vs?WT.mc_id=theurlist-github-cephilli)
 - Install the [C# extension for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=ms-vscode.csharp&WT.mc_id=theurlist-github-cephilli)
 
 #### Optional
@@ -23,12 +21,12 @@ The backend for this project was built as a serverless API using Azure Functions
 - Install [Postman](https://www.getpostman.com/)
 - Install [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
 
-### Run the serverless backend
+### Run the ASP.Net Core Web API backend
 
 Navigate into backend folder
 
 ```bash
-cd /src/LinkyLink
+cd /api/src/LinkyLink
 ```
 
 Build the project
@@ -37,28 +35,22 @@ Build the project
 dotnet build
 ```
 
-Rename the `local.settings.sample.json` file to `local.settings.json`
-
-Linux & MacOS
+Create a file called `appsettings.Development.json`
 
 ```bash
-mv local.settings.sample.json local.settings.json
+echo > appsettings.Development.json
 ```
 
-Windows command line
+Copy the contents of the `appsettings.sample.json` into the `appsettings.Development.json` file.
+
+[Create a Cosmos DB instance](https://docs.microsoft.com/en-us/azure/cosmos-db/how-to-manage-database-account?WT.mc_id=theurlist-github-cephilli) in Azure using the SQL API or use the [CosmosDB Emulator](https://docs.microsoft.com/en-us/azure/cosmos-db/local-emulator)
+
+Update the `appsettings.Development.json` file with your Cosmos DB Uri and Primary Key in the `ServiceEndpoint` & `AuthKey` settings respectively. This database will initially be empty. If you try out the API with Postman (see below), the collection and sample documents will be created for you automatically. Otherwise it's structure will be created when you create your first list through the frontend.
+
+Start the API via the command line
 
 ```bash
-REN local.settings.sample.json local.settings.json
-```
-
-Update the `local.settings.json` file with your Application Insights key to the `APPINSIGHTS_INSTRUMENTATIONKEY` setting. You could also just remove this if you don't want to use Application Inisghts.
-
-[Create an a Cosmos DB instance](https://docs.microsoft.com/en-us/azure/cosmos-db/how-to-manage-database-account?WT.mc_id=theurlist-github-cephilli) in Azure using the SQL API. Update the `local.settings.json` file with your Cosmos DB connection string in the `LinkLinkConnection` settings. This database will initially be empty. If you try out the API with Postman (see below), the collection and sample documents will be created for you automatically. Otherwise it's structure will be created when you create your first list through the frontend.
-
-Start the function via the command line
-
-```bash
-func start
+dotnet run
 ```
 
 ![func start](docs/func_start.png)

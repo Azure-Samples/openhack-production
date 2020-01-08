@@ -10,12 +10,7 @@ env=$3
 location=$4
 
 if [[ $# -ne 4 ]]; then
-    echo "Illegal number of arguments"
-    exit 1
-fi
-
-if [[ -z $businessUnit || -z $appName || -z $env || -z $location ]]; then
-    echo 'One or more variables are undefined'
+    echo "Illegal number of arguments. BusinessUnit, AppName, Environment and Region must be provided"
     exit 1
 fi
 

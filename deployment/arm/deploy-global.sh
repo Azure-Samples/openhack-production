@@ -8,13 +8,8 @@ businessUnit=$1
 appName=$2
 env=$3
 
-if [[ "$#" -ne 6 ]]; then
-    echo "Illegal number of arguments"
-    exit 1
-fi
-
-if [[ -z $businessUnit || -z $appName || -z $env ]]; then
-    echo 'One or more variables are undefined'
+if [[ "$#" < 4 ]]; then
+    echo "Illegal number of arguments. BusinessUnit, AppName, Environment and atleast one Region must be provided"
     exit 1
 fi
 
@@ -44,6 +39,7 @@ toArmArray() {
   printf $value
 }
 
+# set -e exists here if just let counter=0 is specified. Workaround is to add || true to the expression
 let counter=0 || true
 
 frontendHostArray=()
@@ -68,7 +64,7 @@ cosmosdbRegions=$(toArmArray ${cosmosdbRegionArray[*]})
 echo "Creating global resource Group: $resourceGroupName"
 az group create \
   --name $resourceGroupName \
-  --location centralus
+  --location ${cosmosdbRegionArray[0]}
 
 echo "Deploying global resources to $resourceGroupName"
 az group deployment create \

@@ -1,11 +1,19 @@
 #!/bin/bash
+set -eu
+
 parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd "$parent_path"
+
+if [[ $# -ne 4 ]]; then
+  echo "Illegal number of arguments. BusinessUnit, AppName, Environment and Region must be provided"
+  exit 1
+fi
 
 businessUnit=$1
 appName=$2
 env=$3
 location=$4
+
 scope="$businessUnit-$appName-$env-$location"
 resourceGroupName="rg-$scope"
 

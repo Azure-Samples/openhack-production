@@ -1,0 +1,121 @@
+trigger:
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - api/*
+      - pipelines/api-pipelines.yml
+  
+pr:
+  autoCancel: true   
+  branches:
+    include:
+     - master
+  paths:
+    include:
+      - api/*
+      - pipelines/api-pipelines.yml
+
+pool:
+  vmImage: "ubuntu-latest"
+  
+variables:
+  - group: prodoh-urlist-variable-group
+
+stages:
+  - stage: BuildStage
+    displayName: Build API
+    jobs:
+      - job: BuildJob
+        displayName: Build Test and Publish
+        steps:
+          - task: UseDotNet@2
+            displayName: Dotnet version 3.1.100
+            inputs:
+              version: '3.1.100'
+
+          - task: DotNetCoreCLI@2
+            displayName: Build
+            inputs:
+              command: build
+              projects: '**/*.csproj'
+              arguments: '--configuration Release'
+
+          - task: DotNetCoreCLI@2
+            displayName: Test
+            inputs:
+              command: test
+              projects: '**/*Tests/*.csproj'
+              arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
+  
+          - task: DotNetCoreCLI@2
+            displayName: Publish packages
+            inputs:
+              command: publish
+              arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+              zipAfterPublish: True
+  
+          - task: PublishBuildArtifacts@1
+            condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+            displayName: Publish Artifacts
+            inputs:
+              pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
+              artifactName: 'drop'
+              publishLocation: 'Container'
+             
+  - stage: DeployStage
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    displayName: Deploy API
+    jobs:
+      - job: RegionalMaxtrixDeployment
+        displayName: Deploy API to Region
+        strategy:
+          matrix:
+            westus2:
+              region: westus2
+            eastus:
+              region: eastus
+            centralus:
+              region: centralus
+        steps:    
+          - task: DownloadBuildArtifacts@0
+            displayName: Download Build Artifacts
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: 'drop'
+              downloadPath: '$(Build.ArtifactStagingDirectory)'
+
+          - task: AzureCLI@1
+            displayName: Get Cosmosdb URI and Key
+            inputs:
+              azureSubscription: $(azureSubscription)
+              scriptLocation: inlineScript
+              inlineScript: |
+                set -eu
+
+                RESOURCE_GROUP_NAME='rg-$(businessUnit)-urlist-dev-gbl'
+
+                COSMOSDB_NAME=`az cosmosdb list -g $RESOURCE_GROUP_NAME --query [0].name -o tsv`
+                COSMOSDB_URI=`az cosmosdb list -g $RESOURCE_GROUP_NAME --query [0].documentEndpoint -o tsv`
+                COSMOSDB_KEY=`az cosmosdb keys list -g $RESOURCE_GROUP_NAME -n $COSMOSDB_NAME --query primaryMasterKey -o tsv`
+              
+                if [[ -z $COSMOSDB_URI || -z $COSMOSDB_KEY ]]; then
+                  echo 'COSMOSDB_URI or COSMOSDB_KEY variable is undefined'
+                  exit 1
+                fi
+
+                echo "##vso[task.setvariable variable=cosmosdbURI]$COSMOSDB_URI"
+                echo "##vso[task.setvariable variable=cosmosdbKey]$COSMOSDB_KEY"
+
+          - task: AzureRMWebAppDeployment@4
+            displayName: Deploy to App Service
+            inputs:
+              ConnectionType: 'AzureRM'
+              azureSubscription: $(azureSubscription)
+              appType: 'apiApp'
+              WebAppName: 'backend-$(businessUnit)-urlist-dev-$(region)'
+              packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'  
+              appSettings: -CosmosSettings:ServiceEndpoint $(cosmosdbURI) -CosmosSettings:AuthKey $(cosmosdbKey) 
+                -CosmosSettings:DatabaseName linkylinkdb -CosmosSettings:ContainerName linkbundles

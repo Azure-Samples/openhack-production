@@ -27,14 +27,18 @@ namespace LinkyLink.Controllers
             _linksService = linksService;
         }
 
-        // Todo - Remove this method
-        // GET: api/Links
+        /// <summary>
+        /// List all the LinkBundles.
+        /// </summary>
         [HttpGet]
         public async Task<IEnumerable<LinkBundle>> GetLinkBundles()
         {
             return await _linksService.AllLinkBundles();
         }
 
+        /// <summary>
+        /// List a LinkBundles by Vanity Url.
+        /// </summary>
         // GET: api/Links/{vanityUrl}
         [HttpGet("{vanityUrl}")]
         public async Task<ActionResult<LinkBundle>> GetLinkBundle(string vanityUrl)
@@ -49,6 +53,9 @@ namespace LinkyLink.Controllers
             return linkBundle;
         }
 
+        /// <summary>
+        /// List all the LinkBundles for a user.
+        /// </summary>
         // GET: api/Links/User/{userId}
         [HttpGet("user/{userId}")]
         public async Task<ActionResult<LinkBundle>> GetLinkBundlesForUser(string userId)
@@ -77,6 +84,9 @@ namespace LinkyLink.Controllers
             return new OkObjectResult(results);
         }
 
+        /// <summary>
+        /// Create one or more LinkBundles.
+        /// </summary>
         // POST: api/Links
         [HttpPost]
         public async Task<ActionResult<LinkBundle>> PostLinkBundle(LinkBundle linkBundle)
@@ -131,6 +141,9 @@ namespace LinkyLink.Controllers
             return CreatedAtAction("GetLinkBundle", new { vanityUrl = linkBundle.VanityUrl }, linkBundle);
         }
 
+        /// <summary>
+        /// Delete a LinkBundle by Vanity Url.
+        /// </summary>
         // DELETE: api/Links/{vanityUrl}
         [HttpDelete("{vanityUrl}")]
         public async Task<ActionResult<LinkBundle>> DeleteLinkBundle(string vanityUrl)
@@ -166,6 +179,9 @@ namespace LinkyLink.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Update a LinkBundle by a Vanity Url.
+        /// </summary>
         // PATCH: api/Links/{vanityUrl}
         [HttpPatch("{vanityUrl}")]
         public async Task<ActionResult<LinkBundle>> PatchLinkBundle(string vanityUrl, JsonPatchDocument<LinkBundle> linkBundle)

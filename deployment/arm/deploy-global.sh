@@ -4,16 +4,59 @@ set -eu
 parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd "$parent_path"
 
-if [[ "$#" < 4 ]]; then
-  echo "Illegal number of arguments. BusinessUnit, AppName, Environment and atleast one Region must be provided"
-  exit 1
+function usage() {
+    echo
+    echo "Arguments:"
+    echo -e "\t-u\t Sets the business unit"
+    echo -e "\t-a\t Sets the app name"
+    echo -e "\t-e\t Sets the environment"
+    echo -e "\t-r\t Sets the regions (Comma delimited values)"
+    echo
+    echo "Example:"
+    echo -e "\tbash deploy.sh -u $(whoami) -a urlist -e test -r westus,eastus,centralus"
+}
+
+while getopts "u:a:e:r:hq" opt
+do
+    case $opt in
+        u) businessUnit=$OPTARG;;
+        a) appName=$OPTARG;;
+        e) env=$OPTARG;;
+        r) regions=(${OPTARG//,/ });;
+        :) echo "Error: -${OPTARG} requires a value"; exit 2;;
+        *) usage;exit 2;;
+    esac
+done
+
+# Validation
+if [ -z $businessUnit ]
+then
+    echo "Business Unit is required"
+    usage
+    exit 2
 fi
 
-businessUnit=$1
-appName=$2
-env=$3
+if [ -z $appName ]
+then
+    echo "App name is required"
+    usage
+    exit 2
+fi
 
-# Regions are passed in as additional arguments
+if [ -z $env ]
+then
+    echo "Environment is required"
+    usage
+    exit 2
+fi
+
+if [ -z $regions ]
+then
+    echo "Regions is required"
+    usage
+    exit 2
+fi
+
 scope="$businessUnit-$appName-$env-gbl"
 regionScope="$businessUnit-$appName-$env"
 resourceGroupName="rg-$scope"
@@ -28,15 +71,15 @@ echo "Front Door: $frontDoorName"
 echo "Cosmos DB Name: $cosmosdbName"
 
 timestamp() {
-  date +"%Y%m%dZ%H%M%S"
+    date +"%Y%m%dZ%H%M%S"
 }
 
 # Convert array to ARM array format
 toArmArray() {
-  array=("$@")
-  value=$(printf "\"%s\"", "${array[@]}")
-  value="[${value%?}]"
-  printf $value
+    array=("$@")
+    value=$(printf "\"%s\"", "${array[@]}")
+    value="[${value%?}]"
+    printf $value
 }
 
 # set -e fails and exit here if just let counter=0 is specified. Workaround is to add || true to the expression
@@ -46,15 +89,11 @@ frontendHostArray=()
 backendHostArray=()
 cosmosdbRegionArray=()
 
-for region in $@
+for region in ${regions[@]}
 do
-  let "counter=counter + 1"
-  if [ $counter -gt 3 ]
-  then
     frontendHostArray+=("frontend-$regionScope-$region.azurewebsites.net")
     backendHostArray+=("apim-$regionScope-$region.azure-api.net")
     cosmosdbRegionArray+=("$region")
-  fi
 done
 
 frontendHosts=$(toArmArray ${frontendHostArray[*]})
@@ -65,13 +104,13 @@ echo "Backend Hosts: $backendHosts"
 
 echo "Creating global resource Group: $resourceGroupName"
 az group create \
-  --name $resourceGroupName \
-  --location ${cosmosdbRegionArray[0]}
+--name $resourceGroupName \
+--location ${regions[0]}
 
 echo "Deploying global resources to $resourceGroupName"
 az group deployment create \
-  --name "Urlist-global-$(timestamp)" \
-  --resource-group $resourceGroupName \
-  --template-file global.json \
-  --parameters frontDoorName=$frontDoorName frontendHosts=$frontendHosts backendHosts=$backendHosts \
-      cosmosdbName=$cosmosdbName cosmosdbRegions=$cosmosdbRegions
+--name "Urlist-global-$(timestamp)" \
+--resource-group $resourceGroupName \
+--template-file global.json \
+--parameters frontDoorName=$frontDoorName frontendHosts=$frontendHosts backendHosts=$backendHosts \
+  cosmosdbName=$cosmosdbName cosmosdbRegions=$cosmosdbRegions

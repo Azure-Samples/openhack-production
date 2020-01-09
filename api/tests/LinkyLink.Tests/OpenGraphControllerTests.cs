@@ -4,30 +4,34 @@ using LinkyLink.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace LinkyLink.Tests
 {
     /// <summary>
-    /// Tests to validate methods in ValidatePageController class.
+    /// Tests to validate methods in OpenGraphController class.
     /// </summary>
-    public class ValidatePageControllerTests
+    public class OpenGraphControllerTests
     {
-        private readonly ValidatePageController _validatePageController;
+        private readonly OpenGraphController _openGraphController;
         private readonly Mock<IOpenGraphService> _mockService;
 
-        public ValidatePageControllerTests()
+        public OpenGraphControllerTests()
         {
             _mockService = new Mock<IOpenGraphService>();
-            _validatePageController = new ValidatePageController(_mockService.Object);
+            _openGraphController = new OpenGraphController(_mockService.Object);
         }
 
         [Fact]
-        public async Task ValidatePageReturnsBadRequestWhenEmptyPayload()
+        public async Task OpenGraphReturnsBadRequestWhenEmptyPayload()
         {
-            // Arrange, Act
-            ActionResult<OpenGraphResult> result = await _validatePageController.Post();
+            // Arrange
+            List<OpenGraphRequest> openGraphRequests = null;
+
+            // Act
+            ActionResult<OpenGraphResult> result = await _openGraphController.Post(openGraphRequests);
 
             // Assert
             Assert.IsType<BadRequestObjectResult>(result.Result);

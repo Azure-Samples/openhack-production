@@ -80,7 +80,7 @@
 			"response": []
 		},
 		{
-			"name": "Validate Page",
+			"name": "Open Graph Request",
 			"request": {
 				"method": "POST",
 				"header": [
@@ -93,16 +93,16 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n\t\"url\" : \"marketplace.visualstudio.com/items? itemName=sdras vue-vscode-extensionpack\",\n\t\"id\" : \"1\"\n}"
+					"raw": "[{\n        \"id\": \"cjsorrho200023h5poelwd47z\",\n        \"url\": \"facebook.com\"\n          }, {\n        \"id\": \"cjsorr5bs00003h5pzs3iu49c\",\n        \"url\": \"microsoft.com\"\n          }, {\n        \"id\": \"cjsorrc5d00013h5p3e1f8tgk\",\n        \"url\": \"google.com\"\n          }]"
 				},
 				"url": {
-					"raw": "{{host}}/api/validatePage",
+					"raw": "{{host}}/api/openGraph",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
 						"api",
-						"validatePage"
+						"openGraph"
 					]
 				}
 			},

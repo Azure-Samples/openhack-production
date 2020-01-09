@@ -90,7 +90,7 @@ namespace LinkyLink
                 app.UseDeveloperExceptionPage();
             }
             
-            //  Configure Swagger
+            // Configure Swagger
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {

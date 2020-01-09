@@ -25,10 +25,10 @@ variables:
 
 stages:
   - stage: BuildStage
-    displayName: Build API
+    displayName: Build
     jobs:
       - job: BuildJob
-        displayName: Build Test and Publish
+        displayName: API
         steps:
           - task: UseDotNet@2
             displayName: Dotnet version 3.1.100
@@ -87,10 +87,10 @@ stages:
              
   - stage: DeployStage
     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-    displayName: Deploy API
+    displayName: Deploy
     jobs:
       - job: RegionalMaxtrixDeployment
-        displayName: Deploy API to Region
+        displayName: API to Region
         strategy:
           matrix:
             westus2:

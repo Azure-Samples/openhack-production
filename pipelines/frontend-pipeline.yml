@@ -4,23 +4,7 @@
 # https://aka.ms/yaml
 
 trigger:
-  branches:
-    include:
-      - master
-  paths:
-    include:
-      - frontend/*
-      - pipelines/frontend-pipelines.yml
-    
-  pr:
-    autoCancel: true   
-    branches:
-      include:
-        - master
-    paths:
-      include:
-        - frontend/*
-        - pipelines/frontend-pipelines.yml
+- master
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -30,32 +14,52 @@ variables:
 
 stages:
   - stage: BuildStage
-    displayName: Build VUE Frontend
+    displayName: Build frontend 
     jobs:
       - job: BuildJob
-        displayName: Build Test and Publish
         steps:
-          - task: Npm@1
-            displayName: setup Npm
-            inputs:
-              command: 'install'
-              workingDir: './'
           - task: Bash@3
-            displayName: build frontend
+            displayName: Generate frontend configurations.
             inputs:
+              filePath: './frontend/generateConfigs.sh'
+
+          - task: Npm@1
+            displayName: Setup NPM for building frontend.
+            inputs:
+              workingDir: './frontend'
+              command: 'install'
+              
+          - task: Bash@3
+            displayName: Build frontend.
+            inputs:
+              workingDirectory: './frontend'
               targetType: 'inline'
-              script: 'npm run build'
+              script: |
+                set -eu
+                # first double check that the config file exists
+                configFile=".env.production"
+                
+                echo "VUE_APP_FRONTEND=https://urllist.z22.web.core.windows.net/" > .env.production
+                echo "VUE_APP_BACKEND=http://linkylink20191226111606.azurewebsites.net" >> .env.production 
+
+                if [[ ! -f $configFile ]]
+                then
+                  echo "The environment specific config file is missing!"
+                  exit 1
+                fi
+
+                npm run build
           - task: PublishBuildArtifacts@1
+            displayName: Stage build output.
             inputs:
-              PathtoPublish: 'dist'
+              PathtoPublish: './frontend/dist'
               ArtifactName: 'WebApp'
               publishLocation: 'Container'
   - stage: DeployStage
     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-    displayName: Deploying FE regionally
+    displayName: Deploy the VUE frontend in respective regions.
     jobs:
       - job: RegionalMaxtrixDeployment
-        displayName: Deploy FE to Regions
         strategy:
           matrix:
             westus2:
@@ -66,18 +70,21 @@ stages:
               region: centralus
         steps:    
           - task: DownloadBuildArtifacts@0
+            displayName: Download build output
             inputs:
               buildType: 'current'
               downloadType: 'single'
               artifactName: 'WebApp'
-              downloadPath: 'dist'
+              downloadPath: './frontend/dist'
           - task: AzureCLI@2
+            displayName: Publish frontend to hosting storage.
             inputs:
-              azureSubscription: $(azureSubscription)
+              azureSubscription: 'Visual Studio Enterprise(023bcb41-2018-4689-911a-37b46ddae6b5)'
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
+              workingDirectory: './frontend'
               inlineScript: |
                 set -eu
-
+                
                 storageActName=$(echo "$(businessUnit)$(region)" | tr "[:upper:]" "[:lower:]" | tr -d '-')
                 az storage blob upload-batch -s dist -d \$web --account-name $storageActName

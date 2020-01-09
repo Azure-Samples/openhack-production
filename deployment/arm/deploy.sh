@@ -69,12 +69,11 @@ do
 done
 
 # Deploy global resources
-<<<<<<< HEAD
 bash deploy-global.sh \
 -u $businessUnit \
 -a $appName \
 -e $env \
 -r $(join , ${regions[*]})
-=======
+
 bash deploy-global.sh $businessUnit $appName $env ${regions[*]}
->>>>>>> 8257141... Adding FE deployment scripts
+

@@ -140,4 +140,3 @@ stages:
               packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'  
               appSettings: -CosmosSettings:ServiceEndpoint $(cosmosdbURI) -CosmosSettings:AuthKey $(cosmosdbKey) 
                 -CosmosSettings:DatabaseName linkylinkdb -CosmosSettings:ContainerName linkbundles
->>>>>>> master

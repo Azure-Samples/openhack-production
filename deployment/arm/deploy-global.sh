@@ -112,5 +112,7 @@ az group deployment create \
 --name "Urlist-global-$(timestamp)" \
 --resource-group $resourceGroupName \
 --template-file global.json \
---parameters frontDoorName=$frontDoorName frontendHosts=$frontendHosts backendHosts=$backendHosts \
-  cosmosdbName=$cosmosdbName cosmosdbRegions=$cosmosdbRegions
+--parameters \
+    frontDoorName=$frontDoorName \
+    frontendHosts=$frontendHosts backendHosts=$backendHosts \
+    cosmosdbName=$cosmosdbName cosmosdbRegions=$cosmosdbRegions

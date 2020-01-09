@@ -2,26 +2,23 @@
 using LinkyLink.Service;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace LinkyLink.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    // Todo - Change the name of the controller to something meaningful.
     /// <summary>
     /// This class handles API requests to get details of a Link such as title, description and image.
     /// </summary>
-    public class ValidatePageController : Controller
+    public class OpenGraphController : Controller
     {
         private readonly IOpenGraphService _openGraphService;
 
-        public ValidatePageController(IOpenGraphService openGraphService)
+        public OpenGraphController(IOpenGraphService openGraphService)
         {
             _openGraphService = openGraphService;
         }
@@ -32,31 +29,22 @@ namespace LinkyLink.Controllers
         /// <remarks>
         /// Sample body:
         ///
-        ///     {
+        ///     [{
         ///        "id": 1,
-        ///        "url": "https://www.google.com"
-        ///     }
+        ///        "url": "https://www.microsoft.com"
+        ///     }]
         ///
         /// </remarks>        
-        // POST: api/ValidatePage
+        // POST: api/OpenGraph
         [HttpPost]
-        public async Task<ActionResult<OpenGraphResult>> Post()
+        public async Task<ActionResult<OpenGraphResult>> Post(IEnumerable<OpenGraphRequest> openGraphRequests)
         {
             try
             {
-                string requestBody = await new StreamReader(Request.Body).ReadToEndAsync();
-                dynamic data = JsonConvert.DeserializeObject(requestBody);
-
-                if (data is JArray)
+                if (openGraphRequests != null && openGraphRequests.Count() > 0)
                 {
-                    // expecting a JSON array of objects with url(string), id(string)
-                    IEnumerable<OpenGraphResult> result = await _openGraphService.GetMultipleGraphResults(Request, data);
-                    return new OkObjectResult(result);
-                }
-                else if (data is JObject)
-                {
-                    // expecting a JSON object with url(string), id(string)
-                    OpenGraphResult result = await _openGraphService.GetGraphResult(Request, data);
+                    string requestHost = Request.Host.HasValue ? Request.Host.Host : string.Empty;
+                    IEnumerable<OpenGraphResult> result = await _openGraphService.GetGraphResults(Request, openGraphRequests);
                     return new OkObjectResult(result);
                 }
 

@@ -87,6 +87,24 @@ namespace LinkyLink.Controllers
         /// <summary>
         /// Create one or more LinkBundles.
         /// </summary>
+        /// <remarks>
+        /// Sample body:
+        ///
+        /// {
+        /// "links": [
+        ///    {
+        ///    "id": "cjsorrho200023h5poelwd47z",
+        ///    "url": "facebook.com",
+        ///    "title": "Facebook - Log In or Sign Up",
+        ///    "description": "Create an account or log into Facebook. Connect with friends, family and other people you know. Share photos and videos, send messages and get updates.",
+        ///    "image": "//www.facebook.com/images/fb_icon_325x325.png"
+        ///    }
+        ///   ],
+        /// "vanityUrl": "postman-test",
+        /// "description": "",
+        /// "userId": "cecilphillip"
+        /// }
+        /// </remarks>         
         // POST: api/Links
         [HttpPost]
         public async Task<ActionResult<LinkBundle>> PostLinkBundle(LinkBundle linkBundle)

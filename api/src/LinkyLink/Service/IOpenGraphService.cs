@@ -7,8 +7,6 @@ namespace LinkyLink.Service
 {
     public interface IOpenGraphService
     {
-        Task<OpenGraphResult> GetGraphResult(HttpRequest req, dynamic singleLinkItem);
-
-        Task<IEnumerable<OpenGraphResult>> GetMultipleGraphResults(HttpRequest req, dynamic multiLinkItem);
+        Task<IEnumerable<OpenGraphResult>> GetGraphResults(HttpRequest req, IEnumerable<OpenGraphRequest> openGraphRequests);
     }
 }

@@ -364,4 +364,4 @@ MigrationBackup/
 .DS_Store
 local.settings.json
 .vscode/launch.json
-**/**.Development.json
+**.Development.json

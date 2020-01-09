@@ -26,6 +26,18 @@ namespace LinkyLink.Controllers
             _openGraphService = openGraphService;
         }
 
+        /// <summary>
+        /// Validates and lists details for one or more urls.
+        /// </summary>
+        /// <remarks>
+        /// Sample body:
+        ///
+        ///     {
+        ///        "id": 1,
+        ///        "url": "https://www.google.com"
+        ///     }
+        ///
+        /// </remarks>        
         // POST: api/ValidatePage
         [HttpPost]
         public async Task<ActionResult<OpenGraphResult>> Post()

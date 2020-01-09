@@ -1,3 +1,6 @@
+using System;
+using System.IO;
+using System.Reflection;
 using LinkyLink.Helpers;
 using LinkyLink.Models;
 using LinkyLink.Service;
@@ -7,11 +10,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 
 namespace LinkyLink
 {
     public class Startup
     {
+        readonly string _CORSPolicyName = "OHCORSPolicyName";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -29,9 +35,44 @@ namespace LinkyLink
             services.AddTransient<ILinksService, LinksService>();
             services.AddTransient<IOpenGraphService, OpenGraphService>();
             services.AddSingleton<UserAuth>();
+
+            // Add CORS policy to enable all origins
+            // this is added just in case the OH participants
+            // needed to test locally.
+            services.AddCors(options =>
+            {
+                options.AddPolicy(_CORSPolicyName,
+                    builder =>
+                       {
+                           builder.AllowAnyOrigin()
+                               .AllowAnyMethod()
+                               .AllowAnyHeader();
+                       });
+            });
+
+
             services.AddMvc().AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.IgnoreNullValues = true;
+            });
+
+            // Swagger Document Generation
+            services.AddSwaggerGen(c => {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "LinkyLink API",
+                    Description = "OpenHack - Production ASP.NET Core Web API",
+                    License = new OpenApiLicense
+                    {
+                        Name = "Use under MIT License",
+                        Url = new Uri("https://raw.githubusercontent.com/Azure-Samples/openhack-production/master/LICENSE"),
+                    }
+                });
+                // Set the comments path for the Swagger JSON and UI.
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);                
             });
         }
 
@@ -48,6 +89,15 @@ namespace LinkyLink
             {
                 app.UseDeveloperExceptionPage();
             }
+            
+            // Configure Swagger
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
+
+            app.UseCors(_CORSPolicyName);
 
             app.UseHttpsRedirection();
 

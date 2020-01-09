@@ -4,7 +4,7 @@
 	"values": [
 		{
 			"key": "host",
-			"value": "http://localhost:7071",
+			"value": "https://localhost:5001",
 			"type": "text",
 			"description": "",
 			"enabled": true

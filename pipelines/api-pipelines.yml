@@ -25,10 +25,10 @@ variables:
 
 stages:
   - stage: BuildStage
-    displayName: Build
+    displayName: Build API
     jobs:
       - job: BuildJob
-        displayName: API
+        displayName: Build Test and Publish
         steps:
           - task: UseDotNet@2
             displayName: Dotnet version 3.1.100
@@ -48,20 +48,20 @@ stages:
               command: test
               projects: '**/*Tests/*.csproj'
               arguments: -c $(BuildConfiguration) --collect:"XPlat Code Coverage"
-
+  
             # Generate the report using ReportGenerator (https://github.com/danielpalme/ReportGenerator)
           - script: |
               dotnet tool install -g dotnet-reportgenerator-globaltool
               reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:"Cobertura"
             displayName: Create Code coverage report
-  
+    
           - task: PublishCodeCoverageResults@1
             displayName: 'Publish code coverage'
             inputs:
               codeCoverageTool: Cobertura
               summaryFileLocation: $(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml 
               failIfCoverageEmpty: true 
-
+  
           - task: BuildQualityChecks@6
             displayName: 'Build quality check'
             inputs:
@@ -69,7 +69,7 @@ stages:
               coverageFailOption: 'fixed'
               coverageType: 'lines'
               coverageThreshold: '25'
-
+  
           - task: DotNetCoreCLI@2
             displayName: Publish packages
             inputs:
@@ -87,10 +87,10 @@ stages:
              
   - stage: DeployStage
     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-    displayName: Deploy
+    displayName: Deploy API
     jobs:
       - job: RegionalMaxtrixDeployment
-        displayName: API to Region
+        displayName: Deploy API to Region
         strategy:
           matrix:
             westus2:
@@ -138,7 +138,6 @@ stages:
               appType: 'apiApp'
               WebAppName: 'backend-$(businessUnit)-urlist-dev-$(region)'
               packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'  
-              appSettings: -CosmosSettings:ServiceEndpoint $(cosmosdbURI) -CosmosSettings:AuthKey $(cosmosdbKey)
+              appSettings: -CosmosSettings:ServiceEndpoint $(cosmosdbURI) -CosmosSettings:AuthKey $(cosmosdbKey) 
                 -CosmosSettings:DatabaseName linkylinkdb -CosmosSettings:ContainerName linkbundles
-
-
+>>>>>>> master

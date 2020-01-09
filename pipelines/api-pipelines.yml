@@ -49,8 +49,7 @@ stages:
               projects: '**/*Tests/*.csproj'
               arguments: -c $(BuildConfiguration) --collect:"XPlat Code Coverage"
 
-          # Generate the report using ReportGenerator (https://github.com/danielpalme/ReportGenerator)
-          # First install the tool on the machine, then run it
+            # Generate the report using ReportGenerator (https://github.com/danielpalme/ReportGenerator)
           - script: |
               dotnet tool install -g dotnet-reportgenerator-globaltool
               reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:"Cobertura"
@@ -62,6 +61,14 @@ stages:
               codeCoverageTool: Cobertura
               summaryFileLocation: $(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml 
               failIfCoverageEmpty: true 
+
+          - task: BuildQualityChecks@6
+            displayName: 'Build quality check'
+            inputs:
+              checkCoverage: true
+              coverageFailOption: 'fixed'
+              coverageType: 'lines'
+              coverageThreshold: '25'
 
           - task: DotNetCoreCLI@2
             displayName: Publish packages

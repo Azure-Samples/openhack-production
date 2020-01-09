@@ -1,9 +1,21 @@
 #!/bin/bash
-set -eu
 
+##########################################################################################################################################################################################
+#- Purpose: Script is used to deploy the regional resources for the Urlist app
+#- Parameters are:
+#- [-u] businessUnit - The business unit used for resource naming convention.
+#- [-a] appName - The application name used for resource naming convention.
+#- [-e] env - The environment to deploy (ex: dev | test | qa | prod).
+#- [-r] region - The Azure region to deploy to (ex: westus | eastus | centralus | etc).
+###########################################################################################################################################################################################
+
+set -eu
 parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd "$parent_path"
 
+#######################################################
+#- function used to print out script usage
+#######################################################
 function usage() {
     echo
     echo "Arguments:"
@@ -16,6 +28,13 @@ function usage() {
     echo -e "\tbash deploy.sh -u $(whoami) -a urlist -e test -r westus"
 }
 
+##############################################################
+#- function to create a timestamp string
+##############################################################
+function timestamp() {
+    date +"%Y%m%dZ%H%M%S"
+}
+
 while getopts "u:a:e:r:hq" opt
 do
     case $opt in
@@ -23,38 +42,17 @@ do
         a) appName=$OPTARG;;
         e) env=$OPTARG;;
         r) region=$OPTARG;;
-        :) echo "Error: -${OPTARG} requires a value"; exit 2;;
-        *) usage;exit 2;;
+        :) echo "Error: -${OPTARG} requires a value"; exit 1;;
+        *) usage;exit 1;;
     esac
 done
 
 # Validation
-if [ -z $businessUnit ]
+if [[ $# -eq 0 || -z $businessUnit || -z $appName || -z $env || -z $region ]]
 then
-    echo "Business Unit is required"
+    echo "Required parameters are missing"
     usage
-    exit 2
-fi
-
-if [ -z $appName ]
-then
-    echo "App name is required"
-    usage
-    exit 2
-fi
-
-if [ -z $env ]
-then
-    echo "Environment is required"
-    usage
-    exit 2
-fi
-
-if [ -z $region ]
-then
-    echo "Region is required"
-    usage
-    exit 2
+    exit 1
 fi
 
 scope="$businessUnit-$appName-$env-$region"
@@ -66,16 +64,13 @@ echo "Business Unit: $businessUnit"
 echo "App Name: $appName"
 echo "Environment: $env"
 echo "Region: $region"
+echo
 
 apimName="apim-$scope"
 appServicePlanName="asp-$scope"
 frontendAppName="frontend-$scope"
 backendAppName="backend-$scope"
 appInsightsName="ai-$scope"
-
-timestamp() {
-    date +"%Y%m%dZ%H%M%S"
-}
 
 echo "Creating Regional Resource Group: $resourceGroupName"
 az group create \

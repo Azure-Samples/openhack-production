@@ -1,21 +1,42 @@
 #!/bin/bash
-set -e
+
+##########################################################################################################################################################################################
+#- Purpose: Script is used to deploy the Urlist app
+#- Support deploying to multiple regions as well as required global resources
+#- Parameters are:
+#- [-u] businessUnit - The business unit used for resource naming convention.
+#- [-a] appName - The application name used for resource naming convention.
+#- [-e] env - The environment to deploy (ex: dev | test | qa | prod).
+#- [-r] regions - A comma delimted list of regions to deploy to (ex: westus,eastus,centralus).
+###########################################################################################################################################################################################
+
+set -eu
 parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd "$parent_path"
 
+#######################################################
+#- function used to print out script usage
+#######################################################
 function usage() {
     echo
     echo "Arguments:"
-    echo -e "\t-u\t Sets the business unit"
-    echo -e "\t-a\t Sets the app name"
-    echo -e "\t-e\t Sets the environment"
-    echo -e "\t-r\t Sets the region list (Comma delimited values)"
+    echo -e "\t-u \t Sets the business unit (required)"
+    echo -e "\t-a \t Sets the app name (required)"
+    echo -e "\t-e \t Sets the environment (required)"
+    echo -e "\t-r \t Sets the region list (Comma delimited values) (required)"
     echo
     echo "Example:"
     echo -e "\tbash deploy.sh -u $(whoami) -a urlist -e test -r westus,eastus,centralus"
 }
 
-function join { local d=$1; shift; echo -n "$1"; shift; printf "%s" "${@/#/$d}"; }
+##############################################################################
+#- function used to join a bash array into a string with specified delimiter
+#- $1 - The delimiter
+#- $n - The values to join
+##############################################################################
+function join {
+    local d=$1; shift; echo -n "$1"; shift; printf "%s" "${@/#/$d}";
+}
 
 while getopts "u:a:e:r:hq" opt
 do
@@ -24,38 +45,17 @@ do
         a) appName=$OPTARG;;
         e) env=$OPTARG;;
         r) regions=(${OPTARG//,/ });;
-        :) echo "Error: -${OPTARG} requires a value"; exit 2;;
-        *) usage;exit 2;;
+        :) echo "Error: -${OPTARG} requires a value"; exit 1;;
+        *) usage;exit 1;;
     esac
 done
 
 # Validation
-if [ -z $businessUnit ]
+if [[ $# -eq 0 || -z $businessUnit || -z $appName || -z $env || -z $regions ]]
 then
-    echo "Business Unit is required"
+    echo "Required parameters are missing"
     usage
-    exit 2
-fi
-
-if [ -z $appName ]
-then
-    echo "App name is required"
-    usage
-    exit 2
-fi
-
-if [ -z $env ]
-then
-    echo "Environment is required"
-    usage
-    exit 2
-fi
-
-if [ -z $regions ]
-then
-    echo "Regions is required"
-    usage
-    exit 2
+    exit 1
 fi
 
 # Deploy scale unit per region

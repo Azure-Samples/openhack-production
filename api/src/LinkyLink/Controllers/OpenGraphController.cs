@@ -43,7 +43,6 @@ namespace LinkyLink.Controllers
             {
                 if (openGraphRequests != null && openGraphRequests.Count() > 0)
                 {
-                    string requestHost = Request.Host.HasValue ? Request.Host.Host : string.Empty;
                     IEnumerable<OpenGraphResult> result = await _openGraphService.GetGraphResults(Request, openGraphRequests);
                     return new OkObjectResult(result);
                 }

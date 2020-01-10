@@ -1,4 +1,7 @@
 #!/bin/bash
+set -eu
+parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+cd "$parent_path"
 
 ##########################################################################################################################################################################################
 #- Purpose: Script is used to deploy the global resources for the Urlist app

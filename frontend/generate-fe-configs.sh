@@ -1,5 +1,9 @@
 #!/bin/bash
 
+set -eu
+parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+cd "$parent_path"
+
 ######################################################################
 #- Purpose: This script will produce the configuration file for this frontend
 #- the config file is used to pass the endpoints hosting the frontend
@@ -51,7 +55,7 @@ then
 fi
 
 # include common script to populate shared variables
-source common-script.sh
+source ../deployment/arm/common-script.sh
 
 
 echo "VUE_APP_FRONTEND=https://$frontDoorEndpoint" > .env.production

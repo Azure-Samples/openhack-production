@@ -21,7 +21,11 @@ stages:
           - task: Bash@3
             displayName: Generate frontend configurations.
             inputs:
-              filePath: './frontend/generateConfigs.sh'
+              workingDirectory: './frontend'
+              targetType: 'inline'
+              script: |
+                chmod +x generate-fe-configs.sh
+                ./generate-fe-configs.sh -u $(businessUnit) -a $(appName) -e $(env)
 
           - task: Npm@1
             displayName: Setup NPM for building frontend.
@@ -34,21 +38,7 @@ stages:
             inputs:
               workingDirectory: './frontend'
               targetType: 'inline'
-              script: |
-                set -eu
-                # first double check that the config file exists
-                configFile=".env.production"
-                
-                echo "VUE_APP_FRONTEND=https://urllist.z22.web.core.windows.net/" > .env.production
-                echo "VUE_APP_BACKEND=http://linkylink20191226111606.azurewebsites.net" >> .env.production 
-
-                if [[ ! -f $configFile ]]
-                then
-                  echo "The environment specific config file is missing!"
-                  exit 1
-                fi
-
-                npm run build
+              script: "npm run build"
           - task: PublishBuildArtifacts@1
             displayName: Stage build output.
             inputs:

@@ -1,0 +1,90 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  - group: prodoh-urlist-variable-group
+
+stages:
+  - stage: BuildStage
+    displayName: Build frontend -
+    jobs:
+      - job: BuildJob
+        steps:
+          - task: Bash@3
+            displayName: Generate frontend configurations.
+            inputs:
+              filePath: './frontend/generateConfigs.sh'
+
+          - task: Npm@1
+            displayName: Setup NPM for building frontend.
+            inputs:
+              workingDir: './frontend'
+              command: 'install'
+              
+          - task: Bash@3
+            displayName: Build frontend.
+            inputs:
+              workingDirectory: './frontend'
+              targetType: 'inline'
+              script: |
+                set -eu
+                # first double check that the config file exists
+                configFile=".env.production"
+                
+                echo "VUE_APP_FRONTEND=https://urllist.z22.web.core.windows.net/" > .env.production
+                echo "VUE_APP_BACKEND=http://linkylink20191226111606.azurewebsites.net" >> .env.production 
+
+                if [[ ! -f $configFile ]]
+                then
+                  echo "The environment specific config file is missing!"
+                  exit 1
+                fi
+
+                npm run build
+          - task: PublishBuildArtifacts@1
+            displayName: Stage build output.
+            inputs:
+              PathtoPublish: './frontend/dist'
+              ArtifactName: 'WebApp'
+              publishLocation: 'Container'
+  - stage: DeployStage
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    displayName: Deploy the VUE frontend -
+    jobs:
+      - job: RegionalMaxtrixDeployment
+        strategy:
+          matrix:
+            westus2:
+              region: westus2
+            eastus:
+              region: eastus
+            centralus:
+              region: centralus
+        steps:    
+          - task: DownloadBuildArtifacts@0
+            displayName: Download build output
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: 'WebApp'
+              downloadPath: './frontend/dist'
+          - task: AzureCLI@2
+            displayName: Publish frontend to hosting storage.
+            inputs:
+              azureSubscription: 'Visual Studio Enterprise(023bcb41-2018-4689-911a-37b46ddae6b5)'
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              workingDirectory: './frontend'
+              inlineScript: |
+                set -eu
+                
+                storageActName=$(echo "$(businessUnit)$(region)" | tr "[:upper:]" "[:lower:]" | tr -d '-')
+                az storage blob upload-batch -s dist -d \$web --account-name $storageActName

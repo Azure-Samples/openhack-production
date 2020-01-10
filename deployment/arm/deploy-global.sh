@@ -9,10 +9,6 @@
 #- [-r] regions - A comma delimted list of regions to deploy to (ex: westus,eastus,centralus).
 ###########################################################################################################################################################################################
 
-set -eu
-parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
-cd "$parent_path"
-
 #######################################################
 #- function used to print out script usage
 #######################################################
@@ -28,25 +24,6 @@ function usage() {
     echo -e "\tbash deploy.sh -u $(whoami) -a urlist -e test -r westus,eastus,centralus"
 }
 
-##############################################################
-#- function to create a timestamp string
-##############################################################
-function timestamp() {
-    date +"%Y%m%dZ%H%M%S"
-}
-
-##############################################################
-#- function used to convert a bash array to ARM array format
-#- $n - The values to join
-##############################################################
-function toArmArray() {
-    array=("$@")
-    value=$(printf "\"%s\"", "${array[@]}")
-    value="[${value%?}]"
-    printf $value
-}
-
-
 while getopts "u:a:e:r:hq" opt
 do
     case $opt in
@@ -60,7 +37,6 @@ do
 done
 
 # Validation
-# Validation
 if [[ $# -eq 0 || -z $businessUnit || -z $appName || -z $env || -z $regions ]]
 then
     echo "Required parameters are missing"
@@ -68,11 +44,11 @@ then
     exit 1
 fi
 
-scope="$businessUnit-$appName-$env-gbl"
-regionScope="$businessUnit-$appName-$env"
-resourceGroupName="rg-$scope"
-frontDoorName="fd-$scope"
-cosmosdbName="db-$scope"
+# include common script to populate shared variables
+source common-script.sh
+
+# set global resource group name
+resourceGroupName="rg-$globalScope"
 
 echo "Resource Group: $resourceGroupName"
 echo "Business Unit: $businessUnit"
@@ -80,6 +56,8 @@ echo "App Name: $appName"
 echo "Environment: $env"
 echo "Front Door: $frontDoorName"
 echo "Cosmos DB Name: $cosmosdbName"
+echo "Storage Account Name: $storageActName"
+echo 
 
 # set -e fails and exit here if just let counter=0 is specified. Workaround is to add || true to the expression
 let counter=0 || true
@@ -90,7 +68,15 @@ cosmosdbRegionArray=()
 
 for region in ${regions[@]}
 do
-    frontendHostArray+=("frontend-$regionScope-$region.azurewebsites.net")
+    storageActName="$(generateStorageAccountName -u $businessUnit -a $appName -e $env -r $region)"
+    
+    # fetch the regional primary endpoint for the static website hosted in blob storage
+    primaryEP=$(az storage account show --name $storageActName --query 'primaryEndpoints.web')
+    # the frontendHost needs to be the domain name, using sed to extract that from the URL
+    # also removing the additional quotes az returns with the URL
+    primaryEP=$(echo $primaryEP | sed -e 's|^[^/]*//||' -e 's|/.*$||' -e 's/"//g')
+    frontendHostArray+=("$primaryEP")
+
     backendHostArray+=("apim-$regionScope-$region.azure-api.net")
     cosmosdbRegionArray+=("$region")
 done
@@ -100,7 +86,7 @@ backendHosts=$(toArmArray ${backendHostArray[*]})
 cosmosdbRegions=$(toArmArray ${cosmosdbRegionArray[*]})
 echo "Frontend Hosts: $frontendHosts"
 echo "Backend Hosts: $backendHosts"
-echo
+echo 
 
 echo "Creating global resource Group: $resourceGroupName"
 az group create \
@@ -114,6 +100,6 @@ az group deployment create \
 --resource-group $resourceGroupName \
 --template-file global.json \
 --parameters \
-frontDoorName=$frontDoorName \
+frontDoorName=$frontDoorName frontDoorEndpoint=$frontDoorEndpoint \
 frontendHosts=$frontendHosts backendHosts=$backendHosts \
 cosmosdbName=$cosmosdbName cosmosdbRegions=$cosmosdbRegions

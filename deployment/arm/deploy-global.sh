@@ -59,7 +59,6 @@ echo "App Name: $appName"
 echo "Environment: $env"
 echo "Front Door: $frontDoorName"
 echo "Cosmos DB Name: $cosmosdbName"
-echo "Storage Account Name: $storageActName"
 echo 
 
 # set -e fails and exit here if just let counter=0 is specified. Workaround is to add || true to the expression
@@ -71,14 +70,17 @@ cosmosdbRegionArray=()
 
 for region in ${regions[@]}
 do
+    # include common script to populate shared variables per region
+    source common-script.sh
+    
     storageActName="$(generateStorageAccountName -u $businessUnit -a $appName -e $env -r $region)"
     
     # fetch the regional primary endpoint for the static website hosted in blob storage
-    primaryEP=$(az storage account show --name $storageActName --query 'primaryEndpoints.web')
+    primaryEndpoint=$(az storage account show --name $storageActName --query 'primaryEndpoints.web')
     # the frontendHost needs to be the domain name, using sed to extract that from the URL
     # also removing the additional quotes az returns with the URL
-    primaryEP=$(echo $primaryEP | sed -e 's|^[^/]*//||' -e 's|/.*$||' -e 's/"//g')
-    frontendHostArray+=("$primaryEP")
+    primaryEndpoint=$(echo $primaryEndpoint | sed -e 's|^[^/]*//||' -e 's|/.*$||' -e 's/"//g')
+    frontendHostArray+=("$primaryEndpoint")
 
     backendHostArray+=("apim-$regionScope-$region.azure-api.net")
     cosmosdbRegionArray+=("$region")

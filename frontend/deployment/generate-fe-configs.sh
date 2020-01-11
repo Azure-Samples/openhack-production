@@ -58,6 +58,6 @@ fi
 source ../deployment/arm/common-script.sh
 
 
-echo "VUE_APP_FRONTEND=https://$frontDoorEndpoint" > .env.production
-echo "VUE_APP_BACKEND=https://$frontDoorEndpoint" >> .env.production 
+echo "VUE_APP_FRONTEND=https://$frontDoorEndpoint" > ../.env.production
+echo "VUE_APP_BACKEND=https://$frontDoorEndpoint" >> ../.env.production 
 

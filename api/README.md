@@ -20,6 +20,7 @@ The backend for this project was built as a .Net Core API using .NET Core. All t
 #### Optional
 
 - Install [Postman](https://www.getpostman.com/)
+- Install [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
 
 ### Run the ASP.Net Core Web API backend
 
@@ -91,7 +92,16 @@ If everything was setup correctly, you should see a response that resembles the 
 
 ![postman](docs/postman_response.png)
 
-### API Paths
+### Try out the API using the REST Client extension
+
+- Open the `validate-api.http` file located in the `openhack-production/api` directory
+- Follow the instructions in the `Run the ASP.Net Core Web API backend` section of this README to start the backend
+- Select `Send Request` for any of the endpoints
+
+![REST Client](docs/rest_client.png)
+
+
+### API Documentation
 
 - The API uses [Swagger](https://swagger.io/) for API Documentation.  You can view the swagger documentation by navigating to: `https://localhost:<port>/swagger`
 

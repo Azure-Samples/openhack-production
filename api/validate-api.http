@@ -37,10 +37,10 @@ GET https://localhost:5001/api/links/postman-test
 
 
 ### Validate Page
-POST https://localhost:5001/api/validatePage
+POST https://localhost:5001/api/openGraph
 Content-Type: application/json
 
-{
+[{
 	"url" : "google.com",
 	"id" : "1"
-}
+}]

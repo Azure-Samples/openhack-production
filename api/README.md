@@ -22,6 +22,12 @@ The backend for this project was built as a .Net Core API using .NET Core. All t
 - Install [Postman](https://www.getpostman.com/)
 - Install [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
 
+### Setup Database
+
+[Create a Cosmos DB instance](https://docs.microsoft.com/en-us/azure/cosmos-db/how-to-manage-database-account) in Azure using the SQL API or use the [CosmosDB Emulator](https://docs.microsoft.com/en-us/azure/cosmos-db/local-emulator)
+
+Update the `appsettings.Development.json` file with your Cosmos DB Uri and Primary Key in the `ServiceEndpoint` & `AuthKey` settings respectively. This database will initially be empty. If you try out the API with Postman (see below), the collection and sample documents will be created for you automatically. Otherwise it's structure will be created when you create your first list through the frontend.
+
 ### Run the ASP.Net Core Web API backend
 
 Copy the contents of the `appsettings.sample.json` into the `appsettings.Development.json` file:
@@ -29,6 +35,7 @@ Copy the contents of the `appsettings.sample.json` into the `appsettings.Develop
 ```bash
 cp appsettings.sample.json appsettings.Development.json
 ```
+
 
 ### Run from your favorite CLI
 
@@ -50,21 +57,6 @@ Build the project
 dotnet build
 ```
 
-### Run from Visual Studio
-From Visual studio choose the startup project as `LinkyLink`.  Then from the debug start menu choose one of the following:
-
-#### IIS Express
-Will start the Rest API from an IIS Express instance on a random port.
-
-#### LinkLink
-Will start the Rest API from a console app on port `5000` similar to calling `dotnet run` from your favorite CLI.
-
-## Setup Database
-
-[Create a Cosmos DB instance](https://docs.microsoft.com/en-us/azure/cosmos-db/how-to-manage-database-account) in Azure using the SQL API or use the [CosmosDB Emulator](https://docs.microsoft.com/en-us/azure/cosmos-db/local-emulator)
-
-Update the `appsettings.Development.json` file with your Cosmos DB Uri and Primary Key in the `ServiceEndpoint` & `AuthKey` settings respectively. This database will initially be empty. If you try out the API with Postman (see below), the collection and sample documents will be created for you automatically. Otherwise it's structure will be created when you create your first list through the frontend.
-
 Start the API via the command line
 
 ```bash
@@ -74,6 +66,16 @@ dotnet run
 ![func start](docs/api_start.png)
 
 Alternatively, start a debuging session in `Visual Studio` or `Visual Studio Code`.
+
+
+### Run from Visual Studio
+From Visual studio choose the startup project as `LinkyLink`.  Then from the debug start menu choose one of the following:
+
+#### IIS Express
+Will start the Rest API from an IIS Express instance on a random port.
+
+#### LinkLink
+Will start the Rest API from a console app on port `5000` similar to calling `dotnet run` from your favorite CLI.
 
 ### Try out the API with Postman
 

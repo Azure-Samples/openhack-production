@@ -47,6 +47,7 @@ stages:
               publishLocation: 'Container'
   - stage: DeployStage
     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    dependsOn: BuildStage
     displayName: Deploy the VUE frontend -
     jobs:
       - job: RegionalMaxtrixDeployment
@@ -67,14 +68,18 @@ stages:
               artifactName: 'WebApp'
               downloadPath: './frontend/dist'
           - task: AzureCLI@2
-            displayName: Publish frontend to hosting storage.
             inputs:
-              azureSubscription: 'Visual Studio Enterprise(023bcb41-2018-4689-911a-37b46ddae6b5)'
+              azureSubscription: $(azureSubscription)
               scriptType: 'bash'
               scriptLocation: 'inlineScript'
-              workingDirectory: './frontend'
               inlineScript: |
-                set -eu
+                businessUnit=$(businessUnit)
+                appName=$(appName)
+                region=$(region)
+                env=$(env)
                 
-                storageActName=$(echo "$(businessUnit)$(region)" | tr "[:upper:]" "[:lower:]" | tr -d '-')
-                az storage blob upload-batch -s dist -d \$web --account-name $storageActName
+                source deployment/arm/common-script.sh
+                
+                storageActName=$(generateStorageAccountName -u $businessUnit -a $appName -e $env -r $region)
+                
+                az storage blob upload-batch -s ../../frontend/dist/WebApp -d \$web --account-name $storageActName

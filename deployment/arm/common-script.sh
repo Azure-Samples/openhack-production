@@ -26,6 +26,7 @@ function toArmArray() {
     printf $value
 }
 
+
 function generateStorageAccountName() {
     #######################################################
     #- function used to print out script usage
@@ -68,10 +69,19 @@ function generateStorageAccountName() {
     # Storage account names can only contain lowercase letters and numbers
     # they need to be unique globally! Another restriction is they need
     # to be between 3-24 in length, the approach we follow here
-    # is to truncate each part of the name to 5 characters totaling to 22 
-    # characters in length.
-    storageActName="sa${businessUnit:0:10}${appName:0:5}${env:0:2}${region:0:3}"
-    storageActName=$(echo "$storageActName" | tr "[:upper:]" "[:lower:]")
+    # is to produce an MD5 hash and truncate the first 24 characters.
+    storageActName="${businessUnit}${appName}${env}${region}"
+    # Mac has md5 while Ubuntu has md5sum
+    # running script based on OS
+    if [[ "$(uname)" == "Darwin" ]]
+    then
+       storageActName=$(echo -n $storageActName | md5)
+    else
+       storageActName=$(echo -n $storageActName | md5sum)
+    fi
+
+    # ensure all chars are lowercase
+    storageActName=$(echo sa${storageActName:0:22} | tr "[:upper:]" "[:lower:]")
     
     # Return storage account name
     echo $storageActName
@@ -79,7 +89,6 @@ function generateStorageAccountName() {
 
 # Deployment scopes
 globalScope="$businessUnit-$appName-$env-gbl"
-regionScope="$businessUnit-$appName-$env"
 
 # Global configs
 frontDoorName="fd-$globalScope"
@@ -87,8 +96,12 @@ frontDoorEndpoint="$frontDoorName.azurefd.net"
 cosmosdbName="db-$globalScope"
 
 # Regional configs
-apimName="apim-$regionScope"
-appServicePlanName="asp-$regionScope"
-frontendAppName="frontend-$regionScope"
-backendAppName="backend-$regionScope"
-appInsightsName="ai-$regionScope"
+if [[ ! -z ${region+x} ]]
+then
+    regionScope="$businessUnit-$appName-$env-$region"
+    apimName="apim-$regionScope"
+    appServicePlanName="asp-$regionScope"
+    frontendAppName="frontend-$regionScope"
+    backendAppName="backend-$regionScope"
+    appInsightsName="ai-$regionScope"
+fi

@@ -1,10 +1,8 @@
 #!/bin/bash
 set -eu
-parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
-cd "$parent_path"
 
 ##########################################################################################################################################################################################
-#- Purpose: Script is used to deploy the regional resources for the Urlist app
+#- Purpose: Script is used to publish the frontend to the static website hosting 
 #- Parameters are:
 #- [-u] businessUnit - The business unit used for resource naming convention.
 #- [-a] appName - The application name used for resource naming convention.
@@ -24,7 +22,7 @@ function usage() {
     echo -e "\t-r\t Sets the region"
     echo
     echo "Example:"
-    echo -e "\tbash deploy.sh -u $(whoami) -a urlist -e test -r westus"
+    echo -e "\tbash publish-to-host.sh -u $(whoami) -a urlist -e test -r westus"
 }
 
 while getopts "u:a:e:r:hq" opt
@@ -47,39 +45,10 @@ then
     exit 1
 fi
 
-echo "deploy-region $region"
-
 # include common script to populate shared variables
-source common-script.sh
-
-resourceGroupName="rg-$regionScope"
+common-script.sh
 
 storageActName=$(generateStorageAccountName -u $businessUnit -a $appName -e $env -r $region)
-echo "Resource Group: $resourceGroupName"
-echo "Region Scope: $regionScope"
-echo "Business Unit: $businessUnit"
-echo "App Name: $appName"
-echo "Storage Account Name: $storageActName"
-echo "Environment: $env"
-echo "Region: $region"
-echo
 
-echo "Creating Regional Resource Group: $resourceGroupName"
-az group create \
---name $resourceGroupName \
---location $region
-
-echo "Deploying regional resources to $resourceGroupName"
-az group deployment create \
---name "Urlist-$region-$(timestamp)" \
---resource-group $resourceGroupName \
---template-file region.json \
---parameters location=$region apimName=$apimName appServicePlanName=$appServicePlanName \
-frontendAppName=$frontendAppName backendAppName=$backendAppName appInsightsName=$appInsightsName storageActName=$storageActName
-
-echo "Configuring blob storage for static website hosting"
-az storage blob service-properties update \
---account-name $storageActName \
---static-website \
---index-document index.html \
---404-document index.html
+# upload to host
+az storage blob upload-batch -s dist -d \$web --account-name $storageActName

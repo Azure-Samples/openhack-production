@@ -1,7 +1,6 @@
 ﻿using HtmlAgilityPack;
 using LinkyLink.Models;
 using Microsoft.AspNetCore.Http;
-using Newtonsoft.Json.Linq;
 using OpenGraphNet;
 using System;
 using System.Collections.Generic;
@@ -10,11 +9,29 @@ using System.Threading.Tasks;
 
 namespace LinkyLink.Service
 {
+    /// <summary>
+    /// Class is used to retrieve OpenGraph information for one or more links
+    /// </summary>
     public class OpenGraphService : IOpenGraphService
     {
-        public async Task<OpenGraphResult> GetGraphResult(HttpRequest req, dynamic singleLinkItem)
+        /// <summary>
+        /// Gets OpenGraph results
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="openGraphRequests"></param>
+        /// <returns>List of OpenGraphResults</returns>        
+        public async Task<IEnumerable<OpenGraphResult>> GetGraphResults(HttpRequest req, IEnumerable<OpenGraphRequest> openGraphRequests)
         {
-            string url = singleLinkItem.url, id = singleLinkItem.id;
+            IEnumerable<OpenGraphResult> allResults =
+                await Task.WhenAll((openGraphRequests)
+                .Select(item => GetGraphResult(req, item)));
+
+            return allResults;
+        }
+
+        private async Task<OpenGraphResult> GetGraphResult(HttpRequest req, OpenGraphRequest openGraphRequest)
+        {
+            string url = openGraphRequest.Url, id = openGraphRequest.Id;
             if (!string.IsNullOrEmpty(url) && !string.IsNullOrEmpty(id))
             {
                 /**
@@ -39,15 +56,6 @@ namespace LinkyLink.Service
                 }
             }
             return new OpenGraphResult { Id = id };
-        }
-
-        public async Task<IEnumerable<OpenGraphResult>> GetMultipleGraphResults(HttpRequest req, dynamic multiLinkItem)
-        {
-            IEnumerable<OpenGraphResult> allResults =
-                await Task.WhenAll((multiLinkItem as JArray)
-                .Select(item => GetGraphResult(req, item)));
-
-            return allResults;
-        }
+        }        
     }
 }

@@ -20,8 +20,17 @@ The backend for this project was built as a .Net Core API using .NET Core. All t
 #### Optional
 
 - Install [Postman](https://www.getpostman.com/)
+- Install [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
 
 ### Run the ASP.Net Core Web API backend
+
+Copy the contents of the `appsettings.sample.json` into the `appsettings.Development.json` file:
+
+```bash
+cp appsettings.sample.json appsettings.Development.json
+```
+
+### Run from your favorite CLI
 
 Set the `ASPNETCORE_ENVIRONMENT` environment variable.  To 
 
@@ -40,11 +49,17 @@ Build the project
 ```bash
 dotnet build
 ```
-Copy the contents of the `appsettings.sample.json` into the `appsettings.Development.json` file:
 
-```bash
-cp appsettings.sample.json appsettings.Development.json
-```
+### Run from Visual Studio
+From Visual studio choose the startup project as `LinkyLink`.  Then from the debug start menu choose one of the following:
+
+#### IIS Express
+Will start the Rest API from an IIS Express instance on a random port.
+
+#### LinkLink
+Will start the Rest API from a console app on port `5000` similar to calling `dotnet run` from your favorite CLI.
+
+## Setup Database
 
 [Create a Cosmos DB instance](https://docs.microsoft.com/en-us/azure/cosmos-db/how-to-manage-database-account) in Azure using the SQL API or use the [CosmosDB Emulator](https://docs.microsoft.com/en-us/azure/cosmos-db/local-emulator)
 
@@ -77,7 +92,16 @@ If everything was setup correctly, you should see a response that resembles the 
 
 ![postman](docs/postman_response.png)
 
-### API Paths
+### Try out the API using the REST Client extension
+
+- Open the `validate-api.http` file located in the `openhack-production/api` directory
+- Follow the instructions in the `Run the ASP.Net Core Web API backend` section of this README to start the backend
+- Select `Send Request` for any of the endpoints
+
+![REST Client](docs/rest_client.png)
+
+
+### API Documentation
 
 - The API uses [Swagger](https://swagger.io/) for API Documentation.  You can view the swagger documentation by navigating to: `https://localhost:<port>/swagger`
 

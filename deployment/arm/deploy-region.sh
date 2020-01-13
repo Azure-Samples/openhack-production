@@ -1,4 +1,7 @@
 #!/bin/bash
+set -eu
+parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+cd "$parent_path"
 
 ##########################################################################################################################################################################################
 #- Purpose: Script is used to deploy the regional resources for the Urlist app
@@ -8,10 +11,6 @@
 #- [-e] env - The environment to deploy (ex: dev | test | qa | prod).
 #- [-r] region - The Azure region to deploy to (ex: westus | eastus | centralus | etc).
 ###########################################################################################################################################################################################
-
-set -eu
-parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
-cd "$parent_path"
 
 #######################################################
 #- function used to print out script usage
@@ -26,13 +25,6 @@ function usage() {
     echo
     echo "Example:"
     echo -e "\tbash deploy.sh -u $(whoami) -a urlist -e test -r westus"
-}
-
-##############################################################
-#- function to create a timestamp string
-##############################################################
-function timestamp() {
-    date +"%Y%m%dZ%H%M%S"
 }
 
 while getopts "u:a:e:r:hq" opt
@@ -55,22 +47,22 @@ then
     exit 1
 fi
 
-scope="$businessUnit-$appName-$env-$region"
-resourceGroupName="rg-$scope"
+echo "deploy-region $region"
 
+# include common script to populate shared variables
+source common-script.sh
+
+resourceGroupName="rg-$regionScope"
+
+storageActName=$(generateStorageAccountName -u $businessUnit -a $appName -e $env -r $region)
 echo "Resource Group: $resourceGroupName"
-echo "Region Scope: $scope"
+echo "Region Scope: $regionScope"
 echo "Business Unit: $businessUnit"
 echo "App Name: $appName"
+echo "Storage Account Name: $storageActName"
 echo "Environment: $env"
 echo "Region: $region"
 echo
-
-apimName="apim-$scope"
-appServicePlanName="asp-$scope"
-frontendAppName="frontend-$scope"
-backendAppName="backend-$scope"
-appInsightsName="ai-$scope"
 
 echo "Creating Regional Resource Group: $resourceGroupName"
 az group create \
@@ -82,4 +74,12 @@ az group deployment create \
 --name "Urlist-$region-$(timestamp)" \
 --resource-group $resourceGroupName \
 --template-file region.json \
---parameters location=$region apimName=$apimName appServicePlanName=$appServicePlanName frontendAppName=$frontendAppName backendAppName=$backendAppName appInsightsName=$appInsightsName
+--parameters location=$region apimName=$apimName appServicePlanName=$appServicePlanName \
+frontendAppName=$frontendAppName backendAppName=$backendAppName appInsightsName=$appInsightsName storageActName=$storageActName
+
+echo "Configuring blob storage for static website hosting"
+az storage blob service-properties update \
+--account-name $storageActName \
+--static-website \
+--index-document index.html \
+--404-document index.html

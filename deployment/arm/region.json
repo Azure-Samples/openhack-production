@@ -25,6 +25,10 @@
         "apimName": {
             "defaultValue": "",
             "type": "string"
+        },
+        "storageActName": {
+            "defaultValue": "",
+            "type": "string"
         }
     },
     "variables": {
@@ -287,6 +291,17 @@
                 "isBuffered": true,
                 "resourceId": "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"
             }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2019-04-01",
+            "name": "[parameters('storageActName')]",
+            "location": "[parameters('location')]",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "StorageV2"
         }
     ]
 }

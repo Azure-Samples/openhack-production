@@ -1,0 +1,85 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  - group: prodoh-urlist-variable-group
+
+stages:
+  - stage: BuildStage
+    displayName: Build frontend -
+    jobs:
+      - job: BuildJob
+        steps:
+          - task: Bash@3
+            displayName: Generate frontend configurations.
+            inputs:
+              workingDirectory: './frontend'
+              targetType: 'inline'
+              script: |
+                chmod +x generate-fe-configs.sh
+                ./generate-fe-configs.sh -u $(businessUnit) -a $(appName) -e $(env)
+
+          - task: Npm@1
+            displayName: Setup NPM for building frontend.
+            inputs:
+              workingDir: './frontend'
+              command: 'install'
+              
+          - task: Bash@3
+            displayName: Build frontend.
+            inputs:
+              workingDirectory: './frontend'
+              targetType: 'inline'
+              script: "npm run build"
+          - task: PublishBuildArtifacts@1
+            displayName: Stage build output.
+            inputs:
+              PathtoPublish: './frontend/dist'
+              ArtifactName: 'WebApp'
+              publishLocation: 'Container'
+  - stage: DeployStage
+    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
+    dependsOn: BuildStage
+    displayName: Deploy the VUE frontend -
+    jobs:
+      - job: RegionalMaxtrixDeployment
+        strategy:
+          matrix:
+            westus2:
+              region: westus2
+            eastus:
+              region: eastus
+            centralus:
+              region: centralus
+        steps:    
+          - task: DownloadBuildArtifacts@0
+            displayName: Download build output
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: 'WebApp'
+              downloadPath: './frontend/dist'
+          - task: AzureCLI@2
+            inputs:
+              azureSubscription: $(azureSubscription)
+              scriptType: 'bash'
+              scriptLocation: 'inlineScript'
+              inlineScript: |
+                businessUnit=$(businessUnit)
+                appName=$(appName)
+                region=$(region)
+                env=$(env)
+                
+                source deployment/arm/common-script.sh
+                
+                storageActName=$(generateStorageAccountName -u $businessUnit -a $appName -e $env -r $region)
+                
+                az storage blob upload-batch -s ../../frontend/dist/WebApp -d \$web --account-name $storageActName

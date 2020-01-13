@@ -8,7 +8,13 @@ The backend for this project was built as a .Net Core API using .NET Core. All t
 - [.NET Core](https://dotnet.microsoft.com)
 - [Azure Cosmos DB](https://azure.microsoft.com/services/cosmos-db)
 
-## Build and run the backend locally
+## Build and run the ASP.NET Core backend locally
+
+Copy the contents of the `appsettings.sample.json` into the `appsettings.Development.json` file:
+
+```bash
+cp appsettings.sample.json appsettings.Development.json
+```
 
 ### Get the prerequisites
 
@@ -27,15 +33,6 @@ The backend for this project was built as a .Net Core API using .NET Core. All t
 [Create a Cosmos DB instance](https://docs.microsoft.com/en-us/azure/cosmos-db/how-to-manage-database-account) in Azure using the SQL API or use the [CosmosDB Emulator](https://docs.microsoft.com/en-us/azure/cosmos-db/local-emulator)
 
 Update the `appsettings.Development.json` file with your Cosmos DB Uri and Primary Key in the `ServiceEndpoint` & `AuthKey` settings respectively. This database will initially be empty. If you try out the API with Postman (see below), the collection and sample documents will be created for you automatically. Otherwise it's structure will be created when you create your first list through the frontend.
-
-### Run the ASP.Net Core Web API backend
-
-Copy the contents of the `appsettings.sample.json` into the `appsettings.Development.json` file:
-
-```bash
-cp appsettings.sample.json appsettings.Development.json
-```
-
 
 ### Run from your favorite CLI
 

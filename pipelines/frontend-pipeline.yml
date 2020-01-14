@@ -76,7 +76,7 @@ stages:
                 businessUnit=$(businessUnit)
                 appName=$(appName)
                 region=$(region)
-                env=$(env)
+                env=$(environment)
                 
                 source deployment/arm/common-script.sh
                 

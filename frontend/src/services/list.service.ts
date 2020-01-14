@@ -23,11 +23,11 @@ const ListService = {
   },
   async validate(url: string, id: string): Promise<ILink> {
     const response = await ApiService.post(
-      `${config.BACKEND}/api/validatePage`,
-      {
+      `${config.BACKEND}/api/openGraph`,
+      [{
         url: url,
         id: id
-      }
+      }]
     );
     const ogData = <IOGData>response.data;
 

@@ -96,7 +96,7 @@ az webapp auth update \
     --name $backendAppName \
     --resource-group $resourceGroupName \
     --enabled true \
-    --action LoginWithTwitter \
+    --action AllowAnonymous \
     --twitter-consumer-key $TWITTER_KEY \
     --twitter-consumer-secret $TWITTER_SECRET \
     --allowed-external-redirect-urls "https://$frontDoorEndpoint"

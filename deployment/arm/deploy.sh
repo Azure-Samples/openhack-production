@@ -11,7 +11,10 @@
 ###########################################################################################################################################################################################
 
 set -eu
-parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+parent_path=$(
+    cd "$(dirname "${BASH_SOURCE[0]}")"
+    pwd -P
+)
 cd "$parent_path"
 
 #######################################################
@@ -34,43 +37,50 @@ function usage() {
 #- $1 - The delimiter
 #- $n - The values to join
 ##############################################################################
-function join {
-    local d=$1; shift; echo -n "$1"; shift; printf "%s" "${@/#/$d}";
+function join() {
+    local d=$1
+    shift
+    echo -n "$1"
+    shift
+    printf "%s" "${@/#/$d}"
 }
 
-while getopts "u:a:e:r:hq" opt
-do
+while getopts "u:a:e:r:hq" opt; do
     case $opt in
-        u) businessUnit=$OPTARG;;
-        a) appName=$OPTARG;;
-        e) env=$OPTARG;;
-        r) regions=(${OPTARG//,/ });;
-        :) echo "Error: -${OPTARG} requires a value"; exit 1;;
-        *) usage;exit 1;;
+    u) businessUnit=$OPTARG ;;
+    a) appName=$OPTARG ;;
+    e) env=$OPTARG ;;
+    r) regions=(${OPTARG//,/ }) ;;
+    :)
+        echo "Error: -${OPTARG} requires a value"
+        exit 1
+        ;;
+    *)
+        usage
+        exit 1
+        ;;
     esac
 done
 
 # Validation
-if [[ $# -eq 0 || -z $businessUnit || -z $appName || -z $env || -z $regions ]]
-then
+if [[ $# -eq 0 || -z $businessUnit || -z $appName || -z $env || -z $regions ]]; then
     echo "Required parameters are missing"
     usage
     exit 1
 fi
 
 # Deploy scale unit per region
-for region in ${regions[@]}
-do
+for region in ${regions[@]}; do
     bash deploy-region.sh \
-    -u $businessUnit \
-    -a $appName \
-    -e $env \
-    -r $region
+        -u $businessUnit \
+        -a $appName \
+        -e $env \
+        -r $region
 done
 
 # Deploy global resources
 bash deploy-global.sh \
--u $businessUnit \
--a $appName \
--e $env \
--r $(join , ${regions[*]})
+    -u $businessUnit \
+    -a $appName \
+    -e $env \
+    -r $(join , ${regions[*]})

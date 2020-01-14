@@ -101,7 +101,6 @@ then
     regionScope="$businessUnit-$appName-$env-$region"
     apimName="apim-$regionScope"
     appServicePlanName="asp-$regionScope"
-    frontendAppName="frontend-$regionScope"
     backendAppName="backend-$regionScope"
     appInsightsName="ai-$regionScope"
 fi

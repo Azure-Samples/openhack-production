@@ -1,6 +1,9 @@
 #!/bin/bash
 set -eu
-parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+parent_path=$(
+    cd "$(dirname "${BASH_SOURCE[0]}")"
+    pwd -P
+)
 cd "$parent_path"
 
 ##########################################################################################################################################################################################
@@ -27,21 +30,25 @@ function usage() {
     echo -e "\tbash deploy.sh -u $(whoami) -a urlist -e test -r westus"
 }
 
-while getopts "u:a:e:r:hq" opt
-do
+while getopts "u:a:e:r:hq" opt; do
     case $opt in
-        u) businessUnit=$OPTARG;;
-        a) appName=$OPTARG;;
-        e) env=$OPTARG;;
-        r) region=$OPTARG;;
-        :) echo "Error: -${OPTARG} requires a value"; exit 1;;
-        *) usage;exit 1;;
+    u) businessUnit=$OPTARG ;;
+    a) appName=$OPTARG ;;
+    e) env=$OPTARG ;;
+    r) region=$OPTARG ;;
+    :)
+        echo "Error: -${OPTARG} requires a value"
+        exit 1
+        ;;
+    *)
+        usage
+        exit 1
+        ;;
     esac
 done
 
 # Validation
-if [[ $# -eq 0 || -z $businessUnit || -z $appName || -z $env || -z $region ]]
-then
+if [[ $# -eq 0 || -z $businessUnit || -z $appName || -z $env || -z $region ]]; then
     echo "Required parameters are missing"
     usage
     exit 1
@@ -66,20 +73,30 @@ echo
 
 echo "Creating Regional Resource Group: $resourceGroupName"
 az group create \
---name $resourceGroupName \
---location $region
+    --name $resourceGroupName \
+    --location $region
 
 echo "Deploying regional resources to $resourceGroupName"
 az group deployment create \
---name "Urlist-$region-$(timestamp)" \
---resource-group $resourceGroupName \
---template-file region.json \
---parameters location=$region apimName=$apimName appServicePlanName=$appServicePlanName \
-frontendAppName=$frontendAppName backendAppName=$backendAppName appInsightsName=$appInsightsName storageActName=$storageActName
+    --name "Urlist-$region-$(timestamp)" \
+    --resource-group $resourceGroupName \
+    --template-file region.json \
+    --parameters location=$region apimName=$apimName appServicePlanName=$appServicePlanName \
+    backendAppName=$backendAppName appInsightsName=$appInsightsName storageActName=$storageActName
 
 echo "Configuring blob storage for static website hosting"
 az storage blob service-properties update \
---account-name $storageActName \
---static-website \
---index-document index.html \
---404-document index.html
+    --account-name $storageActName \
+    --static-website \
+    --index-document index.html \
+    --404-document index.html
+
+echo "Configuring app service authentication"
+az webapp auth update \
+    --name $backendAppName \
+    --resource-group $resourceGroupName \
+    --enabled true \
+    --action LoginWithTwitter \
+    --twitter-consumer-key $TWITTER_KEY \
+    --twitter-consumer-secret $TWITTER_SECRET \
+    --allowed-external-redirect-urls "https://$frontDoorEndpoint"

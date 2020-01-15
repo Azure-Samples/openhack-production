@@ -111,3 +111,6 @@ if [[ ! -z ${region+x} ]]; then
     backendAppName="backend-$regionScope"
     appInsightsName="ai-$regionScope"
 fi
+
+TWITTER_KEY=Iq1x8x5xhIStmm48mV5cEDhAE
+TWITTER_SECRET=NkNWAqQtWUnfoCWF7R3iA0JufZJauf4eiuGW9p42cARRS7SFSX

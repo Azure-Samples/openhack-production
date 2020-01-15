@@ -25,7 +25,7 @@ stages:
               targetType: 'inline'
               script: |
                 chmod +x generate-fe-configs.sh
-                ./generate-fe-configs.sh -u $(businessUnit) -a $(appName) -e $(env)
+                ./generate-fe-configs.sh -u $(businessUnit) -a $(appName) -e $(environment)
 
           - task: Npm@1
             displayName: Setup NPM for building frontend.

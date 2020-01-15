@@ -109,3 +109,14 @@ If everything was setup correctly, you should see a response that resembles the 
 ### Misc. Notes
 
 - [Swagger](https://swagger.io/) XML Comments have been enabled to provide better API Documentation.  This means that warnings will be generated for public undocumented public types and members.  By default, this project disables warnings.  Documentation to enable warnings can be found [here](https://docs.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-swashbuckle?view=aspnetcore-3.1&tabs=visual-studio-code)
+
+# Docker local development
+This is an alternative local development option. The container sets the ASPNETCORE environment to `Development`, so make sure you have a `appsettings.Development.json` created and configured before building the container image.
+```
+docker build -t linkylink .
+docker run -p 5000:80 -it linkylink
+curl http://localhost:5000/api/links/postman-test
+```
+
+## Setup certificate for HTTPS
+If you want to get everything working with HTTPS, you can follow the instructions in this [doc](https://docs.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-3.1). In essence, you need to mount a drive containing your development certifcate into the container.

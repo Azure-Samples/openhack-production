@@ -1,0 +1,5 @@
+bin\
+out\
+.git
+*Dockerfile*
+*docker-compose*

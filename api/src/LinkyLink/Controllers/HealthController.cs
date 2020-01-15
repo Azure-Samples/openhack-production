@@ -11,6 +11,7 @@ namespace LinkyLink.Controllers
     [ApiController]
     public class HealthController : ControllerBase
     {
+        [HttpGet]
         public ActionResult Ping()
         {
             var status = new

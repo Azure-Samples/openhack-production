@@ -88,7 +88,7 @@ for region in ${regions[@]}; do
     primaryEndpoint=$(echo $primaryEndpoint | sed -e 's|^[^/]*//||' -e 's|/.*$||' -e 's/"//g')
     frontendHostArray+=("$primaryEndpoint")
 
-    backendHostArray+=("apim-$regionScope-$region.azure-api.net")
+    backendHostArray+=("apim-$regionScope.azure-api.net")
     cosmosdbRegionArray+=("$region")
 done
 

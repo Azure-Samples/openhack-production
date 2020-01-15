@@ -75,7 +75,7 @@ echo "Creating Regional Resource Group: $resourceGroupName"
 az group create \
     --name $resourceGroupName \
     --location $region
-
+echo
 echo "Deploying regional resources to $resourceGroupName"
 az group deployment create \
     --name "Urlist-$region-$(timestamp)" \
@@ -84,6 +84,7 @@ az group deployment create \
     --parameters location=$region apimName=$apimName appServicePlanName=$appServicePlanName \
     backendAppName=$backendAppName appInsightsName=$appInsightsName storageActName=$storageActName
 
+echo
 echo "Configuring blob storage for static website hosting"
 az storage blob service-properties update \
     --account-name $storageActName \
@@ -91,6 +92,7 @@ az storage blob service-properties update \
     --index-document index.html \
     --404-document index.html
 
+echo
 echo "Configuring app service authentication"
 az webapp auth update \
     --name $backendAppName \

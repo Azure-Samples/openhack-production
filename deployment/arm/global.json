@@ -88,6 +88,31 @@
                                 }
                             }
                         }
+                    },
+                    {
+                        "name": "Auth",
+                        "properties": {
+                            "enabledState": "Enabled",
+                            "frontendEndpoints": [
+                                {
+                                    "id": "[resourceId('Microsoft.Network/frontDoors/frontendEndpoints', parameters('frontDoorName'), 'publicEndpoint')]"
+                                }
+                            ],
+                            "acceptedProtocols": [
+                                "Http",
+                                "Https"
+                            ],
+                            "patternsToMatch": [
+                                "/.auth/*"
+                            ],
+                            "routeConfiguration": {
+                                "@odata.type": "#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration",
+                                "forwardingProtocol": "HttpsOnly",
+                                "backendPool": {
+                                    "id": "[resourceId('Microsoft.Network/frontDoors/backendPools', parameters('frontDoorName'), 'Backend')]"
+                                }
+                            }
+                        }
                     }
                 ],
                 "loadBalancingSettings": [
@@ -121,7 +146,7 @@
                         "name": "backendHealthProbe",
                         "properties": {
                             "intervalInSeconds": 30,
-                            "path": "/forecasts/health",
+                            "path": "/health",
                             "protocol": "Https"
                         }
                     }
@@ -223,3 +248,4 @@
         }
     ]
 }
+

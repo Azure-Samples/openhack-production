@@ -17,6 +17,19 @@ Other useful tools
 
 ## Build and run the frontend locally
 
+### Modify Environment Variable
+* Follow the guide on how to run the Backend locally.  You can find the README [here](../api/README.md)
+* Once the Backend has started, you will want to get the port the Backend uses *(local port may change depending upon the IDE being used)* and modify the `VUE_APP_BACKEND` environment variable value in the `env.development` file.  See below:
+
+```bash
+VUE_APP_BACKEND=https://localhost:5001
+```
+to
+
+```bash
+VUE_APP_BACKEND=[scheme_url_port]
+```
+
 ### Install Vue CLI globally
 ```bash
 npm install -g @vue/cli
@@ -59,3 +72,11 @@ to
 axios.defaults.withCredentials = true;
 ```
 This should keep you out of CORS troubles
+
+## Debugging the application
+
+* Follow the instructions in the [Build and run the frontend locally](##-build-and-run-the-frontend-locally) to start application
+* In Chrome, press `F12` to start the Chrome Developer Tools
+* Select `Source` then expand `webpack` then expand the `.` folder then expand `src` and find the TypeScript file that you would like to debug and `double-click` the line in the TypeScript file that you are interested in.  See the screenshot below as an example:
+
+![localhost serve](/docs/localhost_debugging.png)

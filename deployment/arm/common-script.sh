@@ -45,7 +45,7 @@ function genStorageActNameUsage() {
 }
 
 #######################################################
-#- function used to generate the stroage account name
+#- function used to generate the storage account name
 #######################################################
 function generateStorageAccountName() {
     # reset the index for the arguments locally for this function.

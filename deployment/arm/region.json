@@ -105,22 +105,9 @@
                 "capacity": 0
             },
             "properties": {
-                "publisherEmail": "wabrez@microsoft.com",
-                "publisherName": "Microsoft",
+                "publisherEmail": "admin@contoso.com",
+                "publisherName": "Contoso",
                 "notificationSenderEmail": "apimgmt-noreply@mail.windowsazure.com"
-            }
-        },
-        {
-            "type": "Microsoft.ApiManagement/service/properties",
-            "apiVersion": "2019-01-01",
-            "name": "[concat(parameters('apimName'), '/5df9447791f0e91e700024e9')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.ApiManagement/service', parameters('apimName'))]"
-            ],
-            "properties": {
-                "displayName": "Logger-Credentials-5df9447791f0e91e700024ea",
-                "value": "7d72fb3b-9de9-4d5a-955b-bac2b786a2f6",
-                "secret": true
             }
         },
         {

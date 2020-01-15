@@ -13,11 +13,11 @@ using System.Threading.Tasks;
 
 namespace LinkyLink.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
     /// <summary>
     /// This class handles API requests for Link bundles and defines set of actions to peform on Link bundles.
     /// </summary>
+    [Route("api/[controller]")]
+    [ApiController]
     public class LinksController : ControllerBase
     {
         private readonly ILinksService _linksService;

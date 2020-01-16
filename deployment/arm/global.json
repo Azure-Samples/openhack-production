@@ -48,7 +48,6 @@
                                 }
                             ],
                             "acceptedProtocols": [
-                                "Http",
                                 "Https"
                             ],
                             "patternsToMatch": [
@@ -73,7 +72,6 @@
                                 }
                             ],
                             "acceptedProtocols": [
-                                "Http",
                                 "Https"
                             ],
                             "patternsToMatch": [
@@ -99,7 +97,6 @@
                                 }
                             ],
                             "acceptedProtocols": [
-                                "Http",
                                 "Https"
                             ],
                             "patternsToMatch": [
@@ -108,9 +105,32 @@
                             "routeConfiguration": {
                                 "@odata.type": "#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration",
                                 "forwardingProtocol": "HttpsOnly",
+                                "customForwardingPath": "/auth",
                                 "backendPool": {
                                     "id": "[resourceId('Microsoft.Network/frontDoors/backendPools', parameters('frontDoorName'), 'Backend')]"
                                 }
+                            }
+                        }
+                    },
+                    {
+                        "name": "HttpRedirect",
+                        "properties": {
+                            "enabledState": "Enabled",
+                            "frontendEndpoints": [
+                                {
+                                    "id": "[resourceId('Microsoft.Network/frontDoors/frontendEndpoints', parameters('frontDoorName'), 'publicEndpoint')]"
+                                }
+                            ],
+                            "acceptedProtocols": [
+                                "Http"
+                            ],
+                            "patternsToMatch": [
+                                "/*"
+                            ],
+                            "routeConfiguration": {
+                                "@odata.type": "#Microsoft.Azure.FrontDoor.Models.FrontdoorRedirectConfiguration",
+                                "redirectType": "Moved",
+                                "redirectProtocol": "HttpsOnly"
                             }
                         }
                     }
@@ -248,4 +268,3 @@
         }
     ]
 }
-

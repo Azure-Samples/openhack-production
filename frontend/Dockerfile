@@ -1,12 +1,17 @@
-FROM nginx
+FROM node:10.15.0
 
+# make the 'app' folder the current working directory
 WORKDIR /app
 
-# Copy in the static build assets
-COPY dist/ /app/
+# copy both 'package.json' and 'package-lock.json' (if available)
+COPY package*.json ./
 
-# Copy in the nginx config file
-COPY nginx.conf /etc/nginx/nginx.conf
+# install project dependencies
+RUN npm install
+RUN npm install -g @vue/cli
 
-# All files are in, start the web server
-CMD ["nginx"]
+# copy project files and folders to the current working directory (i.e. 'app' folder)
+COPY . .
+
+# start app
+CMD ["npm", "run", "serve"]

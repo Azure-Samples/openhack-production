@@ -58,8 +58,8 @@ fi
 source ../deployment/arm/common-script.sh
 
 # the common script would set working directory to ../deployment/arm
-# need to reset the path to the frontend door to place
-# the config file in the right folder.
+# need to reset the path to the frontend folder to place
+# the config file in the right location.
 cd "$frontend_parent_path"
 
 echo "VUE_APP_FRONTEND=https://$frontDoorEndpoint" > .env.production

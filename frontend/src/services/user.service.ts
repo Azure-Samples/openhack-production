@@ -5,8 +5,9 @@ import config from "@/config";
 
 const UserService = {
   async me(): Promise<User> {
-    const response = await ApiService.get(`${config.BACKEND}/.auth/me`);
-    return new User(response.data[0]);
+    const idToken = localStorage.getItem("id_token");
+    const user: User = idToken ? new User(idToken) : new User();
+    return Promise.resolve(user);
   },
 
   async lists(userName: string): Promise<Array<IUserList>> {

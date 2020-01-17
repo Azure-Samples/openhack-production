@@ -1,18 +1,9 @@
 <template>
   <header id="navbar" class="header">
-    <nav
-      class="navbar container"
-      role="navigation"
-      aria-label="main navigation"
-    >
+    <nav class="navbar container" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
         <a class="navbar-item" href="/">
-          <img
-            width="100"
-            height="60"
-            src="@/assets/logo-beta.svg"
-            alt="urlist logo"
-          />
+          <img width="100" height="60" src="@/assets/logo-beta.svg" alt="urlist logo" />
         </a>
         <a
           id="hamburger"
@@ -24,12 +15,7 @@
           data-target="navbarBasicExample"
           @click="showMenu = !showMenu"
         >
-          <img
-            src="@/assets/burger.svg"
-            alt="toggle menu"
-            width="60"
-            height="60"
-          />
+          <img src="@/assets/burger.svg" alt="toggle menu" width="60" height="60" />
         </a>
       </div>
       <div class="beta-bump navbar-menu" :class="{ 'is-active': showMenu }">
@@ -40,11 +26,7 @@
             </span>
             New
           </a>
-          <router-link
-            v-if="currentUser.loggedIn"
-            class="navbar-item"
-            to="/s/user"
-          >
+          <router-link v-if="currentUser.loggedIn" class="navbar-item" to="/s/user">
             <span class="icon is-large navbar-icon">
               <i class="fas fa-lg fa-user-circle"></i>
             </span>
@@ -59,19 +41,12 @@
         </div>
 
         <div class="navbar-end">
-          <div
-            class="navbar-item has-dropdown is-hoverable"
-            v-if="currentUser.loggedIn"
-          >
+          <div class="navbar-item has-dropdown is-hoverable" v-if="currentUser.loggedIn">
             <a class="navbar-link">
               <div class="columns is-gapless is-mobile">
                 <div class="column is-narrow">
                   <figure id="profileImage" class="image">
-                    <img
-                      class="is-rounded"
-                      :src="currentUser.profileImage"
-                      alt
-                    />
+                    <img class="is-rounded" :src="currentUser.profileImage" alt />
                   </figure>
                 </div>
                 <div class="column">
@@ -80,7 +55,7 @@
               </div>
             </a>
             <div class="navbar-dropdown">
-              <a class="navbar-item" :href="logoutUrl">
+              <a class="navbar-item" @click.prevent="logout()">
                 <span class="icon is-medium navbar-icon">
                   <i class="fas fa-sign-out-alt"></i>
                 </span>
@@ -88,7 +63,7 @@
               </a>
             </div>
           </div>
-          <a v-else class="navbar-item" @click.prevent="showLoginModal = true">
+          <a v-else class="navbar-item" @click.prevent="login()">
             <span class="icon is-large navbar-icon">
               <i class="fas fa-lg fa-sign-in-alt"></i>
             </span>
@@ -109,6 +84,7 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 import ProgressBar from "@/components/ProgressBar.vue";
 import ModalLogin from "@/components/ModalLogin.vue";
 import UserMenu from "@/components/UserMenu.vue";
+import { UserManager } from "oidc-client";
 import User from "@/models/User";
 import config from "@/config";
 
@@ -123,6 +99,22 @@ export default class extends Vue {
   showMenu: boolean = false;
   showLoginModal: boolean = false;
   logoutUrl = config.LOGOUT_URL;
+  userManager: UserManager;
+
+  constructor() {
+    super();
+    this.userManager = new UserManager({
+      loadUserInfo: false,
+      client_id: "b60e06af-abfe-4fbc-a762-52cd6800b985",
+      prompt: "login",
+      authority:
+        "https://testprodoh.b2clogin.com/testprodoh.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1_SignUp_SignIn",
+      redirect_uri: `${window.location.origin}/s/auth/openid`,
+      post_logout_redirect_uri: `${window.location.origin}/s/auth/openid`,
+      response_type: "id_token",
+      scope: "openid"
+    });
+  }
 
   get currentUser(): User {
     return this.$store.getters.currentUser;
@@ -131,6 +123,14 @@ export default class extends Vue {
   newList() {
     this.$store.dispatch("resetCurrentList");
     this.$router.push("/s/edit");
+  }
+
+  async login() {
+    await this.userManager.signinRedirect();
+  }
+
+  async logout() {
+    await this.userManager.signoutRedirect();
   }
 
   async created() {

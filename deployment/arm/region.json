@@ -179,24 +179,6 @@
             }
         },
         {
-            "type": "Microsoft.ApiManagement/service/apis",
-            "apiVersion": "2019-01-01",
-            "name": "[concat(parameters('apimName'), '/auth-api')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.ApiManagement/service', parameters('apimName'))]"
-            ],
-            "properties": {
-                "displayName": "Auth API",
-                "apiRevision": "1",
-                "subscriptionRequired": false,
-                "protocols": [
-                    "https"
-                ],
-                "isCurrent": true,
-                "path": "auth"
-            }
-        },
-        {
             "type": "Microsoft.ApiManagement/service/apis/policies",
             "apiVersion": "2019-01-01",
             "name": "[concat(parameters('apimName'), '/health-api/policy')]",
@@ -232,19 +214,6 @@
             ],
             "properties": {
                 "value": "[concat('<policies><inbound><base /><set-backend-service base-url=\"https://', parameters('backendAppName'),  '.azurewebsites.net/api/opengraph\" /></inbound><backend><base /></backend><outbound><base /></outbound><on-error><base /></on-error>\r\n</policies>')]",
-                "format": "xml"
-            }
-        },
-        {
-            "type": "Microsoft.ApiManagement/service/apis/policies",
-            "apiVersion": "2019-01-01",
-            "name": "[concat(parameters('apimName'), '/auth-api/policy')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.ApiManagement/service/apis', parameters('apimName'), 'auth-api')]",
-                "[resourceId('Microsoft.ApiManagement/service', parameters('apimName'))]"
-            ],
-            "properties": {
-                "value": "[concat('<policies><inbound><base /><set-backend-service base-url=\"https://', parameters('backendAppName'),  '.azurewebsites.net/.auth\" /></inbound><backend><base /></backend><outbound><base /></outbound><on-error><base /></on-error>\r\n</policies>')]",
                 "format": "xml"
             }
         },
@@ -424,38 +393,6 @@
                 ],
                 "responses": [
                 ]
-            }
-        },
-        {
-            "type": "Microsoft.ApiManagement/service/apis/operations",
-            "apiVersion": "2019-01-01",
-            "name": "[concat(parameters('apimName'), '/auth-api/get')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.ApiManagement/service/apis', parameters('apimName'), 'auth-api')]",
-                "[resourceId('Microsoft.ApiManagement/service', parameters('apimName'))]"
-            ],
-            "properties": {
-                "displayName": "GET",
-                "method": "GET",
-                "urlTemplate": "/*",
-                "templateParameters": [],
-                "responses": []
-            }
-        },
-        {
-            "type": "Microsoft.ApiManagement/service/apis/operations",
-            "apiVersion": "2019-01-01",
-            "name": "[concat(parameters('apimName'), '/auth-api/post')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.ApiManagement/service/apis', parameters('apimName'), 'auth-api')]",
-                "[resourceId('Microsoft.ApiManagement/service', parameters('apimName'))]"
-            ],
-            "properties": {
-                "displayName": "POST",
-                "method": "POST",
-                "urlTemplate": "/*",
-                "templateParameters": [],
-                "responses": []
             }
         },
         {

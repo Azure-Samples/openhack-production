@@ -18,7 +18,9 @@ Guidance on onboarding samples to docs.microsoft.com/samples: https://review.doc
 Taxonomies for products and languages: https://review.docs.microsoft.com/new-hope/information-architecture/metadata/taxonomies?branch=master
 -->
 
-Give a short description for your sample here. What does it do and why is it important?
+This is a replica of the Urlist website but re-architected to use server based backend hosted in Azure AppService instead of being serverless. The original project can be found here https://github.com/burkeholland/the-urlist
+
+Please [check here](resources/infrastructure.md) to view and read about the new architecture.
 
 ## Contents
 
@@ -26,7 +28,10 @@ Outline the file contents of the repository. It helps users navigate the codebas
 
 | File/folder       | Description                                |
 |-------------------|--------------------------------------------|
-| `src`             | Sample source code.                        |
+| `api`             | The backend code base implemented using .Net Core. |
+| `frontend`        | The frontend code base implemented using VUE and Typescript |
+| `deployment`      | This folder holds deployment scripts to setup infrastructure. |
+| `pipelines`       | This folder holds YAML files to create Azure pipelines to deploy the project |
 | `.gitignore`      | Define what to ignore at commit time.      |
 | `CHANGELOG.md`    | List of changes to the sample.             |
 | `CONTRIBUTING.md` | Guidelines for contributing to the sample. |
@@ -35,19 +40,20 @@ Outline the file contents of the repository. It helps users navigate the codebas
 
 ## Prerequisites
 
-Outline the required components and tools that a user might need to have on their machine in order to run the sample. This can be anything from frameworks, SDKs, OS versions or IDE releases.
+You need to have the following available
+
+* An Azure subscription
+* Check out the [API folder for backend prerequisites](api/README.md)
+* Check out the [Frontend folder for frontend prerequisites](frontend/README.md)
 
 ## Setup
 
-Explain how to prepare the sample once the user clones or downloads the repository. The section should outline every step necessary to install dependencies and set up any settings (for example, API keys and output folders).
+* You can check the deployment/deploy.sh script file to setup the Azure infrastructure automatically.
+* You would need to create three pipelines using the .yml files available in the pipelines folder.
 
 ## Running the sample
 
-Outline step-by-step instructions to execute the sample and see its output. Include steps for executing the sample from the IDE, starting specific services in the Azure portal or anything related to the overall launch of the code.
-
-## Key concepts
-
-Provide users with more context on the tools and services used in the sample. Explain some of the code that is being used and how services interact with each other.
+Once the pipelines are setup and had successfully deployed the project, find your Azure Frontdoor endpoint and use it to test the website.
 
 ## Contributing
 

@@ -1,15 +1,22 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Threading.Tasks;
 using LinkyLink.Helpers;
 using LinkyLink.Models;
 using LinkyLink.Service;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.AzureADB2C.UI;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 namespace LinkyLink
@@ -50,14 +57,18 @@ namespace LinkyLink
                        });
             });
 
+            services
+                .AddAuthentication(AzureADB2CDefaults.BearerAuthenticationScheme)
+                .AddAzureADB2CBearer(options => Configuration.Bind("AzureAdB2C", options));
 
             services.AddMvc().AddJsonOptions(options =>
-            {
-                options.JsonSerializerOptions.IgnoreNullValues = true;
-            });
+                {
+                    options.JsonSerializerOptions.IgnoreNullValues = true;
+                });
 
             // Swagger Document Generation
-            services.AddSwaggerGen(c => {
+            services.AddSwaggerGen(c =>
+            {
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
@@ -72,7 +83,7 @@ namespace LinkyLink
                 // Set the comments path for the Swagger JSON and UI.
                 var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath);                
+                c.IncludeXmlComments(xmlPath);
             });
         }
 
@@ -89,7 +100,7 @@ namespace LinkyLink
             {
                 app.UseDeveloperExceptionPage();
             }
-            
+
             // Configure Swagger
             app.UseSwagger();
             app.UseSwaggerUI(c =>
@@ -103,7 +114,9 @@ namespace LinkyLink
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
+
 
             app.UseEndpoints(endpoints =>
             {

@@ -1,5 +1,6 @@
 ﻿using LinkyLink.Models;
 using LinkyLink.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +17,7 @@ namespace LinkyLink.Controllers
     /// <summary>
     /// This class handles API requests for Link bundles and defines set of actions to peform on Link bundles.
     /// </summary>
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class LinksController : ControllerBase

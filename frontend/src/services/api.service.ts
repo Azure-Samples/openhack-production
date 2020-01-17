@@ -15,7 +15,8 @@ import store from "../store/store";
 
 const ApiService = {
   init() {
-    axios.defaults.headers.common["x-functions-key"] = config.FUNCTION_KEY;
+    const authorizationHeaderValue = `Bearer ${localStorage.getItem("access_token")}`;
+    axios.defaults.headers.common["Authorization"] = authorizationHeaderValue;
     axios.defaults.withCredentials = false;
 
     axios.interceptors.request.use((config: AxiosRequestConfig) => {

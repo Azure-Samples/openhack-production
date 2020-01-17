@@ -82,7 +82,6 @@
 <script lang="ts">
 import { Component, Prop, Vue } from "vue-property-decorator";
 import ProgressBar from "@/components/ProgressBar.vue";
-import ModalLogin from "@/components/ModalLogin.vue";
 import UserMenu from "@/components/UserMenu.vue";
 import { UserManager } from "oidc-client";
 import User from "@/models/User";
@@ -91,8 +90,7 @@ import config from "@/config";
 @Component({
   components: {
     ProgressBar,
-    UserMenu,
-    ModalLogin
+    UserMenu
   }
 })
 export default class extends Vue {
@@ -110,8 +108,12 @@ export default class extends Vue {
         "https://testprodoh.b2clogin.com/testprodoh.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1_SignUp_SignIn",
       redirect_uri: `${window.location.origin}/s/auth/openid`,
       post_logout_redirect_uri: `${window.location.origin}/s/auth/openid`,
-      response_type: "id_token",
-      scope: "openid"
+      response_type: "id_token token",
+      scope: [
+        "openid",
+        "https://testprodoh.onmicrosoft.com/team1/UrlBundle.ReadWrite",
+        "https://testprodoh.onmicrosoft.com/team1/UrlBundle.Delete"
+      ].join(" ")
     });
   }
 

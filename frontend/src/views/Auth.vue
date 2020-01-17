@@ -10,15 +10,26 @@ import { Component, Prop, Vue } from "vue-property-decorator";
 })
 export default class Auth extends Vue {
   async created() {
-    const hashParams = this.parseHash(this.$route.hash);
+    const hashParams = this.parseHash(this.$route.hash.substr(1));
     if (hashParams.id_token) {
       localStorage.setItem("id_token", hashParams.id_token);
     } else {
       localStorage.removeItem("id_token");
     }
 
-    this.$store.dispatch("getUser");
-    this.$router.push("/");
+    if (hashParams.access_token) {
+      localStorage.setItem("access_token", hashParams.access_token);
+    } else {
+      localStorage.removeItem("access_token");
+    }
+
+    if (hashParams.error) {
+      console.error(hashParams.error);
+      console.error(hashParams.error_description);
+    } else {
+      this.$store.dispatch("getUser");
+      this.$router.push("/");
+    }
   }
 
   parseHash(hash: string): any {

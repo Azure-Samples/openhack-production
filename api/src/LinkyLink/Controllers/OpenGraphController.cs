@@ -1,5 +1,6 @@
 ﻿using LinkyLink.Models;
 using LinkyLink.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace LinkyLink.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     /// <summary>

@@ -98,7 +98,6 @@ import config from "@/config";
 export default class extends Vue {
   showMenu: boolean = false;
   showLoginModal: boolean = false;
-  logoutUrl = config.LOGOUT_URL;
   userManager: UserManager;
 
   constructor() {

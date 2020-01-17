@@ -8,8 +8,5 @@ export default {
       process.env.VUE_APP_FRONTEND
     }`;
   },
-  LOGOUT_URL: `${
-    process.env.VUE_APP_BACKEND
-  }/.auth/logout?post_logout_redirect_uri=${process.env.VUE_APP_FRONTEND}`,
   FUNCTION_KEY: process.env.VUE_APP_FUNCTION_KEY
 };

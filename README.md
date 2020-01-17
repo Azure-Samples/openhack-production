@@ -18,9 +18,9 @@ Guidance on onboarding samples to docs.microsoft.com/samples: https://review.doc
 Taxonomies for products and languages: https://review.docs.microsoft.com/new-hope/information-architecture/metadata/taxonomies?branch=master
 -->
 
-This is a replica of the Urlist website but re-architected to use server based backend hosted in Azure AppService instead of being serverless. The original project can be found here https://github.com/burkeholland/the-urlist
+This is a replica of the Urlist website but re-architected to use server based backend hosted in Azure AppService instead of being serverless. The original project repository can be found here https://github.com/the-urlist
 
-Please [check here](resources/infrastructure.md) to view and read about the new architecture.
+Please [check here](docs/infrastructure.md) to view and read about the new architecture.
 
 ## Contents
 
@@ -32,6 +32,7 @@ Outline the file contents of the repository. It helps users navigate the codebas
 | `frontend`        | The frontend code base implemented using VUE and Typescript |
 | `deployment`      | This folder holds deployment scripts to setup infrastructure. |
 | `pipelines`       | This folder holds YAML files to create Azure pipelines to deploy the project |
+| `docs`            | This folder holds relevant documenation about the project |
 | `.gitignore`      | Define what to ignore at commit time.      |
 | `CHANGELOG.md`    | List of changes to the sample.             |
 | `CONTRIBUTING.md` | Guidelines for contributing to the sample. |
@@ -48,8 +49,8 @@ You need to have the following available
 
 ## Setup
 
-* You can check the deployment/deploy.sh script file to setup the Azure infrastructure automatically.
-* You would need to create three pipelines using the .yml files available in the pipelines folder.
+* Check out the [deployment folder](deployment/README.md) to setup the Azure infrastructure automatically.
+* Check out the [pipelines folder](pipelines/README.md) to create the needed pipelines to automate deployments and infrastructure updates.
 
 ## Running the sample
 

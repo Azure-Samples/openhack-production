@@ -116,7 +116,8 @@ stages:
               scriptLocation: inlineScript
               inlineScript: |
                 set -eu
-                RESOURCE_GROUP_NAME='rg-$(businessUnit)-urlist-dev-gbl'
+
+                RESOURCE_GROUP_NAME='rg-$(businessUnit)-$(appName)-$(environment)-gbl'
                 COSMOSDB_NAME=`az cosmosdb list -g $RESOURCE_GROUP_NAME --query [0].name -o tsv`
                 COSMOSDB_URI=`az cosmosdb list -g $RESOURCE_GROUP_NAME --query [0].documentEndpoint -o tsv`
                 COSMOSDB_KEY=`az cosmosdb keys list -g $RESOURCE_GROUP_NAME -n $COSMOSDB_NAME --query primaryMasterKey -o tsv`
@@ -133,7 +134,7 @@ stages:
               ConnectionType: 'AzureRM'
               azureSubscription: $(azureSubscription)
               appType: 'apiApp'
-              WebAppName: 'backend-$(businessUnit)-urlist-dev-$(region)'
+              WebAppName: 'backend-$(businessUnit)-$(appName)-$(environment)-$(region)'
               packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'  
               appSettings: -CosmosSettings:ServiceEndpoint $(cosmosdbURI) -CosmosSettings:AuthKey $(cosmosdbKey) 
                 -CosmosSettings:DatabaseName linkylinkdb -CosmosSettings:ContainerName linkbundles 

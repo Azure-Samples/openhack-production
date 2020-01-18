@@ -102,18 +102,13 @@ export default class extends Vue {
     super();
     this.userManager = new UserManager({
       loadUserInfo: false,
-      client_id: "b60e06af-abfe-4fbc-a762-52cd6800b985",
+      authority: config.openId.authority,
+      client_id: config.openId.clientId,
+      scope: config.openId.scope,
       prompt: "login",
-      authority:
-        "https://testprodoh.b2clogin.com/testprodoh.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1_SignUp_SignIn",
       redirect_uri: `${window.location.origin}/s/auth/openid`,
       post_logout_redirect_uri: `${window.location.origin}/s/auth/openid`,
-      response_type: "id_token token",
-      scope: [
-        "openid",
-        "https://testprodoh.onmicrosoft.com/team1/UrlBundle.ReadWrite",
-        "https://testprodoh.onmicrosoft.com/team1/UrlBundle.Delete"
-      ].join(" ")
+      response_type: "id_token token"
     });
   }
 

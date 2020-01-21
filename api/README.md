@@ -34,6 +34,20 @@ cp appsettings.sample.json appsettings.Development.json
 
 Update the `appsettings.Development.json` file with your Cosmos DB Uri and Primary Key in the `ServiceEndpoint` & `AuthKey` settings respectively. This database will initially be empty. If you try out the API with Postman (see below), the collection and sample documents will be created for you automatically. Otherwise it's structure will be created when you create your first list through the frontend.
 
+### Setup Azure AD B2C Configuration
+This application requires Azure Active Directory B2C for authentication/authorization. Each API request performs JWT validation from your Azure B2C tenant.
+
+Update `appsettings.Development.json` file with your tenants configuration:
+
+```json
+"AzureAdB2C": {
+  "Instance": "https://[YourTenantName].b2clogin.com/tfp/",
+  "ClientId": "[The Azure B2C application client ID]",
+  "Domain": "[YourTenantName].onmicrosoft.com",
+  "SignUpSignInPolicyId": "[Your Azure B2C policy name]" 
+},
+```
+
 ### Run from your favorite CLI
 
 Set the `ASPNETCORE_ENVIRONMENT` environment variable.  To 

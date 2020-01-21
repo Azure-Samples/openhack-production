@@ -6,6 +6,7 @@ The Urlist application is a relativly simple application that uses a robust and 
 
 ## Naming Conventions
 All resources follow a naming convention that ensures unique naming that includes the following components:
+
 - Resource Type
 - Business Unit
 - Application Name
@@ -14,6 +15,7 @@ All resources follow a naming convention that ensures unique naming that include
 
 > `${ResourceType}-${BusinessUnit}-${AppName}-${Env}-${Region}`
 ### Examples
+
 - fd-prodoh-urlist-prod-gbl **(Front Door)**
 - rg-prodoh-urlist-prod-westus **(Resource Group)**
 - apim-prodoh-urlist-prod-westus **(API Management)**
@@ -28,7 +30,7 @@ Azure Frontdoor is used to provide a central frontdoor and mesh to all micro-ser
 - Caching for static content
 
 ### Backend Pools
-Two backends are configured for the Urlist application. Backend pools can be configured with different priority or weights based on your business needs.  Each pool also must include a HTTP/HTTPS probe endpoint to monitor a regions health status.  Unhealthy nodes are automatically disabled from the pool.
+More than one backend is configured for the Urlist application. Backend pools can be configured with different priority or weights based on your business needs.  Each pool also must include a HTTP/HTTPS probe endpoint to monitor a regions health status.  Unhealthy nodes are automatically disabled from the pool.
 
 #### Frontend
 The frontend pool uses public endpoints to the static website for each deployed region with equal weighting

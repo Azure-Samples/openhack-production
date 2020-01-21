@@ -18,7 +18,7 @@ Guidance on onboarding samples to docs.microsoft.com/samples: https://review.doc
 Taxonomies for products and languages: https://review.docs.microsoft.com/new-hope/information-architecture/metadata/taxonomies?branch=master
 -->
 
-This is a replica of the Urlist website but re-architected to use server based backend hosted in Azure AppService instead of being serverless. The original project repository can be found here https://github.com/the-urlist
+This is a replica of the Urlist website but re-architected to use Azure AppService to host the backend instead of using Azure Functions. The original project repository can be found here https://github.com/the-urlist
 
 Please [check here](docs/infrastructure.md) to view and read about the new architecture.
 

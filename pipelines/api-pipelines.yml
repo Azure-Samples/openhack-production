@@ -125,3 +125,14 @@ stages:
                 -AzureAdB2C:ClientId $(AZUREADB2C_CLIENTID)
                 -AzureAdB2C:Domain $(AZUREADB2C_DOMAIN)
                 -AzureAdB2C:SignUpSignInPolicyId $(AZUREADB2C_POLICYID)
+  - stage: ValidateStage
+    dependsOn: DeployStage
+    displayName: Validate
+    steps:
+      - task: DotNetCoreCLI@2
+        displayName: Integration Tests
+        inputs:
+          command: test
+          projects: '**/LinkyLink.Integration.Tests/*.csproj'
+    env:
+      INTTEST_AzureAdB2C__BaseAddress: $(VUE_APP_BACKEND)

@@ -17,8 +17,6 @@ export default class extends Vue {
   get showProfileMenu() {
     return this.$store.getters.showProfileMenu;
   }
-
-  logoutUrl = config.LOGOUT_URL;
 }
 </script>
 

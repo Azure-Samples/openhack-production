@@ -4,6 +4,7 @@ import Home from "@/views/Home.vue";
 import List from "@/views/List.vue";
 import User from "@/views/User.vue";
 import Edit from "@/views/Edit.vue";
+import Auth from "@/views/Auth.vue";
 
 Vue.use(Router);
 
@@ -37,6 +38,11 @@ let router = new Router({
       path: "/:id",
       name: "list",
       component: List
+    },
+    {
+      path: "/s/auth/openid",
+      name: "auth",
+      component: Auth
     }
     // {
     //   path: "/:id",

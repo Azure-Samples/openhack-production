@@ -15,7 +15,6 @@ import store from "../store/store";
 
 const ApiService = {
   init() {
-    axios.defaults.headers.common["x-functions-key"] = config.FUNCTION_KEY;
     axios.defaults.withCredentials = false;
 
     axios.interceptors.request.use((config: AxiosRequestConfig) => {

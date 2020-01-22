@@ -1,4 +1,4 @@
-import { IAuthResponse } from "@/models/IAuthResponse";
+import jsonwebtoken from "jsonwebtoken";
 
 export default class User {
   userName: string = "";
@@ -6,20 +6,14 @@ export default class User {
   loggedIn: boolean = false;
   profileImage: string = "";
 
-  constructor(response?: IAuthResponse) {
-    if (response) {
+  constructor(jwtToken?: string) {
+    if (jwtToken) {
+      const claims: any = jsonwebtoken.decode(jwtToken);
+
+      this.name = `${claims.given_name} ${claims.family_name}`;
+      this.userName = claims.emails[0];
+      this.profileImage = "";
       this.loggedIn = true;
-      this.userName = response.user_id;
-
-      for (let claim of response.user_claims) {
-        if (claim.typ.indexOf("/identity/claims/name") > 0) {
-          this.name = claim.val;
-        }
-
-        if (claim.typ.indexOf("profile_image_url_https") > 0) {
-          this.profileImage = claim.val;
-        }
-      }
     }
   }
 }

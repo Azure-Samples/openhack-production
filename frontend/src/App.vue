@@ -19,9 +19,7 @@ import ProgressBar from "@/components/ProgressBar.vue";
     ProgressBar
   }
 })
-export default class List extends Vue {
-  authUrl: string = process.env.VUE_APP_AUTH_URL;
-}
+export default class List extends Vue {}
 </script>
 
 <style scoped lang="scss">

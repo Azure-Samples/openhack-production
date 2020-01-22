@@ -25,7 +25,7 @@ There are two configurations needed for the frontend to run, those are passed as
 
 ## Build and run the frontend locally
 
-### Modify Environment Variable
+### Modify Environment Variables
 
 * Follow the guide on how to run the Backend locally.  You can find the README [here](../api/README.md)
 * Once the Backend has started, you will want to get the port the Backend uses *(local port may change depending upon the IDE being used)* and modify the `VUE_APP_BACKEND` environment variable value in the `env.development` file.  See below:
@@ -38,6 +38,9 @@ to
 
 ```bash
 VUE_APP_BACKEND=[scheme_url_port]
+VUE_APP_OIDC_AUTHORITY=[Azure B2C Open ID config endpoint]
+VUE_APP_OIDC_CLIENT_ID=[Azure B2C Client Application ID]
+VUE_APP_OIDC_SCOPE=[Azure B2C Client Scope]
 ```
 
 ### Install Vue CLI globally

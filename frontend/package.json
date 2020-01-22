@@ -10,6 +10,8 @@
   "dependencies": {
     "axios": "^0.18.1",
     "cuid": "^2.1.6",
+    "jsonwebtoken": "^8.5.1",
+    "oidc-client": "^1.10.1",
     "typescript-debounce-decorator": "0.0.17",
     "v-tooltip": "^2.0.2",
     "vue": "^2.6.10",
@@ -22,6 +24,7 @@
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^5.9.0",
+    "@types/jsonwebtoken": "^8.3.6",
     "@types/vuelidate": "^0.7.5",
     "@vue/cli-plugin-babel": "^3.8.0",
     "@vue/cli-plugin-eslint": "^3.8.0",
@@ -29,7 +32,6 @@
     "@vue/cli-service": "^3.8.0",
     "@vue/eslint-config-prettier": "^4.0.1",
     "@vue/eslint-config-typescript": "^4.0.0",
-    "typescript-eslint-parser": "^22.0.0",
     "babel-eslint": "^10.0.1",
     "bulma": "^0.7.5",
     "eslint": "^5.16.0",
@@ -37,6 +39,7 @@
     "node-sass": "^4.12.0",
     "sass-loader": "^7.1.0",
     "typescript": "~3.4.4",
+    "typescript-eslint-parser": "^22.0.0",
     "vue-template-compiler": "^2.6.10",
     "vuex-module-decorators": "^0.9.9"
   }

@@ -109,7 +109,7 @@ stages:
               artifactName: 'drop'
               downloadPath: '$(Build.ArtifactStagingDirectory)'
           - task: AzureRMWebAppDeployment@4
-            displayName: Deploy to App Service
+            displayName: Deploy to Staging Slot
             inputs:
               ConnectionType: 'AzureRM'
               azureSubscription: $(azureSubscription)
@@ -128,22 +128,21 @@ stages:
                 -AzureAdB2C:ClientId $(AZUREADB2C_CLIENTID)
                 -AzureAdB2C:Domain $(AZUREADB2C_DOMAIN)
                 -AzureAdB2C:SignUpSignInPolicyId $(AZUREADB2C_POLICYID)
-  - stage: ValidateStage
-    dependsOn: DeployStage
-    displayName: Validate
-    jobs:
-      - job: LinksAPI
-        displayName: Links API
-        steps:
-          - task: UseDotNet@2
-            displayName: Dotnet version 3.1.100
-            inputs:
-              version: '3.1.100'
           - task: DotNetCoreCLI@2
-            displayName: Integration Tests
+            displayName: Validation Tests
             inputs:
               command: test
               projects: '**/LinkyLink.Integration.Tests/*.csproj'
               arguments: -c $(BuildConfiguration)
             env:
-              INTTEST_AzureAdB2C__BaseAddress: $(VUE_APP_BACKEND)
+              INTTEST_AzureAdB2C__BaseAddress: 'backend-$(businessUnit)-$(appName)-$(environment)-$(region)-staging.azurewebsites.net'
+          - task: AzureAppServiceManage@0
+            displayName: Swap Staging and Production Slots
+            inputs:
+              azureSubscription: $(azureSubscription)
+              action: Swap Slots
+              ResourceGroupName: 'rg-$(businessUnit)-$(appName)-$(environment)-$(region)'
+              WebAppName: 'backend-$(businessUnit)-$(appName)-$(environment)-$(region)'
+              specifySlotOrASE: true
+              swapWithProduction: true
+              sourceSlot: staging

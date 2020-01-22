@@ -114,6 +114,7 @@ stages:
               ConnectionType: 'AzureRM'
               azureSubscription: $(azureSubscription)
               appType: 'apiApp'
+              ResourceGroupName: 'rg-$(businessUnit)-$(appName)-$(environment)-$(region)'
               WebAppName: 'backend-$(businessUnit)-$(appName)-$(environment)-$(region)'
               packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'  
               appSettings: 

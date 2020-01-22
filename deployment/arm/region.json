@@ -423,7 +423,7 @@
             "properties": {
                 "loggerType": "applicationInsights",
                 "credentials": {
-                    "instrumentationKey": "{{Logger-Credentials-5df9447791f0e91e700024ea}}"
+                    "instrumentationKey": "[reference(resourceId('Microsoft.Insights/components', parameters('appInsightsName')), '2015-05-01').InstrumentationKey]"
                 },
                 "isBuffered": true,
                 "resourceId": "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"
@@ -441,7 +441,7 @@
             "properties": {
                 "loggerType": "applicationInsights",
                 "credentials": {
-                    "instrumentationKey": "{{Logger-Credentials-5df9447791f0e91e700024ea}}"
+                    "instrumentationKey": "[reference(resourceId('Microsoft.Insights/components', parameters('appInsightsName')), '2015-05-01').InstrumentationKey]"
                 },
                 "isBuffered": true,
                 "resourceId": "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"

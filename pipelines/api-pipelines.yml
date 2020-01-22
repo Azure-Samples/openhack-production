@@ -132,6 +132,10 @@ stages:
       - job: LinksAPI
         displayName: Links API
         steps:
+          - task: UseDotNet@2
+            displayName: Dotnet version 3.1.100
+            inputs:
+              version: '3.1.100'
           - task: DotNetCoreCLI@2
             displayName: Integration Tests
             inputs:

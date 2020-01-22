@@ -100,7 +100,12 @@ stages:
               region: eastus
             centralus:
               region: centralus
-        steps:    
+        steps:
+          - task: UseDotNet@2
+            displayName: Dotnet version 3.1.100
+            inputs:
+              version: '3.1.100'
+
           - task: DownloadBuildArtifacts@0
             displayName: Download Build Artifacts
             inputs:
@@ -108,6 +113,7 @@ stages:
               downloadType: 'single'
               artifactName: 'drop'
               downloadPath: '$(Build.ArtifactStagingDirectory)'
+
           - task: AzureRMWebAppDeployment@4
             displayName: Deploy to Staging Slot
             inputs:
@@ -128,6 +134,7 @@ stages:
                 -AzureAdB2C:ClientId $(AZUREADB2C_CLIENTID)
                 -AzureAdB2C:Domain $(AZUREADB2C_DOMAIN)
                 -AzureAdB2C:SignUpSignInPolicyId $(AZUREADB2C_POLICYID)
+
           - task: DotNetCoreCLI@2
             displayName: Validation Tests
             inputs:
@@ -136,6 +143,7 @@ stages:
               arguments: -c $(BuildConfiguration)
             env:
               INTTEST_AzureAdB2C__BaseAddress: 'backend-$(businessUnit)-$(appName)-$(environment)-$(region)-staging.azurewebsites.net'
+          
           - task: AzureAppServiceManage@0
             displayName: Swap Staging and Production Slots
             inputs:

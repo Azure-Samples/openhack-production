@@ -27,8 +27,7 @@
             "type": "string"
         }
     },
-    "variables": {
-    },
+    "variables": {},
     "resources": [
         {
             "type": "microsoft.insights/components",
@@ -55,8 +54,7 @@
                 "capacity": 1
             },
             "kind": "app",
-            "properties": {
-            }
+            "properties": {}
         },
         {
             "type": "Microsoft.Web/sites",
@@ -266,12 +264,10 @@
                         "name": "vanityUrl",
                         "type": "string",
                         "required": true,
-                        "values": [
-                        ]
+                        "values": []
                     }
                 ],
-                "responses": [
-                ]
+                "responses": []
             }
         },
         {
@@ -287,10 +283,8 @@
                 "description": "Get API health",
                 "method": "GET",
                 "urlTemplate": "/",
-                "templateParameters": [
-                ],
-                "responses": [
-                ]
+                "templateParameters": [],
+                "responses": []
             }
         },
         {
@@ -305,11 +299,9 @@
                 "displayName": "List All",
                 "method": "GET",
                 "urlTemplate": "/",
-                "templateParameters": [
-                ],
+                "templateParameters": [],
                 "description": "List all the LinkBundles.",
-                "responses": [
-                ]
+                "responses": []
             }
         },
         {
@@ -329,8 +321,7 @@
                         "name": "userId",
                         "type": "string",
                         "required": true,
-                        "values": [
-                        ]
+                        "values": []
                     }
                 ],
                 "description": "List all the LinkBundles for a user."
@@ -353,13 +344,11 @@
                         "name": "vanityUrl",
                         "type": "string",
                         "required": true,
-                        "values": [
-                        ]
+                        "values": []
                     }
                 ],
                 "description": "List a LinkBundles by Vanity Url.",
-                "responses": [
-                ]
+                "responses": []
             }
         },
         {
@@ -379,13 +368,11 @@
                         "name": "vanityUrl",
                         "type": "string",
                         "required": true,
-                        "values": [
-                        ]
+                        "values": []
                     }
                 ],
                 "description": "Update a LinkBundle by a Vanity Url.",
-                "responses": [
-                ]
+                "responses": []
             }
         },
         {
@@ -401,10 +388,8 @@
                 "description": "Creates a new link bundle",
                 "method": "POST",
                 "urlTemplate": "/",
-                "templateParameters": [
-                ],
-                "responses": [
-                ]
+                "templateParameters": [],
+                "responses": []
             }
         },
         {
@@ -420,10 +405,8 @@
                 "description": "Validates and lists details for one or more urls.",
                 "method": "POST",
                 "urlTemplate": "/",
-                "templateParameters": [
-                ],
-                "responses": [
-                ]
+                "templateParameters": [],
+                "responses": []
             }
         },
         {
@@ -486,7 +469,7 @@
             "properties": {
                 "loggerType": "applicationInsights",
                 "credentials": {
-                    "instrumentationKey": "{{Logger-Credentials-5df9447791f0e91e700024ea}}"
+                    "instrumentationKey": "[reference(resourceId('Microsoft.Insights/components', parameters('appInsightsName')), '2015-05-01').InstrumentationKey]"
                 },
                 "isBuffered": true,
                 "resourceId": "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"
@@ -504,7 +487,7 @@
             "properties": {
                 "loggerType": "applicationInsights",
                 "credentials": {
-                    "instrumentationKey": "{{Logger-Credentials-5df9447791f0e91e700024ea}}"
+                    "instrumentationKey": "[reference(resourceId('Microsoft.Insights/components', parameters('appInsightsName')), '2015-05-01').InstrumentationKey]"
                 },
                 "isBuffered": true,
                 "resourceId": "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"

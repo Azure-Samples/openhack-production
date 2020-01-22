@@ -116,6 +116,8 @@ stages:
               appType: 'apiApp'
               ResourceGroupName: 'rg-$(businessUnit)-$(appName)-$(environment)-$(region)'
               WebAppName: 'backend-$(businessUnit)-$(appName)-$(environment)-$(region)'
+              deployToSlotOrASE: true
+              SlotName: staging
               packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'  
               appSettings: 
                 -CosmosSettings:ServiceEndpoint $(COSMOSDB_ENDPOINT) 

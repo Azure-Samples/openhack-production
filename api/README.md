@@ -113,7 +113,6 @@ If everything was setup correctly, you should see a response that resembles the 
 
 ![REST Client](docs/rest_client.png)
 
-
 ### API Documentation
 
 - The API uses [Swagger](https://swagger.io/) for API Documentation.  You can view the swagger documentation by navigating to: `https://localhost:<port>/swagger`
@@ -123,6 +122,39 @@ If everything was setup correctly, you should see a response that resembles the 
 ### Misc. Notes
 
 - [Swagger](https://swagger.io/) XML Comments have been enabled to provide better API Documentation.  This means that warnings will be generated for public undocumented public types and members.  By default, this project disables warnings.  Documentation to enable warnings can be found [here](https://docs.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-swashbuckle?view=aspnetcore-3.1&tabs=visual-studio-code)
+
+# Testing
+
+## Running unit tests
+Unit tests validate the individual components of the API
+```bash
+dotnet test api/tests/LinkyLink.Tests/LinkyLink.Tests.csproj
+```
+
+## Running Integration tests
+Integration tests validate the APIs against a running system.
+
+Before running integration tests you must update the settings within the `appsettings.json` of the integration test project or set environment variables for the following:
+
+### Set Environment Variables
+```bash
+# The base address of the environment to test
+export INTTEST_AzureAdB2C__BaseAddress= 
+# The client ID of your test application within Azure B2C
+export INTTEST_AzureAdB2C__ClientId= 
+# The Azure B2C authority endpoint
+export INTTEST_AzureAdB2C__Authority= 
+# The scope to set on your access token
+export INTTEST_AzureAdB2C__Scope= 
+# The username of your test user account
+export INTTEST_AzureAdB2C__Username= 
+# The password of your test user account
+export INTTEST_AzureAdB2C__Password= 
+```
+### Run tests with dotnet CLI
+```bash
+dotnet test api/tests/LinkyLink.Integration.Tests/LinkyLink.Integration.Tests.csproj
+```
 
 # Docker local development
 This is an alternative local development option. The container sets the ASPNETCORE environment to `Development`, so make sure you have a `appsettings.Development.json` created and configured before building the container image.

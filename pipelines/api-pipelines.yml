@@ -43,10 +43,10 @@ stages:
               arguments: '--configuration Release'
 
           - task: DotNetCoreCLI@2
-            displayName: Test
+            displayName: Unit Tests
             inputs:
               command: test
-              projects: '**/*Tests/*.csproj'
+              projects: '**/LinkyLink.Tests/*.csproj'
               arguments: -c $(BuildConfiguration) --collect:"XPlat Code Coverage"
 
             # Generate the report using ReportGenerator (https://github.com/danielpalme/ReportGenerator)

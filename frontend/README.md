@@ -1,34 +1,53 @@
 # The Urlist - Frontend
+
 [![Build status](https://burkeknowswords.visualstudio.com/The%20Urlist/_apis/build/status/Frontend%20Build)](https://burkeknowswords.visualstudio.com/The%20Urlist/_build/latest?definitionId=7)
 
-The frontend for this project was build with the following libraries and frameworks:
+The frontend has the following views:
 
-* [TypeScript](https://www.typescriptlang.org/)
-* [Vue.js](https://github.com/vuejs/vue) / [Vue CLI](https://github.com/vuejs/vue-cli)
-* [Vuelidate](https://github.com/vuelidate/vuelidate)
-* [Axios](https://github.com/axios/axios)
+- **Homepage view**: this is the first page you would see when visiting the frontend. You can start the process of creating a link-bundles from here.
+
+  ![Homepage picture](docs/Images/Homepage.png)
+
+- **Edit view**: this is the page where you would create your lists.
+  
+  ![Edit picture](docs/Images/Edit_page.png)
+
+- **User view**: this page would list all list-bundles created for a signed-in user.
+  
+  ![Manage lists picture](docs/Images/Manage_lists_page.png)
+
+- **List view**: this page is used to view the list-bundle for a given vanity URL.
+
+  ![View list picture](docs/Images/View_page.png)
+
+The frontend for this project was built with the following libraries and frameworks:
+
+- [TypeScript](https://www.typescriptlang.org/)
+- [Vue.js](https://github.com/vuejs/vue) / [Vue CLI](https://github.com/vuejs/vue-cli)
+- [Vuelidate](https://github.com/vuelidate/vuelidate)
+- [Axios](https://github.com/axios/axios)
 
 Other useful tools
 
-* [Visual Studio Code](https://code.visualstudio.com/?WT.mc_id=theurlist-github-buhollan)
-* [Vetur](https://marketplace.visualstudio.com/items?itemName=octref.vetur&WT.mc_id=theurlist-github-buhollan)
-* [VS Code Debugger for Chrome](https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome&WT.mc_id=theurlist-github-buhollan)
-* [Vue VS Code Extension Pack](https://marketplace.visualstudio.com/items?itemName=sdras.vue-vscode-extensionpack&WT.mc_id=theurlist-github-buhollan)
-* [Vue browser devtools](https://github.com/vuejs/vue-devtools)
+- [Visual Studio Code](https://code.visualstudio.com/?WT.mc_id=theurlist-github-buhollan)
+- [Vetur](https://marketplace.visualstudio.com/items?itemName=octref.vetur&WT.mc_id=theurlist-github-buhollan)
+- [VS Code Debugger for Chrome](https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome&WT.mc_id=theurlist-github-buhollan)
+- [Vue VS Code Extension Pack](https://marketplace.visualstudio.com/items?itemName=sdras.vue-vscode-extensionpack&WT.mc_id=theurlist-github-buhollan)
+- [Vue browser devtools](https://github.com/vuejs/vue-devtools)
 
 ## <a name="feconfigs" ></a> Frontend configurations
 
 There are two configurations needed for the frontend to run, those are passed as [VUE environment variables](https://cli.vuejs.org/guide/mode-and-env.html)
 
-* VUE_APP_BACKEND: this has the URL pointing to the backend endpoint.
-* VUE_APP_FRONTEND: this has the URL point to the frontend endpoint.
+- VUE_APP_BACKEND: this has the URL pointing to the backend endpoint.
+- VUE_APP_FRONTEND: this has the URL point to the frontend endpoint.
 
 ## Build and run the frontend locally
 
-### Modify Environment Variables
+### Modify Environment Variable
 
-* Follow the guide on how to run the Backend locally.  You can find the README [here](../api/README.md)
-* Once the Backend has started, you will want to get the port the Backend uses *(local port may change depending upon the IDE being used)* and modify the `VUE_APP_BACKEND` environment variable value in the `env.development` file.  See below:
+- Follow the guide on how to run the Backend locally. You can find the README [here](../api/README.md)
+- Once the Backend has started, you will want to get the port the Backend uses _(local port may change depending upon the IDE being used)_ and modify the `VUE_APP_BACKEND` environment variable value in the `env.development` file. See below:
 
 ```bash
 VUE_APP_BACKEND=https://localhost:5001
@@ -61,7 +80,7 @@ npm install
 npm run serve
 ```
 
-![localhost serve](docs/localhost_serve.png)
+![localhost serve](docs/Images/localhost_serve.png)
 
 ### Create production build
 
@@ -69,7 +88,7 @@ npm run serve
 npm run build
 ```
 
-*This creates a dist folder under frontend*
+_This creates a dist folder under frontend_
 
 ### Lints and fixes files
 
@@ -77,10 +96,10 @@ npm run build
 npm run lint
 ```
 
-### Running locally vs running on Azure 
+### Running locally vs running on Azure
 
 The code is optimised to be run in a local environment. If either the frontend or backend are run on Azure, there is one line of code that needs to be changed:
-In \frontend\src\services\api.service.ts change line 19 from 
+In \frontend\src\services\api.service.ts change line 19 from
 
 ```bash
 axios.defaults.withCredentials = false;
@@ -96,13 +115,14 @@ This should keep you out of CORS troubles
 
 ## Debugging the application
 
-* Follow the instructions in the [Build and run the frontend locally](##-build-and-run-the-frontend-locally) to start application
-* In Chrome, press `F12` to start the Chrome Developer Tools
-* Select `Source` then expand `webpack` then expand the `.` folder then expand `src` and find the TypeScript file that you would like to debug and `double-click` the line in the TypeScript file that you are interested in.  See the screenshot below as an example:
+- Follow the instructions in the [Build and run the frontend locally](##-build-and-run-the-frontend-locally) to start application
+- In Chrome, press `F12` to start the Chrome Developer Tools
+- Select `Source` then expand `webpack` then expand the `.` folder then expand `src` and find the TypeScript file that you would like to debug and `double-click` the line in the TypeScript file that you are interested in. See the screenshot below as an example:
 
-![localhost serve](docs/localhost_debugging.png)
+![localhost serve](docs/Images/localhost_debugging.png)
 
 # Docker local development
+
 ```
 docker build -t linkylink-fe .
 docker run -it --rm -p 8080:8080 \

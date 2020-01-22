@@ -20,7 +20,12 @@ Taxonomies for products and languages: https://review.docs.microsoft.com/new-hop
 
 This is a replica of the Urlist website but re-architected to use Azure AppService to host the backend instead of using Azure Functions. The original project repository can be found here https://github.com/the-urlist
 
-Please [check here](docs/infrastructure.md) to view and read about the new architecture.
+Please [check here](docs/Infrastructure.md) to view and read about the new architecture.
+
+## Glossary
+
+* Vanity URL: is a descriptive, human-readable, an easy to remember URL that is typically created to simplify sharing a long and hard-to-remember URLs.
+* Link Bundle: a bundle/list of URLs that the user associate with a vanity URL using the Urlist application.
 
 ## Contents
 

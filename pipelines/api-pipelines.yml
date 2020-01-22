@@ -125,4 +125,3 @@ stages:
                 -AzureAdB2C:ClientId $(AZUREADB2C_CLIENTID)
                 -AzureAdB2C:Domain $(AZUREADB2C_DOMAIN)
                 -AzureAdB2C:SignUpSignInPolicyId $(AZUREADB2C_POLICYID)
-

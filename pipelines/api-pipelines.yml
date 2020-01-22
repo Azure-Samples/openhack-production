@@ -118,13 +118,11 @@ stages:
               packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'  
               appSettings: 
                 -CosmosSettings:ServiceEndpoint $(COSMOSDB_ENDPOINT) 
-                -CosmosSettings:AuthKey $(COSTMOSDB_AUTHKEY) 
+                -CosmosSettings:AuthKey $(COSMOSDB_AUTHKEY) 
                 -CosmosSettings:DatabaseName linkylinkdb 
                 -CosmosSettings:ContainerName linkbundles
                 -AzureAdB2C:Instance $(AZUREADB2C_INSTANCE)
                 -AzureAdB2C:ClientId $(AZUREADB2C_CLIENTID)
                 -AzureAdB2C:Domain $(AZUREADB2C_DOMAIN)
                 -AzureAdB2C:SignUpSignInPolicyId $(AZUREADB2C_POLICYID)
-            env:
-              COSTMOSDB_AUTHKEY: $(COSTMOSDB_AUTHKEY)
               

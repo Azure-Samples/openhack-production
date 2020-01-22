@@ -130,11 +130,13 @@ stages:
     displayName: Validate
     jobs:
       - job: LinksAPI
+        displayName: Links API
         steps:
           - task: DotNetCoreCLI@2
             displayName: Integration Tests
             inputs:
               command: test
               projects: '**/LinkyLink.Integration.Tests/*.csproj'
+              arguments: -c $(BuildConfiguration)
             env:
               INTTEST_AzureAdB2C__BaseAddress: $(VUE_APP_BACKEND)

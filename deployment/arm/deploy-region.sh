@@ -71,21 +71,29 @@ echo "Environment: $env"
 echo "Region: $region"
 echo
 
-echo "Creating Regional Resource Group: $resourceGroupName"
+echo "######## Creating Regional Resource Group: $resourceGroupName"
 az group create \
     --name $resourceGroupName \
     --location $region
+
+echo 
+SLEEP_DURATION=10
+echo "Sleeping for $SLEEP_DURATION seconds to wait for resource group creation to finish else group deployment will fail ...."
+sleep $SLEEP_DURATION
+
+
 echo
-echo "Deploying regional resources to $resourceGroupName"
+echo "######## Deploying regional resources to $resourceGroupName"
 az group deployment create \
     --name "Urlist-$region-$(timestamp)" \
     --resource-group $resourceGroupName \
     --template-file region.json \
     --parameters location=$region apimName=$apimName appServicePlanName=$appServicePlanName \
-    backendAppName=$backendAppName appInsightsName=$appInsightsName storageActName=$storageActName
+    backendAppName=$backendAppName appInsightsName=$appInsightsName storageActName=$storageActName \
+    --verbose
 
 echo
-echo "Configuring blob storage for static website hosting"
+echo "######## Configuring blob storage for static website hosting"
 az storage blob service-properties update \
     --account-name $storageActName \
     --static-website \

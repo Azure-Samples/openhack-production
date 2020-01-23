@@ -104,6 +104,11 @@ az group create \
     --name $resourceGroupName \
     --location ${regions[0]}
 
+echo 
+SLEEP_DURATION=10
+echo "Sleeping for $SLEEP_DURATION seconds to wait for resource group creation to finish else  group deployment will fail ...."
+sleep $SLEEP_DURATION
+
 echo
 echo "Deploying global resources to $resourceGroupName"
 az group deployment create \
@@ -113,4 +118,5 @@ az group deployment create \
     --parameters \
     frontDoorName=$frontDoorName frontDoorEndpoint=$frontDoorEndpoint \
     frontendHosts=$frontendHosts backendHosts=$backendHosts \
-    cosmosdbName=$cosmosdbName cosmosdbRegions=$cosmosdbRegions
+    cosmosdbName=$cosmosdbName cosmosdbRegions=$cosmosdbRegions \
+    --verbose

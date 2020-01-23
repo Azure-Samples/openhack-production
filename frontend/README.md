@@ -41,22 +41,21 @@ There are two configurations needed for the frontend to run, those are passed as
 
 - VUE_APP_BACKEND: this has the URL pointing to the backend endpoint.
 - VUE_APP_FRONTEND: this has the URL point to the frontend endpoint.
+- VUE_APP_OIDC_AUTHORITY: the configured Azure B2C Open ID endpoint.
+- VUE_APP_OIDC_CLIENT_ID: the configured Azure B2C Client Application ID.
+- VUE_APP_OIDC_SCOPE: the Azure B2C Client Scope.
 
 ## Build and run the frontend locally
 
 ### Modify Environment Variable
 
 - Follow the guide on how to run the Backend locally. You can find the README [here](../api/README.md)
-- Once the Backend has started, you will want to get the port the Backend uses _(local port may change depending upon the IDE being used)_ and modify the `VUE_APP_BACKEND` environment variable value in the `env.development` file. See below:
+- Once the Backend has started, you will want to get the port the Backend uses _(local port may change depending upon the IDE being used)_.
+- Create a local configuration file called `env.development` and add the needed configs as described [above](feconfigs), something like the following:
 
 ```bash
-VUE_APP_BACKEND=https://localhost:5001
-```
-
-to
-
-```bash
-VUE_APP_BACKEND=[scheme_url_port]
+VUE_APP_BACKEND=http://localhost:[backend_port]
+VUE_APP_FRONTEND=http://localhost:[frontend_port]
 VUE_APP_OIDC_AUTHORITY=[Azure B2C Open ID config endpoint]
 VUE_APP_OIDC_CLIENT_ID=[Azure B2C Client Application ID]
 VUE_APP_OIDC_SCOPE=[Azure B2C Client Scope]

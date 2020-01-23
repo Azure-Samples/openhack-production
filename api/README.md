@@ -134,6 +134,8 @@ dotnet test api/tests/LinkyLink.Tests/LinkyLink.Tests.csproj
 ## Running Integration tests
 Integration tests validate the APIs against a running system.
 
+The integration tests require a special configuration that uses a [resource owner password credentials (ROPC) flow in Azure AD B2C](https://docs.microsoft.com/en-us/azure/active-directory-b2c/configure-ropc?tabs=applications). The ROPC client application only works with local user accounts. Social logins are not supported.
+
 Before running integration tests you must update the settings within the `appsettings.json` of the integration test project or set environment variables for the following:
 
 ### Set Environment Variables

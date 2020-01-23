@@ -55,6 +55,7 @@ if [[ $# -eq 0 || -z $businessUnit || -z $appName || -z $env || -z $region ]]; t
 fi
 
 echo "deploy-region $region"
+echo
 
 # include common script to populate shared variables
 source common-script.sh
@@ -71,7 +72,7 @@ echo "Environment: $env"
 echo "Region: $region"
 echo
 
-echo "######## Creating Regional Resource Group: $resourceGroupName"
+echo "######## Creating Regional Resource Group: $resourceGroupName ########"
 az group create \
     --name $resourceGroupName \
     --location $region
@@ -83,7 +84,7 @@ sleep $SLEEP_DURATION
 
 
 echo
-echo "######## Deploying regional resources to $resourceGroupName"
+echo "######## Deploying regional resources to $resourceGroupName ########"
 az group deployment create \
     --name "Urlist-$region-$(timestamp)" \
     --resource-group $resourceGroupName \
@@ -93,7 +94,7 @@ az group deployment create \
     --verbose
 
 echo
-echo "######## Configuring blob storage for static website hosting"
+echo "######## Configuring blob storage for static website hosting ########"
 az storage blob service-properties update \
     --account-name $storageActName \
     --static-website \

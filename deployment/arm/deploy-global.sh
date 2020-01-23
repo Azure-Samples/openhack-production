@@ -99,7 +99,7 @@ echo "Frontend Hosts: $frontendHosts"
 echo "Backend Hosts: $backendHosts"
 echo
 
-echo "Creating global resource Group: $resourceGroupName"
+echo "######## Creating global resource Group: $resourceGroupName ########"
 az group create \
     --name $resourceGroupName \
     --location ${regions[0]}
@@ -110,7 +110,7 @@ echo "Sleeping for $SLEEP_DURATION seconds to wait for resource group creation t
 sleep $SLEEP_DURATION
 
 echo
-echo "Deploying global resources to $resourceGroupName"
+echo "########  Deploying global resources to $resourceGroupName ########"
 az group deployment create \
     --name "Urlist-global-$(timestamp)" \
     --resource-group $resourceGroupName \

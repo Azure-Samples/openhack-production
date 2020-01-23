@@ -101,3 +101,14 @@ This should keep you out of CORS troubles
 * Select `Source` then expand `webpack` then expand the `.` folder then expand `src` and find the TypeScript file that you would like to debug and `double-click` the line in the TypeScript file that you are interested in.  See the screenshot below as an example:
 
 ![localhost serve](docs/localhost_debugging.png)
+
+# Docker local development
+```
+docker build -t linkylink-fe .
+docker run -it --rm -p 8080:8080 \
+-e "VUE_APP_BACKEND=http://localhost:5000" \
+-e "VUE_APP_OIDC_AUTHORITY=https://<b2c login subdomain>.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1_SignUp_SignIn" \
+-e "VUE_APP_OIDC_CLIENT_ID=<client id?" \
+-e "VUE_APP_OIDC_SCOPE=openid https://testprodoh.onmicrosoft.com/api/UrlBundle.ReadWrite" \
+linkylink-fe
+```

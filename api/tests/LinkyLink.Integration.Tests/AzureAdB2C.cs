@@ -2,8 +2,11 @@
 
 namespace LinkyLink.Integration.Tests
 {
+    /// <summary>
+    /// Azure AD B2C Configuration for Integration tests
+    /// </summary>
     [JsonObject]
-    class AzureAdB2C
+    public class AzureAdB2C
     {
         [JsonProperty]
         public string Authority { get; set; }

@@ -3,6 +3,9 @@ using System.IO;
 
 namespace LinkyLink.Integration.Tests
 {
+    /// <summary>
+    /// Base class for running integration tests that use configuration provider
+    /// </summary>
     public class IntegrationTest
     {
         protected IConfiguration Configuration { get; private set; }

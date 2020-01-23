@@ -18,21 +18,11 @@ stages:
     jobs:
       - job: BuildJob
         steps:
-          - task: Bash@3
-            displayName: Generate frontend configurations.
-            inputs:
-              workingDirectory: './frontend'
-              targetType: 'inline'
-              script: |
-                chmod +x generate-fe-configs.sh
-                ./generate-fe-configs.sh -u $(businessUnit) -a $(appName) -e $(environment)
-
           - task: Npm@1
             displayName: Setup NPM for building frontend.
             inputs:
               workingDir: './frontend'
-              command: 'install'
-              
+              command: 'install'              
           - task: Bash@3
             displayName: Build frontend.
             inputs:

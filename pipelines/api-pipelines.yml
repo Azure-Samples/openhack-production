@@ -108,26 +108,6 @@ stages:
               downloadType: 'single'
               artifactName: 'drop'
               downloadPath: '$(Build.ArtifactStagingDirectory)'
-
-          - task: AzureCLI@1
-            displayName: Get Cosmosdb URI and Key
-            inputs:
-              azureSubscription: $(azureSubscription)
-              scriptLocation: inlineScript
-              inlineScript: |
-                set -eu
-
-                RESOURCE_GROUP_NAME='rg-$(businessUnit)-$(appName)-$(environment)-gbl'
-                COSMOSDB_NAME=`az cosmosdb list -g $RESOURCE_GROUP_NAME --query [0].name -o tsv`
-                COSMOSDB_URI=`az cosmosdb list -g $RESOURCE_GROUP_NAME --query [0].documentEndpoint -o tsv`
-                COSMOSDB_KEY=`az cosmosdb keys list -g $RESOURCE_GROUP_NAME -n $COSMOSDB_NAME --query primaryMasterKey -o tsv`
-              
-                if [[ -z $COSMOSDB_URI || -z $COSMOSDB_KEY ]]; then
-                  echo 'COSMOSDB_URI or COSMOSDB_KEY variable is undefined'
-                  exit 1
-                fi
-                echo "##vso[task.setvariable variable=cosmosdbURI]$COSMOSDB_URI"
-                echo "##vso[task.setvariable variable=cosmosdbKey]$COSMOSDB_KEY"
           - task: AzureRMWebAppDeployment@4
             displayName: Deploy to App Service
             inputs:
@@ -136,5 +116,13 @@ stages:
               appType: 'apiApp'
               WebAppName: 'backend-$(businessUnit)-$(appName)-$(environment)-$(region)'
               packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'  
-              appSettings: -CosmosSettings:ServiceEndpoint $(cosmosdbURI) -CosmosSettings:AuthKey $(cosmosdbKey) 
-                -CosmosSettings:DatabaseName linkylinkdb -CosmosSettings:ContainerName linkbundles 
+              appSettings: 
+                -CosmosSettings:ServiceEndpoint $(COSMOSDB_ENDPOINT) 
+                -CosmosSettings:AuthKey $(COSMOSDB_AUTHKEY) 
+                -CosmosSettings:DatabaseName linkylinkdb 
+                -CosmosSettings:ContainerName linkbundles
+                -AzureAdB2C:Instance $(AZUREADB2C_INSTANCE)
+                -AzureAdB2C:ClientId $(AZUREADB2C_CLIENTID)
+                -AzureAdB2C:Domain $(AZUREADB2C_DOMAIN)
+                -AzureAdB2C:SignUpSignInPolicyId $(AZUREADB2C_POLICYID)
+              

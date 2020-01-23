@@ -72,10 +72,6 @@
         </div>
       </div>
     </nav>
-    <modal-login
-      :isActive="showLoginModal"
-      @close="showLoginModal = false"
-    ></modal-login>
   </header>
 </template>
 

@@ -43,10 +43,10 @@ stages:
               arguments: '--configuration Release'
 
           - task: DotNetCoreCLI@2
-            displayName: Test
+            displayName: Unit Tests
             inputs:
               command: test
-              projects: '**/*Tests/*.csproj'
+              projects: '**/LinkyLink.Tests/*.csproj'
               arguments: -c $(BuildConfiguration) --collect:"XPlat Code Coverage"
 
             # Generate the report using ReportGenerator (https://github.com/danielpalme/ReportGenerator)
@@ -100,7 +100,12 @@ stages:
               region: eastus
             centralus:
               region: centralus
-        steps:    
+        steps:
+          - task: UseDotNet@2
+            displayName: Dotnet version 3.1.100
+            inputs:
+              version: '3.1.100'
+
           - task: DownloadBuildArtifacts@0
             displayName: Download Build Artifacts
             inputs:
@@ -108,13 +113,17 @@ stages:
               downloadType: 'single'
               artifactName: 'drop'
               downloadPath: '$(Build.ArtifactStagingDirectory)'
+
           - task: AzureRMWebAppDeployment@4
-            displayName: Deploy to App Service
+            displayName: Deploy to Staging Slot
             inputs:
               ConnectionType: 'AzureRM'
               azureSubscription: $(azureSubscription)
               appType: 'apiApp'
+              ResourceGroupName: 'rg-$(businessUnit)-$(appName)-$(environment)-$(region)'
               WebAppName: 'backend-$(businessUnit)-$(appName)-$(environment)-$(region)'
+              deployToSlotOrASE: true
+              SlotName: staging
               packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'  
               appSettings: 
                 -CosmosSettings:ServiceEndpoint $(COSMOSDB_ENDPOINT) 
@@ -125,4 +134,23 @@ stages:
                 -AzureAdB2C:ClientId $(AZUREADB2C_CLIENTID)
                 -AzureAdB2C:Domain $(AZUREADB2C_DOMAIN)
                 -AzureAdB2C:SignUpSignInPolicyId $(AZUREADB2C_POLICYID)
-              
+
+          - task: DotNetCoreCLI@2
+            displayName: Validation Tests
+            inputs:
+              command: test
+              projects: '**/LinkyLink.Integration.Tests/*.csproj'
+              arguments: -c $(BuildConfiguration)
+            env:
+              INTTEST_AzureAdB2C__BaseAddress: 'https://backend-$(businessUnit)-$(appName)-$(environment)-$(region)-staging.azurewebsites.net'
+          
+          - task: AzureAppServiceManage@0
+            displayName: Swap Staging and Production Slots
+            inputs:
+              azureSubscription: $(azureSubscription)
+              action: Swap Slots
+              ResourceGroupName: 'rg-$(businessUnit)-$(appName)-$(environment)-$(region)'
+              WebAppName: 'backend-$(businessUnit)-$(appName)-$(environment)-$(region)'
+              specifySlotOrASE: true
+              swapWithProduction: true
+              sourceSlot: staging

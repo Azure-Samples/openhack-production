@@ -1,3 +1,5 @@
+name: deploy-infrastructure
+
 trigger:
   branches:
     include:
@@ -12,44 +14,48 @@ pr: none
 pool:
   vmImage: "ubuntu-latest"
 
-variables:
-  - group: prodoh-urlist-variable-group
-
 stages:
-  - stage: DeployRegionalInfrastructure
-    displayName: Regional
+  - stage: Development
+    displayName: Development
+    variables:
+      - group: prodoh-urlist-dev
     jobs:
-      - job: RegionalMaxtrixDeployment
-        displayName: Resource Group
-        strategy:
-          matrix:
-            westus2:
-              region: westus2
-            eastus:
-              region: eastus
-            centralus:
-              region: centralus
-        steps:
-          - task: AzureCLI@2
-            displayName: Deploy ARM Template
-            inputs:
-              azureSubscription: $(azureSubscription)
-              scriptType: "bash"
-              scriptLocation: "scriptPath"
-              scriptPath: "./deployment/arm/deploy-region.sh"
-              arguments: "-u $(businessUnit) -a $(appName) -e $(environment) -r $(region)"
+    - template: templates/iac-deploy-environment.yml
+      parameters:
+        subscription: 'PELITTLE TEAM - CSE DWR(d36d0808-a967-4f73-9fdc-32ea232fc81d)'
+        businessUnit: $(businessUnit)
+        appName: $(appName)
+        environment: dev
+        regions:
+          - westus2
 
-  - stage: DeployGlobalInfrastructure
-    displayName: Global
+  - stage: Staging
+    displayName: Staging
+    variables:
+      - group: prodoh-urlist-staging
     jobs:
-      - job: DeployGlobalInfrastructure
-        displayName: Resources
-        steps:
-          - task: AzureCLI@2
-            displayName: Deploy ARM Template
-            inputs:
-              azureSubscription: $(azureSubscription)
-              scriptType: "bash"
-              scriptLocation: "scriptPath"
-              scriptPath: "./deployment/arm/deploy-global.sh"
-              arguments: "-u $(businessUnit) -a $(appName) -e $(environment) -r westus2,eastus,centralus"
+    - template: templates/iac-deploy-environment.yml
+      parameters:
+        subscription: 'PELITTLE TEAM - CSE DWR(d36d0808-a967-4f73-9fdc-32ea232fc81d)'
+        businessUnit: $(businessUnit)
+        appName: $(appName)
+        environment: staging
+        regions:
+          - westus2
+          - eastus
+
+  - stage: Production
+    displayName: Production
+    variables:
+      - group: prodoh-urlist-prod
+    jobs:
+    - template: templates/iac-deploy-environment.yml
+      parameters:
+        subscription: 'PELITTLE TEAM - CSE DWR(d36d0808-a967-4f73-9fdc-32ea232fc81d)'
+        businessUnit: $(businessUnit)
+        appName: $(appName)
+        environment: prod
+        regions:
+          - westus2
+          - eastus
+          - centralus

@@ -1,0 +1,68 @@
+parameters:
+  subscription: ""
+  businessUnit: "prodoh"
+  appName: "urlist"
+  environment: ""
+  regions: []
+
+jobs:
+  - deployment: 
+    environment: ${{ parameters.environment }}
+    displayName: Deploy Infrastructure
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - bash: echo "Deploying ${{ parameters.environment }} environment"
+              displayName: Check for Approval
+  - job: setup
+    displayName: Initialize
+    variables:
+      - name: regionList
+        value: ${{ join(',', parameters.regions) }}
+    steps:
+      - task: Bash@3
+        name: createMatrixJson
+        displayName: Create Matrix
+        inputs:
+          targetType: inline
+          script: |
+            echo $(regionList)
+            source ./deployment/arm/utils.sh
+            matrix=$(toRegionMatrix $(regionList))
+            echo $matrix
+            echo "##vso[task.setVariable variable=matrix;isOutput=true]$matrix"
+
+  - job: DeployRegionalResourceGroup
+    displayName: "Deploy Region:"
+    variables:
+      - name: regionList
+        value: ${{ join(',', parameters.regions) }}
+    dependsOn: setup
+    strategy:
+      matrix: $[ dependencies.setup.outputs['createMatrixJson.matrix'] ]
+    steps:
+      - task: AzureCLI@2
+        displayName: Deploy Region ($(region))
+        inputs:
+          azureSubscription: ${{ parameters.subscription }}
+          scriptType: "bash"
+          scriptLocation: "scriptPath"
+          scriptPath: "./deployment/arm/deploy-region.sh"
+          arguments: "-u ${{ parameters.businessUnit }} -a ${{ parameters.appName }} -e ${{ parameters.environment }} -r $(region) }}"
+
+  - job: DeployGlobalResourceGroup
+    displayName: Deploy Global Resources
+    dependsOn: DeployRegionalResourceGroup
+    variables:
+      - name: regionList
+        value: ${{ join(',', parameters.regions) }}
+    steps:
+      - task: AzureCLI@2
+        displayName: Deploy ARM Template
+        inputs:
+          azureSubscription: ${{ parameters.subscription }}
+          scriptType: "bash"
+          scriptLocation: "scriptPath"
+          scriptPath: "./deployment/arm/deploy-global.sh"
+          arguments: "-u ${{ parameters.businessUnit }} -a ${{ parameters.appName }} -e ${{ parameters.environment }} -r $(regionList)"

@@ -1,75 +1,72 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+name: frontend-pipeline
 
 trigger:
-- master
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - frontend/*
+      - pipelines/frontend-pipeline.yml
+
+pr:
+  autoCancel: true
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - frontend/*
+      - pipelines/frontend-pipeline.yml
 
 pool:
-  vmImage: 'ubuntu-latest'
-
-variables:
-  - group: prodoh-urlist-variable-group
+  vmImage: "ubuntu-latest"
 
 stages:
-  - stage: BuildStage
-    displayName: Build frontend -
-    jobs:
-      - job: BuildJob
-        steps:
-          - task: Npm@1
-            displayName: Setup NPM for building frontend.
-            inputs:
-              workingDir: './frontend'
-              command: 'install'              
-          - task: Bash@3
-            displayName: Build frontend.
-            inputs:
-              workingDirectory: './frontend'
-              targetType: 'inline'
-              script: "npm run build"
-          - task: PublishBuildArtifacts@1
-            displayName: Stage build output.
-            inputs:
-              PathtoPublish: './frontend/dist'
-              ArtifactName: 'WebApp'
-              publishLocation: 'Container'
-  - stage: DeployStage
+  - stage: Development
+    displayName: Development
     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-    dependsOn: BuildStage
-    displayName: Deploy the VUE frontend -
+    variables:
+      - group: prodoh-urlist-dev
     jobs:
-      - job: RegionalMaxtrixDeployment
-        strategy:
-          matrix:
-            westus2:
-              region: westus2
-            eastus:
-              region: eastus
-            centralus:
-              region: centralus
-        steps:    
-          - task: DownloadBuildArtifacts@0
-            displayName: Download build output
-            inputs:
-              buildType: 'current'
-              downloadType: 'single'
-              artifactName: 'WebApp'
-              downloadPath: './frontend/dist'
-          - task: AzureCLI@2
-            inputs:
-              azureSubscription: $(azureSubscription)
-              scriptType: 'bash'
-              scriptLocation: 'inlineScript'
-              inlineScript: |
-                businessUnit=$(businessUnit)
-                appName=$(appName)
-                region=$(region)
-                env=$(environment)
-                
-                source deployment/arm/common-script.sh
-                
-                storageActName=$(generateStorageAccountName -u $businessUnit -a $appName -e $env -r $region)
-                
-                az storage blob upload-batch -s ../../frontend/dist/WebApp -d \$web --account-name $storageActName
+      - template: templates/frontend-deploy-environment.yml
+        parameters:
+          subscription: "PELITTLE TEAM - CSE DWR(d36d0808-a967-4f73-9fdc-32ea232fc81d)"
+          businessUnit: $(businessUnit)
+          appName: $(appName)
+          environment: dev
+          regions:
+            - westus2
+
+  - stage: Staging
+    displayName: Staging
+    dependsOn: Development
+    variables:
+      - group: prodoh-urlist-staging
+    jobs:
+      - template: templates/frontend-deploy-environment.yml
+        parameters:
+          subscription: "PELITTLE TEAM - CSE DWR(d36d0808-a967-4f73-9fdc-32ea232fc81d)"
+          businessUnit: $(businessUnit)
+          appName: $(appName)
+          environment: staging
+          regions:
+            - westus2
+            - eastus
+
+  - stage: Production
+    displayName: Production
+    dependsOn: Staging
+    variables:
+      - group: prodoh-urlist-prod
+    jobs:
+      - template: templates/frontend-deploy-environment.yml
+        parameters:
+          subscription: "PELITTLE TEAM - CSE DWR(d36d0808-a967-4f73-9fdc-32ea232fc81d)"
+          businessUnit: $(businessUnit)
+          appName: $(appName)
+          environment: prod
+          regions:
+            - westus2
+            - eastus
+            - centralus

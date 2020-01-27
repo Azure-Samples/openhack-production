@@ -80,3 +80,11 @@ Today the URList app only contains 1 micro-service but as new features are added
 Each micro-service it attached to its region's Application Insights cluster for fast recording of requests, page views, custom events and other metrics.
 
 Logs from each app insights cluster is aggregated with Azure Monitor to provide a global view of service KPIs including availability, RPS, latency, etc.  Health checks and alerts can be configured to provide a robust monitoring and observability solution. 
+
+## Azure AD B2C
+Azure Active Directory B2C is used for custom authentication & authorization across the Urlist application.
+
+Currently the configuration of the B2C tenant requires a manual setup process since script automation is not currently possible.
+
+### Application
+The following applications are required for the B2C configuration

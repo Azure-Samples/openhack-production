@@ -28,7 +28,7 @@ There are two configurations needed for the frontend to run, those are passed as
 ### Modify Environment Variables
 
 * Follow the guide on how to run the Backend locally.  You can find the README [here](../api/README.md)
-* Once the Backend has started, you will want to get the port the Backend uses *(local port may change depending upon the IDE being used)* and modify the `VUE_APP_BACKEND` environment variable value in the `env.development` file.  See below:
+* Once the Backend has started, you will want to get the port the Backend uses *(local port may change depending upon the IDE being used)* and modify the `VUE_APP_BACKEND` environment variable value in the `.env.development.local` file.  See below:
 
 ```bash
 VUE_APP_BACKEND=https://localhost:5001
@@ -103,12 +103,19 @@ This should keep you out of CORS troubles
 ![localhost serve](docs/localhost_debugging.png)
 
 # Docker local development
-```
+By default the front-end will be running in `development mode`, consequently make sure you setup the environment files as described [here](###-Modify-Environment-Variables).
+```bash
 docker build -t linkylink-fe .
-docker run -it --rm -p 8080:8080 \
--e "VUE_APP_BACKEND=http://localhost:5000" \
--e "VUE_APP_OIDC_AUTHORITY=https://<b2c login subdomain>.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1_SignUp_SignIn" \
--e "VUE_APP_OIDC_CLIENT_ID=<client id?" \
--e "VUE_APP_OIDC_SCOPE=openid https://testprodoh.onmicrosoft.com/api/UrlBundle.ReadWrite" \
+docker run -it --rm -p 8080:8080 --name frontend linkylink-fe
+```
+
+Alternatively, you can pass the environment variables to override any settings from the `.env.[mode]` files
+```bash
+docker build -t linkylink-fe .
+docker run -it --rm -p 8080:8080 --name frontend \
+-e VUE_APP_BACKEND="http://localhost:5000" \
+-e VUE_APP_OIDC_AUTHORITY="https://<b2c login subdomain>.b2clogin.com/testprodoh.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1_SignUp_SignIn" \
+-e VUE_APP_OIDC_CLIENT_ID="<client id>" \
+-e VUE_APP_OIDC_SCOPE="openid https://<b2c login subdomain>.onmicrosoft.com/api/UrlBundle.ReadWrite" \
 linkylink-fe
 ```

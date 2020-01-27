@@ -104,7 +104,18 @@ This should keep you out of CORS troubles
 
 # Docker local development
 By default the front-end will be running in `development mode`, consequently make sure you setup the environment files as described [here](###-Modify-Environment-Variables).
-```
+```bash
 docker build -t linkylink-fe .
 docker run -it --rm -p 8080:8080 --name frontend linkylink-fe
+```
+
+Alternatively, you can pass the environment variables to override any settings from the `.env.[mode]` files
+```bash
+docker build -t linkylink-fe .
+docker run -it --rm -p 8080:8080 --name frontend \
+-e VUE_APP_BACKEND="http://localhost:5000" \
+-e VUE_APP_OIDC_AUTHORITY="https://<b2c login subdomain>.b2clogin.com/testprodoh.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1_SignUp_SignIn" \
+-e VUE_APP_OIDC_CLIENT_ID="<client id>" \
+-e VUE_APP_OIDC_SCOPE="openid https://<b2c login subdomain>.onmicrosoft.com/api/UrlBundle.ReadWrite" \
+linkylink-fe
 ```

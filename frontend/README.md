@@ -37,7 +37,7 @@ Other useful tools
 
 ## <a name="feconfigs" ></a> Frontend configurations
 
-There are two configurations needed for the frontend to run, those are passed as [VUE environment variables](https://cli.vuejs.org/guide/mode-and-env.html)
+There are two configurations needed for the frontend to run, those are passed as [VUE environment configs](https://cli.vuejs.org/guide/mode-and-env.html)
 
 - VUE_APP_BACKEND: this has the URL pointing to the backend endpoint.
 - VUE_APP_FRONTEND: this has the URL point to the frontend endpoint.
@@ -47,11 +47,11 @@ There are two configurations needed for the frontend to run, those are passed as
 
 ## Build and run the frontend locally
 
-### Modify Environment Variable
+### Modify VUE environment configs
 
 - Follow the guide on how to run the Backend locally. You can find the README [here](../api/README.md)
 - Once the Backend has started, you will want to get the port the Backend uses _(local port may change depending upon the IDE being used)_.
-- Create a local configuration file called `env.development` and add the needed configs as described [above](feconfigs), something like the following:
+- Create a local configuration file called `env.development.local` and add the needed configs as described [above](feconfigs), something like the following:
 
 ```bash
 VUE_APP_BACKEND=http://localhost:[backend_port]
@@ -61,15 +61,13 @@ VUE_APP_OIDC_CLIENT_ID=[Azure B2C Client Application ID]
 VUE_APP_OIDC_SCOPE=[Azure B2C Client Scope]
 ```
 
-### Install Vue CLI globally
+### Setup NPM for the frontend
 
 ```bash
+# Install Vue CLI globally
 npm install -g @vue/cli
-```
 
-### Install npm packages for frontend project
-
-```bash
+# Install npm packages for frontend project
 npm install
 ```
 
@@ -98,7 +96,7 @@ npm run lint
 ## Debugging the application
 
 - Follow the instructions in the [Build and run the frontend locally](##-build-and-run-the-frontend-locally) to start application
-- In Chrome, press `F12` to start the Chrome Developer Tools
+- In Chrome, open the Chrome Developer Tools
 - Select `Source` then expand `webpack` then expand the `.` folder then expand `src` and find the TypeScript file that you would like to debug and `double-click` the line in the TypeScript file that you are interested in. See the screenshot below as an example:
 
 ![localhost serve](docs/Images/localhost_debugging.png)

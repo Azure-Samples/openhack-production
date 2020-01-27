@@ -31,7 +31,7 @@ cp appsettings.sample.json appsettings.Development.json
 
 ### Setup Database
 
-Update the `appsettings.Development.json` file with your Cosmos DB Uri and Primary Key in the `ServiceEndpoint` & `AuthKey` settings respectively. This database will initially be empty. If you try out the API with Postman (see below), the collection and sample documents will be created for you automatically. Otherwise it's structure will be created when you create your first link-bundle through the frontend.
+Update the `appsettings.Development.json` file with your Cosmos DB Uri and Primary Key in the `ServiceEndpoint` & `AuthKey` settings respectively. You dont need to worry about setting up the database as it will be created automatically for you when you create your first link-bundle through the frontend.
 
 ### Setup Azure AD B2C Configuration
 This application requires Azure Active Directory B2C for authentication/authorization. Each API request performs JWT validation from your Azure B2C tenant.

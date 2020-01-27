@@ -20,7 +20,7 @@ Taxonomies for products and languages: https://review.docs.microsoft.com/new-hop
 
 This is a replica of the Urlist website but re-architected to use Azure AppService to host the backend instead of using Azure Functions. The original project repository can be found here https://github.com/the-urlist
 
-Please [check here](docs/Infrastructure.md) to view and read about the new architecture.
+Please [check here](docs/Infrastructure.md) to view and read about the architecture.
 
 ## Glossary
 

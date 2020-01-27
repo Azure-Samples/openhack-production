@@ -14,6 +14,9 @@ pr: none
 pool:
   vmImage: "ubuntu-latest"
 
+variables:
+  - group: prodoh-urlist-all
+
 stages:
   - stage: Development
     displayName: Development
@@ -22,7 +25,7 @@ stages:
     jobs:
     - template: templates/iac-deploy-environment.yml
       parameters:
-        subscription: 'PELITTLE TEAM - CSE DWR(d36d0808-a967-4f73-9fdc-32ea232fc81d)'
+        subscription: $(azureSubscription)
         businessUnit: $(businessUnit)
         appName: $(appName)
         environment: dev
@@ -36,7 +39,7 @@ stages:
     jobs:
     - template: templates/iac-deploy-environment.yml
       parameters:
-        subscription: 'PELITTLE TEAM - CSE DWR(d36d0808-a967-4f73-9fdc-32ea232fc81d)'
+        subscription: $(azureSubscription)
         businessUnit: $(businessUnit)
         appName: $(appName)
         environment: staging
@@ -51,7 +54,7 @@ stages:
     jobs:
     - template: templates/iac-deploy-environment.yml
       parameters:
-        subscription: 'PELITTLE TEAM - CSE DWR(d36d0808-a967-4f73-9fdc-32ea232fc81d)'
+        subscription: $(azureSubscription)
         businessUnit: $(businessUnit)
         appName: $(appName)
         environment: prod

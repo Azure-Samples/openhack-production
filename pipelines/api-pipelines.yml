@@ -23,7 +23,7 @@ pool:
   vmImage: "ubuntu-latest"
 
 variables:
-  - group: prodoh-urlist-all
+  - group: prodoh-urlist-common
 
 stages:
   - stage: BuildAndValidate

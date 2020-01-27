@@ -20,7 +20,7 @@ pr:
       - pipelines/frontend-pipeline.yml
 
 variables:
-  - group: prodoh-urlist-all
+  - group: prodoh-urlist-common
 
 pool:
   vmImage: "ubuntu-latest"

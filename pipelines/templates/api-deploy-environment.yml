@@ -58,6 +58,7 @@ jobs:
           ConnectionType: 'AzureRM'
           azureSubscription: ${{ parameters.subscription }}
           appType: 'apiApp'
+          # The resource group and web app names must match the naming conventions used in the infrastructure deploy scripts
           ResourceGroupName: 'rg-${{ parameters.businessUnit }}-${{ parameters.appName }}-${{ parameters.environment }}-$(region)'
           WebAppName: 'backend-${{ parameters.businessUnit }}-${{ parameters.appName }}-${{ parameters.environment }}-$(region)'
           deployToSlotOrASE: true
@@ -87,6 +88,7 @@ jobs:
         inputs:
           azureSubscription: ${{ parameters.subscription }}
           action: Swap Slots
+          # The resource group and web app names must match the naming conventions used in the infrastructure deploy scripts
           ResourceGroupName: 'rg-${{ parameters.businessUnit }}-${{ parameters.appName }}-${{ parameters.environment }}-$(region)'
           WebAppName: 'backend-${{ parameters.businessUnit }}-${{ parameters.appName }}-${{ parameters.environment }}-$(region)'
           specifySlotOrASE: true

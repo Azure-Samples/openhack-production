@@ -1,0 +1,107 @@
+parameters:
+  subscription: ""
+  businessUnit: "prodoh"
+  appName: "urlist"
+  environment: ""
+  regions: []
+
+jobs:
+  - deployment: 
+    environment: ${{ parameters.environment }}
+    displayName: Deploy API Backend
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - bash: echo "Deploying ${{ parameters.environment }} environment"
+              displayName: Check for Approval
+  - job: setup
+    displayName: Initialize
+    variables:
+      - name: regionList
+        value: ${{ join(',', parameters.regions) }}
+    steps:
+      - task: Bash@3
+        name: createMatrixJson
+        displayName: Create Matrix
+        inputs:
+          targetType: inline
+          script: |
+            source ./deployment/arm/utils.sh
+            matrix=$(toRegionMatrix $(regionList))
+            echo "##vso[task.setVariable variable=matrix;isOutput=true]$matrix"
+
+  - job: RegionalMaxtrixDeployment
+    displayName: "Deploy Region:"
+    dependsOn: setup
+    variables:
+      resourceGroupName: $[ dependencies.setup.outputs['createVariables.resourceGroupName'] ]
+      webAppName: $[ dependencies.setup.outputs['createVariables.backendAppName'] ]
+    strategy:
+      matrix: $[ dependencies.setup.outputs['createMatrixJson.matrix'] ]
+    steps:
+      - task: UseDotNet@2
+        displayName: Dotnet version 3.1.100
+        inputs:
+          version: '3.1.100'
+
+      - task: DownloadBuildArtifacts@0
+        displayName: Download Build Artifacts
+        inputs:
+          buildType: 'current'
+          downloadType: 'single'
+          artifactName: 'drop'
+          downloadPath: '$(Build.ArtifactStagingDirectory)'
+
+      - task: Bash@3
+        displayName: Create Resource Names
+        inputs:
+          targetType: inine
+          script: |
+            source ./deployment/arm/utils.sh
+            resourceGroupName=$(createResourceName -p rg -u ${{ parameters.businessUnit }} -a ${{ parameters.appName}} -e ${{ parameters.environment}} -r $(region))
+            backendWebAppName=$(createResourceName -p backend -u ${{ parameters.businessUnit }} -a ${{ parameters.appName}} -e ${{ parameters.environment}} -r $(region))
+
+            echo "##vso[task.setVariable variable=resourceGroupName]$resourceGroupName"
+            echo "##vso[task.setVariable variable=backendWebAppName]$backendWebAppName"
+
+      - task: AzureRMWebAppDeployment@4
+        displayName: Deploy to Staging Slot
+        inputs:
+          ConnectionType: 'AzureRM'
+          azureSubscription: ${{ parameters.subscription }}
+          appType: 'apiApp'
+          ResourceGroupName: $(resourceGroupName)
+          WebAppName: $(backendWebAppName)
+          deployToSlotOrASE: true
+          SlotName: staging
+          packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'  
+          appSettings: 
+            -CosmosSettings:ServiceEndpoint $(COSMOSDB_ENDPOINT) 
+            -CosmosSettings:AuthKey $(COSMOSDB_AUTHKEY) 
+            -CosmosSettings:DatabaseName linkylinkdb 
+            -CosmosSettings:ContainerName linkbundles
+            -AzureAdB2C:Instance $(AZUREADB2C_INSTANCE)
+            -AzureAdB2C:ClientId $(AZUREADB2C_CLIENTID)
+            -AzureAdB2C:Domain $(AZUREADB2C_DOMAIN)
+            -AzureAdB2C:SignUpSignInPolicyId $(AZUREADB2C_POLICYID)
+
+      - task: DotNetCoreCLI@2
+        displayName: Validation Tests
+        inputs:
+          command: test
+          projects: '**/LinkyLink.Integration.Tests/*.csproj'
+          arguments: -c $(BuildConfiguration)
+        env:
+          INTTEST_AzureAdB2C__BaseAddress: 'https://backend-${{ parameters.businessUnit }}-${{ parameters.appName }}-${{ parameters.environment }}-$(region)-staging.azurewebsites.net'
+      
+      - task: AzureAppServiceManage@0
+        displayName: Swap Staging and Production Slots
+        inputs:
+          azureSubscription: ${{ parameters.subscription }}
+          action: Swap Slots
+          ResourceGroupName: $(resourceGroupName)
+          WebAppName: $(backendWebAppName)
+          specifySlotOrASE: true
+          swapWithProduction: true
+          sourceSlot: staging

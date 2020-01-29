@@ -1,0 +1,70 @@
+parameters:
+  subscription: ""
+  businessUnit: "prodoh"
+  appName: "urlist"
+  environment: ""
+  regions: []
+
+jobs:
+  - deployment: 
+    environment: ${{ parameters.environment }}
+    displayName: Deploy Frontend
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - bash: echo "Deploying ${{ parameters.environment }} environment"
+              displayName: Check for Approval
+  - job: BuildArtifacts
+    displayName: Build environment artifacts
+    steps:
+    - template: frontend-build.yml
+      parameters:
+        environment: ${{ parameters.environment }}
+
+  - job: setup
+    displayName: Initialize Regions
+    dependsOn: BuildArtifacts
+    variables:
+      - name: regionList
+        value: ${{ join(',', parameters.regions) }}
+    steps:
+      - task: Bash@3
+        name: createMatrixJson
+        displayName: Create Matrix
+        inputs:
+          targetType: inline
+          script: |
+            source ./deployment/arm/utils.sh
+            matrix=$(toRegionMatrix $(regionList))
+            echo "##vso[task.setVariable variable=matrix;isOutput=true]$matrix"
+        
+  - job: DeployFrontendToRegion
+    displayName: "Deploy Region:"
+    dependsOn: setup
+    strategy:
+      matrix: $[ dependencies.setup.outputs['createMatrixJson.matrix'] ]
+    steps:
+      - task: DownloadBuildArtifacts@0
+        displayName: Download Build Artifacts
+        inputs:
+          buildType: current
+          downloadType: single
+          artifactName: frontend-${{ parameters.environment }}
+          downloadPath: ./frontend/dist
+      - task: AzureCLI@2
+        displayName: Deploy to Storage Account
+        inputs:
+          azureSubscription: ${{ parameters.subscription }}
+          scriptType: "bash"
+          scriptLocation: "inlineScript"
+          inlineScript: |
+            businessUnit=${{ parameters.businessUnit }}
+            appName=${{ parameters.appName}}
+            env=${{ parameters.environment}}
+            region=$(region)
+            publishPath="../../frontend/dist/frontend-${{ parameters.environment }}"
+
+            source deployment/arm/common-script.sh
+            storageActName=$(generateStorageAccountName -u $businessUnit -a $appName -e $env -r $region)
+            az storage blob upload-batch -s $publishPath -d \$web --account-name $storageActName

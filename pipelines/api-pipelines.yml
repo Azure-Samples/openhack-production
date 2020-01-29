@@ -1,3 +1,5 @@
+name: api-pipeline
+
 trigger:
   branches:
     include:
@@ -8,10 +10,10 @@ trigger:
       - pipelines/api-pipelines.yml
 
 pr:
-  autoCancel: true   
+  autoCancel: true
   branches:
     include:
-     - master
+      - master
   paths:
     include:
       - api/*
@@ -21,108 +23,59 @@ pool:
   vmImage: "ubuntu-latest"
 
 variables:
-  - group: prodoh-urlist-variable-group
+  - group: prodoh-urlist-common
 
 stages:
-  - stage: BuildStage
-    displayName: Build
+  - stage: BuildAndValidate
+    displayName: Build & Validate
     jobs:
-      - job: BuildJob
-        displayName: API
-        steps:
-          - task: UseDotNet@2
-            displayName: Dotnet version 3.1.100
-            inputs:
-              version: '3.1.100'
+      - template: templates/api-build.yml
 
-          - task: DotNetCoreCLI@2
-            displayName: Build
-            inputs:
-              command: build
-              projects: '**/*.csproj'
-              arguments: '--configuration Release'
-
-          - task: DotNetCoreCLI@2
-            displayName: Test
-            inputs:
-              command: test
-              projects: '**/*Tests/*.csproj'
-              arguments: -c $(BuildConfiguration) --collect:"XPlat Code Coverage"
-
-            # Generate the report using ReportGenerator (https://github.com/danielpalme/ReportGenerator)
-          - script: |
-              dotnet tool install -g dotnet-reportgenerator-globaltool
-              reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:"Cobertura"
-            displayName: Create Code coverage report
-
-          - task: PublishCodeCoverageResults@1
-            displayName: 'Publish code coverage'
-            inputs:
-              codeCoverageTool: Cobertura
-              summaryFileLocation: $(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml 
-              failIfCoverageEmpty: true 
-
-          - task: BuildQualityChecks@6
-            displayName: 'Build quality check'
-            inputs:
-              checkCoverage: true
-              coverageFailOption: 'fixed'
-              coverageType: 'lines'
-              coverageThreshold: '25'
-
-          - task: DotNetCoreCLI@2
-            displayName: Publish packages
-            inputs:
-              command: publish
-              arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
-              zipAfterPublish: True
-
-          - task: PublishBuildArtifacts@1
-            condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-            displayName: Publish Artifacts
-            inputs:
-              pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
-              artifactName: 'drop'
-              publishLocation: 'Container'
-
-  - stage: DeployStage
-    dependsOn: BuildStage
+  - stage: Development
+    displayName: Development
+    dependsOn: BuildAndValidate
     condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
-    displayName: Deploy
+    variables:
+      - group: prodoh-urlist-dev
     jobs:
-      - job: RegionalMaxtrixDeployment
-        displayName: API to Region
-        strategy:
-          matrix:
-            westus2:
-              region: westus2
-            eastus:
-              region: eastus
-            centralus:
-              region: centralus
-        steps:    
-          - task: DownloadBuildArtifacts@0
-            displayName: Download Build Artifacts
-            inputs:
-              buildType: 'current'
-              downloadType: 'single'
-              artifactName: 'drop'
-              downloadPath: '$(Build.ArtifactStagingDirectory)'
-          - task: AzureRMWebAppDeployment@4
-            displayName: Deploy to App Service
-            inputs:
-              ConnectionType: 'AzureRM'
-              azureSubscription: $(azureSubscription)
-              appType: 'apiApp'
-              WebAppName: 'backend-$(businessUnit)-$(appName)-$(environment)-$(region)'
-              packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'  
-              appSettings: 
-                -CosmosSettings:ServiceEndpoint $(COSMOSDB_ENDPOINT) 
-                -CosmosSettings:AuthKey $(COSMOSDB_AUTHKEY) 
-                -CosmosSettings:DatabaseName linkylinkdb 
-                -CosmosSettings:ContainerName linkbundles
-                -AzureAdB2C:Instance $(AZUREADB2C_INSTANCE)
-                -AzureAdB2C:ClientId $(AZUREADB2C_CLIENTID)
-                -AzureAdB2C:Domain $(AZUREADB2C_DOMAIN)
-                -AzureAdB2C:SignUpSignInPolicyId $(AZUREADB2C_POLICYID)
-              
+      - template: templates/api-deploy-environment.yml
+        parameters:
+          subscription: $(azureSubscription)
+          businessUnit: $(businessUnit)
+          appName: $(appName)
+          environment: dev
+          regions:
+            - westus2
+
+  - stage: Staging
+    displayName: Staging
+    dependsOn: Development
+    variables:
+      - group: prodoh-urlist-staging
+    jobs:
+      - template: templates/api-deploy-environment.yml
+        parameters:
+          subscription: $(azureSubscription)
+          businessUnit: $(businessUnit)
+          appName: $(appName)
+          environment: staging
+          regions:
+            - westus2
+            - eastus
+
+  - stage: Production
+    displayName: Production
+    dependsOn: Staging
+    variables:
+      - group: prodoh-urlist-prod
+    jobs:
+      - template: templates/api-deploy-environment.yml
+        parameters:
+          subscription: $(azureSubscription)
+          businessUnit: $(businessUnit)
+          appName: $(appName)
+          environment: prod
+          regions:
+            - westus2
+            - eastus
+            - centralus

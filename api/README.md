@@ -3,7 +3,7 @@
 [![Build status](https://burkeknowswords.visualstudio.com/The%20Urlist/_apis/build/status/Serverless%20Backend%20Build)](https://dev.azure.com/dwrdev/Production%20OpenHack/_build?definitionId=205)
 [![License](https://img.shields.io/badge/license-MIT-orange.svg)](https://raw.githubusercontent.com/Azure-Samples/openhack-production/master/LICENSE)
 
-The backend for this project was built as a .Net Core API using .NET Core. All the data is stored in a Cosmos DB collection using the SQL API.
+The backend for this project is built as a .Net Core API using .NET Core. All the data is stored in a Cosmos DB collection using the SQL API.
 
 - [.NET Core](https://dotnet.microsoft.com)
 - [Azure Cosmos DB](https://azure.microsoft.com/services/cosmos-db)
@@ -22,6 +22,7 @@ cp appsettings.sample.json appsettings.Development.json
 - Install [Visual Studio](https://visualstudio.microsoft.com/) or [Visual Studio Code](https://code.visualstudio.com/) or [Visual Studio Community edition](https://visualstudio.microsoft.com/vs)
 - Install the [C# extension for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=ms-vscode.csharp)
 - For Windows users, [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
+- The infrastructure is setup and available as described [here](../docs/Infrastructure.md)
 
 #### Optional
 
@@ -30,9 +31,7 @@ cp appsettings.sample.json appsettings.Development.json
 
 ### Setup Database
 
-[Create a Cosmos DB instance](https://docs.microsoft.com/en-us/azure/cosmos-db/how-to-manage-database-account) in Azure using the SQL API or use the [CosmosDB Emulator](https://docs.microsoft.com/en-us/azure/cosmos-db/local-emulator)
-
-Update the `appsettings.Development.json` file with your Cosmos DB Uri and Primary Key in the `ServiceEndpoint` & `AuthKey` settings respectively. This database will initially be empty. If you try out the API with Postman (see below), the collection and sample documents will be created for you automatically. Otherwise it's structure will be created when you create your first list through the frontend.
+Update the `appsettings.Development.json` file with your Cosmos DB Uri and Primary Key in the `ServiceEndpoint` & `AuthKey` settings respectively. You dont need to worry about setting up the database as it will be created automatically for you when you create your first link-bundle through the frontend.
 
 ### Setup Azure AD B2C Configuration
 This application requires Azure Active Directory B2C for authentication/authorization. Each API request performs JWT validation from your Azure B2C tenant.

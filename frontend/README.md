@@ -9,18 +9,18 @@ The frontend has the following views:
   ![Homepage picture](docs/Images/Homepage.png)
 
 - **Edit view**: this is the page where you would create your lists.
-  
+
   ![Edit picture](docs/Images/Edit_page.png)
 
 - **User view**: this page would list all list-bundles created for a signed-in user.
-  
+
   ![Manage lists picture](docs/Images/Manage_lists_page.png)
 
 - **List view**: this page is used to view the list-bundle for a given vanity URL.
 
   ![View list picture](docs/Images/View_page.png)
 
-The frontend for this project was built with the following libraries and frameworks:
+The frontend for this project is built with the following libraries and frameworks:
 
 - [TypeScript](https://www.typescriptlang.org/)
 - [Vue.js](https://github.com/vuejs/vue) / [Vue CLI](https://github.com/vuejs/vue-cli)
@@ -51,6 +51,7 @@ There are two configurations needed for the frontend to run, those are passed as
 
 - Follow the guide on how to run the Backend locally. You can find the README [here](../api/README.md)
 - Once the Backend has started, you will want to get the port the Backend uses _(local port may change depending upon the IDE being used)_.
+- Follow the authentication setup guide, [here](../docs/AzureADB2C.md), to identify the needed value for the OIDC configurations needed.
 - Create a local configuration file called `env.development.local` and add the needed configs as described [above](feconfigs), something like the following:
 
 ```bash

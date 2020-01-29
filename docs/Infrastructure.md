@@ -82,9 +82,12 @@ Each micro-service it attached to its region's Application Insights cluster for 
 Logs from each app insights cluster is aggregated with Azure Monitor to provide a global view of service KPIs including availability, RPS, latency, etc.  Health checks and alerts can be configured to provide a robust monitoring and observability solution. 
 
 ## Azure AD B2C
-Azure Active Directory B2C is used for custom authentication & authorization across the Urlist application.
+Azure Active Directory B2C (business-to-consumer) is used for custom authentication & authorization across the Urlist application.
 
-Currently the configuration of the B2C tenant requires a manual setup process since script automation is not currently possible.
+- Built on world class leading Active Directory Identity platform
+- Provides easy integration with popular identity providers like Facebook, Twitter, Google & more
+- Supports branded registration and sign-in flows for a custom tailored experience
+- Provides many built in templates to get your solution up and running within minutes
 
-### Application
-The following applications are required for the B2C configuration
+Detailed information regarding Urlist specific configuration can be found [here](AzureADB2C.md).
+

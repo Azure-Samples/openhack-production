@@ -99,15 +99,15 @@ function generateStorageAccountName() {
 globalScope="$businessUnit-$appName-$env-gbl"
 
 # Global configs
-frontDoorName="fd-$globalScope"
+frontDoorName=$(createResourceName -p fd -u $businessUnit -a $appName -e $env -r gbl)
 frontDoorEndpoint="$frontDoorName.azurefd.net"
-cosmosdbName="db-$globalScope"
+cosmosdbName=$(createResourceName -p db -u $businessUnit -a $appName -e $env -r gbl)
 
 # Regional configs
 if [[ ! -z ${region+x} ]]; then
     regionScope="$businessUnit-$appName-$env-$region"
-    apimName="apim-$regionScope"
-    appServicePlanName="asp-$regionScope"
-    backendAppName="backend-$regionScope"
-    appInsightsName="ai-$regionScope"
+    apimName=$(createResourceName -p apim -u $businessUnit -a $appName -e $env -r $region)
+    appServicePlanName=$(createResourceName -p asp -u $businessUnit -a $appName -e $env -r $region)
+    backendAppName=$(createResourceName -p backend -u $businessUnit -a $appName -e $env -r $region)
+    appInsightsName=$(createResourceName -p ai -u $businessUnit -a $appName -e $env -r $region)
 fi

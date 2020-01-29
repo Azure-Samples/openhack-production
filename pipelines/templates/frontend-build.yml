@@ -1,0 +1,23 @@
+parameters:
+  environment: ""
+
+steps:
+  - task: Npm@1
+    displayName: Install Dependencies
+    inputs:
+      workingDir: "./frontend"
+      command: "install"
+
+  - task: Bash@3
+    displayName: Build frontend
+    inputs:
+      workingDirectory: "./frontend"
+      targetType: "inline"
+      script: "npm run build"
+
+  - task: PublishBuildArtifacts@1
+    displayName: Publish Build Artifacts
+    inputs:
+      PathtoPublish: "./frontend/dist"
+      ArtifactName: frontend-${{ parameters.environment }}
+      publishLocation: "Container"

@@ -27,10 +27,8 @@ jobs:
         inputs:
           targetType: inline
           script: |
-            echo $(regionList)
             source ./deployment/arm/utils.sh
             matrix=$(toRegionMatrix $(regionList))
-            echo $matrix
             echo "##vso[task.setVariable variable=matrix;isOutput=true]$matrix"
 
   - job: DeployRegionalResourceGroup

@@ -54,14 +54,16 @@ if [[ $# -eq 0 || -z $businessUnit || -z $appName || -z $env || -z $region ]]; t
     exit 1
 fi
 
-echo "deploy-region $region"
+echo
+echo "Deploying region: $region..."
 
 # include common script to populate shared variables
+source utils.sh
 source common-script.sh
 
-resourceGroupName="rg-$regionScope"
-
+resourceGroupName=$(createResourceName -p "rg" -u $businessUnit -a $appName -e $env -r $region)
 storageActName=$(generateStorageAccountName -u $businessUnit -a $appName -e $env -r $region)
+
 echo "Resource Group: $resourceGroupName"
 echo "Region Scope: $regionScope"
 echo "Business Unit: $businessUnit"

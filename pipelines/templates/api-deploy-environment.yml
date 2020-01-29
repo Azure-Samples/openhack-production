@@ -27,15 +27,16 @@ jobs:
         inputs:
           targetType: inline
           script: |
-            echo $(regionList)
             source ./deployment/arm/utils.sh
             matrix=$(toRegionMatrix $(regionList))
-            echo $matrix
             echo "##vso[task.setVariable variable=matrix;isOutput=true]$matrix"
 
   - job: RegionalMaxtrixDeployment
     displayName: "Deploy Region:"
     dependsOn: setup
+    variables:
+      resourceGroupName: $[ dependencies.setup.outputs['createVariables.resourceGroupName'] ]
+      webAppName: $[ dependencies.setup.outputs['createVariables.backendAppName'] ]
     strategy:
       matrix: $[ dependencies.setup.outputs['createMatrixJson.matrix'] ]
     steps:
@@ -52,15 +53,26 @@ jobs:
           artifactName: 'drop'
           downloadPath: '$(Build.ArtifactStagingDirectory)'
 
+      - task: Bash@3
+        displayName: Create Resource Names
+        inputs:
+          targetType: inine
+          script: |
+            source ./deployment/arm/utils.sh
+            resourceGroupName=$(createResourceName -p rg -u ${{ parameters.businessUnit }} -a ${{ parameters.appName}} -e ${{ parameters.environment}} -r $(region))
+            backendWebAppName=$(createResourceName -p backend -u ${{ parameters.businessUnit }} -a ${{ parameters.appName}} -e ${{ parameters.environment}} -r $(region))
+
+            echo "##vso[task.setVariable variable=resourceGroupName]$resourceGroupName"
+            echo "##vso[task.setVariable variable=backendWebAppName]$backendWebAppName"
+
       - task: AzureRMWebAppDeployment@4
         displayName: Deploy to Staging Slot
         inputs:
           ConnectionType: 'AzureRM'
           azureSubscription: ${{ parameters.subscription }}
           appType: 'apiApp'
-          # The resource group and web app names must match the naming conventions used in the infrastructure deploy scripts
-          ResourceGroupName: 'rg-${{ parameters.businessUnit }}-${{ parameters.appName }}-${{ parameters.environment }}-$(region)'
-          WebAppName: 'backend-${{ parameters.businessUnit }}-${{ parameters.appName }}-${{ parameters.environment }}-$(region)'
+          ResourceGroupName: $(resourceGroupName)
+          WebAppName: $(backendWebAppName)
           deployToSlotOrASE: true
           SlotName: staging
           packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'  
@@ -88,9 +100,8 @@ jobs:
         inputs:
           azureSubscription: ${{ parameters.subscription }}
           action: Swap Slots
-          # The resource group and web app names must match the naming conventions used in the infrastructure deploy scripts
-          ResourceGroupName: 'rg-${{ parameters.businessUnit }}-${{ parameters.appName }}-${{ parameters.environment }}-$(region)'
-          WebAppName: 'backend-${{ parameters.businessUnit }}-${{ parameters.appName }}-${{ parameters.environment }}-$(region)'
+          ResourceGroupName: $(resourceGroupName)
+          WebAppName: $(backendWebAppName)
           specifySlotOrASE: true
           swapWithProduction: true
           sourceSlot: staging

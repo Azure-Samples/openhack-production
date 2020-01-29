@@ -55,10 +55,11 @@ if [[ $# -eq 0 || -z $businessUnit || -z $appName || -z $env || -z $regions ]]; 
 fi
 
 # include common script to populate shared variables
+source utils.sh
 source common-script.sh
 
 # set global resource group name
-resourceGroupName="rg-$globalScope"
+resourceGroupName=$(createResourceName -p rg -u $businessUnit -a $appName -e $env -r gbl)
 
 echo "Resource Group: $resourceGroupName"
 echo "Business Unit: $businessUnit"

@@ -7,8 +7,7 @@
 function toRegionMatrix() {
     regions=(${@//,/ })
 
-    for region in ${regions[@]}
-    do
+    for region in ${regions[@]}; do
         output+="\"$region\": { \"region\": \"$region\" },"
     done
 
@@ -19,19 +18,36 @@ function toRegionMatrix() {
 }
 
 ##############################################################################
-#- function used to create a AzDO matrix from environment list
-#- $n - The regoins to join
+#- function used to create resource names from well known parameters
+#- -p Prefix ex) rg, webapp, backned, ai
+#- -u Business Unit
+#- -a App Name
+#- -e Environment ex) prod, staging, dev
+#- -r Region ex) westus, centralus, eastus
 ##############################################################################
-function toEnvironmentMatrix() {
-    environments=(${@//,/ })
-
-    for env in ${environments[@]}
-    do
-        output+="\"$env\": { \"environment\": \"$env\" },"
+function createResourceName() {
+    # reset the index for the arguments locally for this function.
+    local OPTIND p u a e r
+    while getopts ":p:u:a:e:r:" opt; do
+        case $opt in
+        p) local prefix=${OPTARG//-/} ;;
+        u) local businessUnit=${OPTARG//-/} ;;
+        a) local appName=${OPTARG//-/} ;;
+        e) local env=${OPTARG//-/} ;;
+        r) local region=${OPTARG//-/} ;;
+        :)
+            echo "Error: -${OPTARG} requires a value" >&2
+            exit 1
+            ;;
+        esac
     done
+    shift $((OPTIND - 1))
 
-    result=$(printf %s ${output})
-    result="{${result%?}}"
+    # Validation
+    if [[ -z $prefix || -z $businessUnit || -z $appName || -z $env || -z $region ]]; then
+        echo "Required parameters are missing"
+        exit 1
+    fi
 
-    printf $result
+    echo "$prefix-$businessUnit-$appName-$env-$region"
 }

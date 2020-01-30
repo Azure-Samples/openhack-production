@@ -21,7 +21,7 @@ All resources follow a naming convention that ensures unique naming that include
 - apim-prodoh-urlist-prod-westus **(API Management)**
 
 ## Azure FrontDoor
-Azure Frontdoor is used to provide a central frontdoor and mesh to all micro-services required for the Urlist application.  It consolidates all url endpoints to a single HTTP entrypoint.  Robust routing rules allow routing traffic to the correct microservice based on request paths.
+[Azure Frontdoor](https://docs.microsoft.com/en-us/azure/frontdoor/) is used to provide a central frontdoor and mesh to all micro-services required for the Urlist application.  It consolidates all url endpoints to a single HTTP entrypoint.  Robust routing rules allow routing traffic to the correct microservice based on request paths.
 
 ### Features
 - Intelligent routing based on geo-location and latency (edge delivery)
@@ -58,14 +58,14 @@ The backend route captures all requiests to the `/api/*` path
 - Cachine: `Disabled`
 
 ## Cosmos DB
-Cosmos DB is used as a document level database to store JSON documents for each URL group. When a new region or scale unit is deployed the cosmos db is automatically replicated to new regions without requiring any custom scripts or configuration.
+[Cosmos DB](https://docs.microsoft.com/en-us/azure/cosmos-db/) is used as a document level database to store JSON documents for each URL group. When a new region or scale unit is deployed the cosmos db is automatically replicated to new regions without requiring any custom scripts or configuration.
 
 ### Features
 - Mulit region read/writes
 - Single connection string
 
 ## API Management
-API Management is used to consolidate all APIs under 1 API umbrella.  This allows for the creation of multiple  services potentially developed by different teams with different programming languages that all require adoption of consistent cross cutting concerns like logging, monitoring, authN, authZ, etc.
+[API Management](https://docs.microsoft.com/en-us/azure/api-management/) is used to consolidate all APIs under 1 API umbrella.  This allows for the creation of multiple  services potentially developed by different teams with different programming languages that all require adoption of consistent cross cutting concerns like logging, monitoring, authN, authZ, etc.
 
 Today the URList app only contains 1 micro-service but as new features are added can easily expand out to multiple micro-services as needed. With a single micro-service this design can be simplified and remove APIM but we're going to keep it in to demonstrate the example.
 
@@ -80,3 +80,14 @@ Today the URList app only contains 1 micro-service but as new features are added
 Each micro-service it attached to its region's Application Insights cluster for fast recording of requests, page views, custom events and other metrics.
 
 Logs from each app insights cluster is aggregated with Azure Monitor to provide a global view of service KPIs including availability, RPS, latency, etc.  Health checks and alerts can be configured to provide a robust monitoring and observability solution. 
+
+## Azure AD B2C
+[Azure Active Directory B2C](https://docs.microsoft.com/en-us/azure/active-directory-b2c/) (business-to-consumer) is used for custom authentication & authorization across the Urlist application.
+
+- Built on world class leading Active Directory Identity platform
+- Provides easy integration with popular identity providers like Facebook, Twitter, Google & more
+- Supports branded registration and sign-in flows for a custom tailored experience
+- Provides many built in templates to get your solution up and running within minutes
+
+Detailed information regarding Urlist specific configuration can be found [here](AzureADB2C.md).
+

@@ -1,5 +1,12 @@
 # Overview
-Currently the Urlist configuration of the B2C tenant requires a manual setup process and script automation is not currently supported.  Setup requries the configuration of applications, identity providers & user flows.
+[Azure Active Directory B2C](https://docs.microsoft.com/en-us/azure/active-directory-b2c/) (business-to-consumer) is used for custom authentication & authorization across the Urlist application.
+
+- Built on world class leading Active Directory Identity platform
+- Provides easy integration with popular identity providers like Facebook, Twitter, Google & more
+- Supports branded registration and sign-in flows for a custom tailored experience
+- Provides many built in templates to get your solution up and running within minutes
+
+Currently the Urlist configuration of the Azure AD B2C tenant requires a manual setup process and script automation is not currently supported.  Setup requries the configuration of applications, identity providers & user flows.
 
 # Applications
 Each application within an organization has unique setup requirements and custom authentication constraints.

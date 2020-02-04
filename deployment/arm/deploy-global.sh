@@ -67,6 +67,7 @@ echo "App Name: $appName"
 echo "Environment: $env"
 echo "Front Door: $frontDoorName"
 echo "Cosmos DB Name: $cosmosdbName"
+echo "Application Insights Name: $appInsightsName"
 echo
 
 # set -e fails and exit here if just let counter=0 is specified. Workaround is to add || true to the expression
@@ -112,6 +113,7 @@ az group deployment create \
     --resource-group $resourceGroupName \
     --template-file global.json \
     --parameters \
+    appInsightsName=$appInsightsName \
     frontDoorName=$frontDoorName frontDoorEndpoint=$frontDoorEndpoint \
     frontendHosts=$frontendHosts backendHosts=$backendHosts \
     cosmosdbName=$cosmosdbName cosmosdbRegions=$cosmosdbRegions

@@ -2,6 +2,10 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "appInsightsName": {
+            "defaultValue": "",
+            "type": "string"
+        },
         "frontDoorName": {
             "defaultValue": "",
             "type": "string"
@@ -30,6 +34,18 @@
         }
     },
     "resources": [
+        {
+            "type": "microsoft.insights/components",
+            "apiVersion": "2015-05-01",
+            "name": "[parameters('appInsightsName')]",
+            "location": "[resourceGroup().location]",
+            "kind": "web",
+            "properties": {
+                "Application_Type": "web",
+                "Flow_Type": "Bluefield",
+                "Request_Source": "rest"
+            }
+        },
         {
             "type": "Microsoft.Network/frontdoors",
             "apiVersion": "2019-05-01",

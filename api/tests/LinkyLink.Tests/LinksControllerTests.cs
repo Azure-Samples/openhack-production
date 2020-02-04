@@ -266,7 +266,7 @@ namespace LinkyLink.Tests
             // Arrange 
             LinkBundle linkBundle = new LinkBundle
             {
-                UserId = "example@microsoft.com1",
+                UserId = "example@microsoft.com",
                 VanityUrl = "samplelink"
             };
 

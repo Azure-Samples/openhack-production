@@ -13,7 +13,7 @@ using Times = Moq.Times;
 namespace LinkyLink.Tests
 {
     /// <summary>
-    /// Tests to validate methods in LinksController class.
+    /// Unit Tests to validate methods in LinksController class.
     /// </summary>
     public class LinksControllerTests
     {
@@ -33,7 +33,7 @@ namespace LinkyLink.Tests
             string vanityUrl = "samplelink";
             
             // Act
-            ActionResult<LinkBundle> result = await _linksController.GetLinkBundle(vanityUrl);
+            ActionResult<LinkBundle> result = await _linksController.GetLinkBundleAsync(vanityUrl);
            
             // Assert
             Assert.IsType<NotFoundResult>(result.Result);
@@ -48,11 +48,11 @@ namespace LinkyLink.Tests
                 VanityUrl = "samplelink"
             };
 
-            _mockService.Setup(service => service.FindLinkBundle(linkBundle.VanityUrl))
+            _mockService.Setup(service => service.FindLinkBundleAsync(linkBundle.VanityUrl))
                 .ReturnsAsync(linkBundle);
 
             // Act
-            ActionResult<LinkBundle> result = await _linksController.GetLinkBundle(linkBundle.VanityUrl);
+            ActionResult<LinkBundle> result = await _linksController.GetLinkBundleAsync(linkBundle.VanityUrl);
 
             // Assert
             Assert.IsType<LinkBundle>(result.Value);
@@ -63,13 +63,13 @@ namespace LinkyLink.Tests
         public async Task GetLinkBundlesForUserReturnsNotFoundIfLinkBundleDoesntExists()
         {
             // Arrange 
-            string userId = "userhash";
+            string userId = "example@microsoft.com";
 
-            _mockService.Setup(service => service.GetUserAccountHash())
+            _mockService.Setup(service => service.GetUserAccountEmail())
                 .Returns(userId);
 
             // Act
-            ActionResult<LinkBundle> result = await _linksController.GetLinkBundlesForUser(userId);
+            ActionResult<LinkBundle> result = await _linksController.GetLinkBundlesForUserAsync(userId);
 
             // Assert
             Assert.IsType<NotFoundResult>(result.Result);
@@ -79,7 +79,7 @@ namespace LinkyLink.Tests
         public async Task GetLinkBundlesForUserReturnsDocumentsIfLinkBundleExists()
         {
             // Arrange
-            string userId = "userhash";
+            string userId = "example@microsoft.com";
             List<LinkBundle> linkBundles = new List<LinkBundle>
             {
                 new LinkBundle
@@ -108,14 +108,14 @@ namespace LinkyLink.Tests
                 }
             };
             
-            _mockService.Setup(service => service.GetUserAccountHash())
+            _mockService.Setup(service => service.GetUserAccountEmail())
                 .Returns(userId);
 
-            _mockService.Setup(service => service.FindLinkBundlesForUser(userId))
+            _mockService.Setup(service => service.FindLinkBundlesForUserAsync(userId))
                 .ReturnsAsync(linkBundles);
 
             // Act
-            ActionResult<LinkBundle> result = await _linksController.GetLinkBundlesForUser(userId);
+            ActionResult<LinkBundle> result = await _linksController.GetLinkBundlesForUserAsync(userId);
 
             // Assert
             Assert.IsType<OkObjectResult>(result.Result);
@@ -127,12 +127,12 @@ namespace LinkyLink.Tests
             // Arrange
             LinkBundle linkBundle = new LinkBundle
             {
-                UserId = "userhash",
+                UserId = "example@microsoft.com",
                 VanityUrl = "samplelink"
             };
 
             // Act
-            ActionResult<LinkBundle> result = await _linksController.GetLinkBundlesForUser(linkBundle.UserId);
+            ActionResult<LinkBundle> result = await _linksController.GetLinkBundlesForUserAsync(linkBundle.UserId);
 
             // Assert
             Assert.IsType<UnauthorizedResult>(result.Result);
@@ -146,7 +146,7 @@ namespace LinkyLink.Tests
             
             LinkBundle linkBundle = new LinkBundle
             {
-                UserId = "userhash",
+                UserId = "example@microsoft.com",
                 VanityUrl = "samplelink",
                 Description = "sampledescription",
                 Links = new List<Link>    
@@ -158,14 +158,14 @@ namespace LinkyLink.Tests
                 }
             };
 
-            _mockService.Setup(r => r.CreateLinkBundle(It.IsAny<LinkBundle>()))
+            _mockService.Setup(r => r.CreateLinkBundleAsync(It.IsAny<LinkBundle>()))
                 .Callback<LinkBundle>(x => expectedLinkBundle = x);
 
             // Act
-            ActionResult<LinkBundle> result = await _linksController.PostLinkBundle(linkBundle);
+            ActionResult<LinkBundle> result = await _linksController.PostLinkBundleAsync(linkBundle);
 
             // Assert
-            _mockService.Verify(x => x.CreateLinkBundle(It.IsAny<LinkBundle>()), Times.Once);
+            _mockService.Verify(x => x.CreateLinkBundleAsync(It.IsAny<LinkBundle>()), Times.Once);
             
             Assert.IsType<CreatedAtActionResult>(result.Result);
             
@@ -183,16 +183,16 @@ namespace LinkyLink.Tests
 
             LinkBundle linkBundle = new LinkBundle
             {
-                UserId = "userhash",
+                UserId = "example@microsoft.com",
                 VanityUrl = string.Empty,
                 Links = new List<Link> { new Link() }
             };
 
-            _mockService.Setup(r => r.CreateLinkBundle(It.IsAny<LinkBundle>()))
+            _mockService.Setup(r => r.CreateLinkBundleAsync(It.IsAny<LinkBundle>()))
                 .Callback<LinkBundle>(x => expectedLinkBundle = x);
 
             // Act
-            ActionResult<LinkBundle> result = await _linksController.PostLinkBundle(linkBundle);
+            ActionResult<LinkBundle> result = await _linksController.PostLinkBundleAsync(linkBundle);
 
             // Assert
             Assert.IsType<CreatedAtActionResult>(result.Result);
@@ -210,16 +210,16 @@ namespace LinkyLink.Tests
 
             LinkBundle linkBundle = new LinkBundle
             {
-                UserId = "userhash",
+                UserId = "example@microsoft.com",
                 VanityUrl = vanityUrl,
                 Links = new List<Link> { new Link() }
             };
 
-            _mockService.Setup(r => r.CreateLinkBundle(It.IsAny<LinkBundle>()))
+            _mockService.Setup(r => r.CreateLinkBundleAsync(It.IsAny<LinkBundle>()))
                 .Callback<LinkBundle>(x => expectedLinkBundle = x);
 
             // Act
-            ActionResult<LinkBundle> result = await _linksController.PostLinkBundle(linkBundle);
+            ActionResult<LinkBundle> result = await _linksController.PostLinkBundleAsync(linkBundle);
 
             // Assert
             Assert.IsType<CreatedAtActionResult>(result.Result);
@@ -227,57 +227,57 @@ namespace LinkyLink.Tests
         }
 
         [Fact]
-        public async Task DeleteLinkBundleReturnsUnAuthorizedIfMissingAuth()
+        public async Task DeleteLinkBundleAsyncReturnsUnAuthorizedIfMissingAuth()
         {
             // Arrange
             LinkBundle linkBundle = new LinkBundle
             {
-                UserId = "userhash",
+                UserId = "example@microsoft.com",
                 VanityUrl = "samplelink"
             };
 
             // Act
-            ActionResult<LinkBundle> result = await _linksController.DeleteLinkBundle(linkBundle.VanityUrl);
+            ActionResult<LinkBundle> result = await _linksController.DeleteLinkBundleAsync(linkBundle.VanityUrl);
 
             // Assert
             Assert.IsType<UnauthorizedResult>(result.Result);
         }
 
         [Fact]
-        public async Task DeleteLinkBundleReturnsNotFoundIfLinkBundleDoesntExists()
+        public async Task DeleteLinkBundleAsyncReturnsNotFoundIfLinkBundleDoesntExists()
         {
             // Arrange 
-            string userId = "userhash";
+            string userId = "example@microsoft.com";
             string vanityUrl = "sampleVanityUrl";
 
-            _mockService.Setup(service => service.GetUserAccountHash())
-                .Returns("userhash");
+            _mockService.Setup(service => service.GetUserAccountEmail())
+                .Returns("example@microsoft.com");
 
             // Act
-            ActionResult<LinkBundle> result = await _linksController.DeleteLinkBundle(vanityUrl);
+            ActionResult<LinkBundle> result = await _linksController.DeleteLinkBundleAsync(vanityUrl);
 
             // Assert
             Assert.IsType<NotFoundResult>(result.Result);
         }
 
         [Fact]
-        public async Task DeleteLinkBundleReturnsForbiddenIfLinkBundleOwnedByOtherUser()
+        public async Task DeleteLinkBundleAsyncReturnsForbiddenIfLinkBundleOwnedByOtherUser()
         {
             // Arrange 
             LinkBundle linkBundle = new LinkBundle
             {
-                UserId = "userhash1",
+                UserId = "example@microsoft.com1",
                 VanityUrl = "samplelink"
             };
 
-            _mockService.Setup(service => service.GetUserAccountHash())
-                .Returns("userhash");
+            _mockService.Setup(service => service.GetUserAccountEmail())
+                .Returns("example@microsoft.com");
 
-            _mockService.Setup(service => service.FindLinkBundle(linkBundle.VanityUrl))
+            _mockService.Setup(service => service.FindLinkBundleAsync(linkBundle.VanityUrl))
                 .ReturnsAsync(linkBundle);
 
             // Act
-            ActionResult<LinkBundle> result = await _linksController.DeleteLinkBundle(linkBundle.VanityUrl);
+            ActionResult<LinkBundle> result = await _linksController.DeleteLinkBundleAsync(linkBundle.VanityUrl);
 
             // Assert
             Assert.IsType<ForbidResult>(result.Result);
@@ -292,7 +292,7 @@ namespace LinkyLink.Tests
             JsonPatchDocument<LinkBundle> patchReqDocument = new JsonPatchDocument<LinkBundle>();
 
             // Act
-            ActionResult<LinkBundle> result = await _linksController.PatchLinkBundle(vanityUrl, patchReqDocument);
+            ActionResult<LinkBundle> result = await _linksController.PatchLinkBundleAsync(vanityUrl, patchReqDocument);
 
             // Assert
             Assert.IsType<UnauthorizedResult>(result.Result);
@@ -304,20 +304,20 @@ namespace LinkyLink.Tests
             // Arrange 
             LinkBundle linkBundle = new LinkBundle
             {
-                UserId = "userhash1",
+                UserId = "example@microsoft.com1",
                 VanityUrl = "samplelink"
             };
 
-            _mockService.Setup(service => service.GetUserAccountHash())
-                .Returns("userhash");
+            _mockService.Setup(service => service.GetUserAccountEmail())
+                .Returns("example@microsoft.com");
 
-            _mockService.Setup(service => service.FindLinkBundle(linkBundle.VanityUrl))
+            _mockService.Setup(service => service.FindLinkBundleAsync(linkBundle.VanityUrl))
                 .ReturnsAsync(linkBundle);
 
             JsonPatchDocument<LinkBundle> patchReqDocument = new JsonPatchDocument<LinkBundle>();
 
             // Act
-            ActionResult<LinkBundle> result = await _linksController.PatchLinkBundle(linkBundle.VanityUrl, patchReqDocument);
+            ActionResult<LinkBundle> result = await _linksController.PatchLinkBundleAsync(linkBundle.VanityUrl, patchReqDocument);
 
             // Assert
             Assert.IsType<ForbidResult>(result.Result);
@@ -331,17 +331,17 @@ namespace LinkyLink.Tests
 
             LinkBundle linkBundle = new LinkBundle
             {
-                UserId = "userhash",
+                UserId = "example@microsoft.com",
                 VanityUrl = "samplelink"
             };
 
-            _mockService.Setup(service => service.GetUserAccountHash())
+            _mockService.Setup(service => service.GetUserAccountEmail())
                 .Returns(linkBundle.UserId);
 
-            _mockService.Setup(service => service.FindLinkBundle(linkBundle.VanityUrl))
+            _mockService.Setup(service => service.FindLinkBundleAsync(linkBundle.VanityUrl))
                 .ReturnsAsync(linkBundle);
 
-            _mockService.Setup(r => r.UpdateLinkBundle(It.IsAny<LinkBundle>()))
+            _mockService.Setup(r => r.UpdateLinkBundleAsync(It.IsAny<LinkBundle>()))
                 .Callback<LinkBundle>(x => expectedLinkBundle = x);
 
             string description = "sampledescription";
@@ -349,7 +349,7 @@ namespace LinkyLink.Tests
             patchReqDocument.Add(d => d.Description, description);
 
             // Act
-            ActionResult<LinkBundle> result = await _linksController.PatchLinkBundle(linkBundle.VanityUrl, patchReqDocument);
+            ActionResult<LinkBundle> result = await _linksController.PatchLinkBundleAsync(linkBundle.VanityUrl, patchReqDocument);
 
             // Assert
             Assert.IsType<NoContentResult>(result.Result);

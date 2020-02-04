@@ -20,16 +20,16 @@ namespace LinkyLink.Service
         /// <param name="req"></param>
         /// <param name="openGraphRequests"></param>
         /// <returns>List of OpenGraphResults</returns>        
-        public async Task<IEnumerable<OpenGraphResult>> GetGraphResults(HttpRequest req, IEnumerable<OpenGraphRequest> openGraphRequests)
+        public async Task<IEnumerable<OpenGraphResult>> GetGraphResultsAsync(HttpRequest req, IEnumerable<OpenGraphRequest> openGraphRequests)
         {
             IEnumerable<OpenGraphResult> allResults =
                 await Task.WhenAll((openGraphRequests)
-                .Select(item => GetGraphResult(req, item)));
+                .Select(item => GetGraphResultAsync(req, item)));
 
             return allResults;
         }
 
-        private async Task<OpenGraphResult> GetGraphResult(HttpRequest req, OpenGraphRequest openGraphRequest)
+        private async Task<OpenGraphResult> GetGraphResultAsync(HttpRequest req, OpenGraphRequest openGraphRequest)
         {
             string url = openGraphRequest.Url, id = openGraphRequest.Id;
             if (!string.IsNullOrEmpty(url) && !string.IsNullOrEmpty(id))

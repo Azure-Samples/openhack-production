@@ -261,12 +261,12 @@ namespace LinkyLink.Tests
         }
 
         [Fact]
-        public async Task DeleteLinkBundleAsyncReturnsForbiddenIfLinkBundleOwnedByOtherUser()
+        public async Task DeleteLinkBundleReturnsForbiddenIfLinkBundleOwnedByOtherUser()
         {
             // Arrange 
             LinkBundle linkBundle = new LinkBundle
             {
-                UserId = "example@microsoft.com",
+                UserId = "example1@microsoft.com",
                 VanityUrl = "samplelink"
             };
 
@@ -304,7 +304,7 @@ namespace LinkyLink.Tests
             // Arrange 
             LinkBundle linkBundle = new LinkBundle
             {
-                UserId = "example@microsoft.com1",
+                UserId = "example1@microsoft.com",
                 VanityUrl = "samplelink"
             };
 

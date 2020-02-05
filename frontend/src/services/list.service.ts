@@ -29,7 +29,7 @@ const ListService = {
         id: id
       }]
     );
-    const ogData = <IOGData>response.data;
+    const ogData = <IOGData>response.data[0];
 
     return new Link(
       id,

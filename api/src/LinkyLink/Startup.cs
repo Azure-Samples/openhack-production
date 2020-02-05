@@ -61,8 +61,8 @@ namespace LinkyLink
                     options.JsonSerializerOptions.IgnoreNullValues = true;
                 });
 
-            // Uncomment the following line to enable Application Insights telemetry collection.
-            //services.AddApplicationInsightsTelemetry(Configuration.GetSection("ApplicationInsights")["InstrumentationKey"]);
+            // Enable Application Insights
+            services.AddApplicationInsightsTelemetry(Configuration.GetSection("ApplicationInsights")["InstrumentationKey"]);
 
             // Swagger Document Generation
             services.AddSwaggerGen(c =>

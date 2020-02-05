@@ -180,11 +180,6 @@ namespace LinkyLink.Controllers
                 return NotFound();
             }
 
-            if (!userHandle.Equals(linkBundle.UserId, StringComparison.InvariantCultureIgnoreCase))
-            {
-                return Forbid();
-            }
-
             try
             {
                 await _linksService.RemoveLinkBundleAsync(linkBundle);

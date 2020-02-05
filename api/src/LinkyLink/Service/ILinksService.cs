@@ -6,20 +6,20 @@ namespace LinkyLink.Service
 {
     public interface ILinksService
     {
-        Task<bool> LinkBundleExists(string id);
+        Task<bool> LinkBundleExistsAsync(string id);
 
-        Task<IEnumerable<LinkBundle>> AllLinkBundles();
+        Task<IEnumerable<LinkBundle>> AllLinkBundlesAsync();
 
-        Task<LinkBundle> FindLinkBundle(string vanityUrl);
+        Task<LinkBundle> FindLinkBundleAsync(string vanityUrl);
 
-        Task<IEnumerable<LinkBundle>> FindLinkBundlesForUser(string userId);
+        Task<IEnumerable<LinkBundle>> FindLinkBundlesForUserAsync(string userId);
 
-        Task CreateLinkBundle(LinkBundle linkBundle);
+        Task CreateLinkBundleAsync(LinkBundle linkBundle);
 
-        Task UpdateLinkBundle(LinkBundle linkBundle);
+        Task UpdateLinkBundleAsync(LinkBundle linkBundle);
 
-        Task RemoveLinkBundle(LinkBundle linkBundle);
+        Task RemoveLinkBundleAsync(LinkBundle linkBundle);
 
-        string GetUserAccountHash();
+        string GetUserAccountEmail();
     }
 }

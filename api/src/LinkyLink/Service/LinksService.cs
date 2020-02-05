@@ -22,50 +22,50 @@ namespace LinkyLink.Service
             _userAuth = userAuth;
         }
 
-        public async Task<bool> LinkBundleExists(string id)
+        public async Task<bool> LinkBundleExistsAsync(string id)
         {
             return await _context.LinkBundle.AnyAsync(a => a.Id == id);
         }
 
-        public async Task<IEnumerable<LinkBundle>> AllLinkBundles()
+        public async Task<IEnumerable<LinkBundle>> AllLinkBundlesAsync()
         {
             return await _context.LinkBundle.ToListAsync();
         }
 
-        public async Task<LinkBundle> FindLinkBundle(string vanityUrl)
+        public async Task<LinkBundle> FindLinkBundleAsync(string vanityUrl)
         {
             return await _context.LinkBundle
                .FirstOrDefaultAsync(b => b.VanityUrl == vanityUrl.ToLower());
         }
 
-        public async Task<IEnumerable<LinkBundle>> FindLinkBundlesForUser(string userId)
+        public async Task<IEnumerable<LinkBundle>> FindLinkBundlesForUserAsync(string userId)
         {
             return await _context.LinkBundle
                 .Where(c => c.UserId == userId)
                 .ToListAsync();
         }
 
-        public async Task CreateLinkBundle(LinkBundle linkBundle)
+        public async Task CreateLinkBundleAsync(LinkBundle linkBundle)
         {
             _context.LinkBundle.Add(linkBundle);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateLinkBundle(LinkBundle linkBundle)
+        public async Task UpdateLinkBundleAsync(LinkBundle linkBundle)
         {
             _context.Entry(linkBundle).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
 
-        public async Task RemoveLinkBundle(LinkBundle linkBundle)
+        public async Task RemoveLinkBundleAsync(LinkBundle linkBundle)
         {
             _context.LinkBundle.Remove(linkBundle);
             await _context.SaveChangesAsync();
         }
 
-        public string GetUserAccountHash()
+        public string GetUserAccountEmail()
         {
-            return _userAuth.GetUserAccountInfo().HashedID;
+            return _userAuth.GetUserAccountInfo().Email;
         }
     }
 }

@@ -7,6 +7,6 @@ namespace LinkyLink.Service
 {
     public interface IOpenGraphService
     {
-        Task<IEnumerable<OpenGraphResult>> GetGraphResults(HttpRequest req, IEnumerable<OpenGraphRequest> openGraphRequests);
+        Task<IEnumerable<OpenGraphResult>> GetGraphResultsAsync(HttpRequest req, IEnumerable<OpenGraphRequest> openGraphRequests);
     }
 }

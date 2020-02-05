@@ -31,7 +31,7 @@ namespace LinkyLink.Tests
             List<OpenGraphRequest> openGraphRequests = null;
 
             // Act
-            ActionResult<OpenGraphResult> result = await _openGraphController.Post(openGraphRequests);
+            ActionResult<OpenGraphResult> result = await _openGraphController.PostAsync(openGraphRequests);
 
             // Assert
             Assert.IsType<BadRequestObjectResult>(result.Result);

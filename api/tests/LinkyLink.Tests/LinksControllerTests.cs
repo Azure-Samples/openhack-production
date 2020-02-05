@@ -261,7 +261,7 @@ namespace LinkyLink.Tests
         }
 
         [Fact]
-        public async Task DeleteLinkBundleReturnsForbiddenIfLinkBundleOwnedByOtherUser()
+        public async Task DeleteLinkBundleAllowsOtherOwnerToDeleteBundles()
         {
             // Arrange 
             LinkBundle linkBundle = new LinkBundle
@@ -280,7 +280,7 @@ namespace LinkyLink.Tests
             ActionResult<LinkBundle> result = await _linksController.DeleteLinkBundle(linkBundle.VanityUrl);
 
             // Assert
-            Assert.IsType<ForbidResult>(result.Result);
+            Assert.IsType<NoContentResult>(result.Result);
         }
 
         [Fact]

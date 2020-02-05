@@ -76,6 +76,7 @@ let counter=0 || true
 frontendHostArray=()
 backendHostArray=()
 cosmosdbRegionArray=()
+regionScopeArray=()
 
 for region in ${regions[@]}; do
     # include common script to populate shared variables per region
@@ -92,14 +93,17 @@ for region in ${regions[@]}; do
 
     backendHostArray+=("apim-$regionScope.azure-api.net")
     cosmosdbRegionArray+=("$region")
+    regionScopeArray+=("$regionScope")
 done
 
 frontendHosts=$(toArmArray ${frontendHostArray[*]})
 backendHosts=$(toArmArray ${backendHostArray[*]})
 cosmosdbRegions=$(toArmArray ${cosmosdbRegionArray[*]})
+regionScope=$(toArmArray ${regionScopeArray[*]})
 echo "Frontend Hosts: $frontendHosts"
 echo "Backend Hosts: $backendHosts"
-echo
+echo "Region Scope: $regionScope"
+echo 
 
 echo "Creating global resource Group: $resourceGroupName"
 az group create \
@@ -113,7 +117,7 @@ az group deployment create \
     --resource-group $resourceGroupName \
     --template-file global.json \
     --parameters \
-    appInsightsName=$appInsightsName \
+    appInsightsName=$appInsightsName regionScope=$regionScope \
     frontDoorName=$frontDoorName frontDoorEndpoint=$frontDoorEndpoint \
     frontendHosts=$frontendHosts backendHosts=$backendHosts \
     cosmosdbName=$cosmosdbName cosmosdbRegions=$cosmosdbRegions

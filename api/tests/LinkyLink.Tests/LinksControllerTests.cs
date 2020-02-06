@@ -27,6 +27,19 @@ namespace LinkyLink.Tests
         }
 
         [Fact]
+        public async Task GetLinkBundlesReturnsAllZeroLinkBundles()
+        {
+            // Arrange 
+            string vanityUrl = "samplelink";
+
+            // Act
+            IEnumerable<LinkBundle> result = await _linksController.GetLinkBundlesAsync();
+
+            // Assert
+            Assert.Equal(0, result.Count());
+        }
+
+        [Fact]
         public async Task GetLinkBundleReturnsNotFoundIfLinkBundleDoesntExists()
         {
             // Arrange 

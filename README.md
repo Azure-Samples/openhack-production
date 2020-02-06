@@ -8,6 +8,10 @@ description: "Add 150 character max description"
 urlFragment: "update-this-to-unique-url-stub"
 ---
 
+API Pipeline
+[![api pipeline](https://dev.azure.com/cseeest/OpenHack/_apis/build/status/Production%20Fundamentals%20OpenHack/%5Burlist%5D%20api-pipeline?branchName=master)](https://dev.azure.com/cseeest/OpenHack/_build/latest?definitionId=42&branchName=master)
+
+Frontend Pipeline [![frontend pipeline](https://dev.azure.com/cseeest/OpenHack/_apis/build/status/Production%20Fundamentals%20OpenHack/%5Burlist%5D%20frontend-pipeline?branchName=master)](https://dev.azure.com/cseeest/OpenHack/_build/latest?definitionId=43&branchName=master)
 # Official Microsoft Sample
 
 <!-- 

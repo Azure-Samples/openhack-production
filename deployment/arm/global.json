@@ -91,7 +91,7 @@
                             "apiVersion": "2019-01-01",
                             "name": "[concat(concat('apim-', parameters('regionScope')[copyIndex()]), '/applicationinsights')]",
                             "dependsOn": [
-                                "[resourceId('Microsoft.ApiManagement/service/loggers', concat('apim-', parameters('regionScope')[copyIndex()]), parameters('appInsightsName'))]"                            
+                                "[resourceId(concat('rg-', parameters('regionScope')[copyIndex()]), 'Microsoft.ApiManagement/service/loggers', concat('apim-', parameters('regionScope')[copyIndex()]), parameters('appInsightsName'))]"                            
                             ],
                             "properties": {
                                 "alwaysLog": "allErrors",

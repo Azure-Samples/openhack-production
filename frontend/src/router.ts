@@ -57,7 +57,7 @@ let router = new Router({
 });
 
 router.beforeEach((to: Route, from: Route, next: any) => {
-  appInsights.trackPageView(to.fullPath);
+  appInsights.trackPageView();
   next();
 });
 

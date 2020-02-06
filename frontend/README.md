@@ -44,6 +44,7 @@ There are two configurations needed for the frontend to run, those are passed as
 - VUE_APP_OIDC_AUTHORITY: the configured Azure B2C Open ID endpoint.
 - VUE_APP_OIDC_CLIENT_ID: the configured Azure B2C Client Application ID.
 - VUE_APP_OIDC_SCOPE: the Azure B2C Client Scope.
+- VUE_APP_APPINSIGHTS_INSTRUMENTATIONKEY: the configured Azure Application Insights instrumentation key.
 
 ## Build and run the frontend locally
 
@@ -60,6 +61,7 @@ VUE_APP_FRONTEND=http://localhost:[frontend_port]
 VUE_APP_OIDC_AUTHORITY=[Azure B2C Open ID config endpoint]
 VUE_APP_OIDC_CLIENT_ID=[Azure B2C Client Application ID]
 VUE_APP_OIDC_SCOPE=[Azure B2C Client Scope]
+VUE_APP_APPINSIGHTS_INSTRUMENTATIONKEY=[Azure Application Insights Instrumentation Key]
 ```
 
 ### Setup NPM for the frontend
@@ -111,10 +113,14 @@ docker run -it --rm -p 8080:8080 \
 -e "VUE_APP_OIDC_AUTHORITY=https://<b2c login subdomain>.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1_SignUp_SignIn" \
 -e "VUE_APP_OIDC_CLIENT_ID=<client id?" \
 -e "VUE_APP_OIDC_SCOPE=openid https://testprodoh.onmicrosoft.com/api/UrlBundle.ReadWrite" \
+-e "VUE_APP_APPINSIGHTS_INSTRUMENTATIONKEY=[Azure Application Insights Instrumentation Key]" \
 linkylink-fe
 ```
+
 =======
+
 # The Urlist - Frontend
+
 [![Build status](https://burkeknowswords.visualstudio.com/The%20Urlist/_apis/build/status/Frontend%20Build)](https://burkeknowswords.visualstudio.com/The%20Urlist/_build/latest?definitionId=7)
 
 The frontend for this project was build with the following libraries and frameworks:
@@ -124,13 +130,14 @@ The frontend for this project was build with the following libraries and framewo
 * [Vuelidate](https://github.com/vuelidate/vuelidate)
 * [Axios](https://github.com/axios/axios)
 
-Other useful tools
+Other useful tools & resources
 
 * [Visual Studio Code](https://code.visualstudio.com/?WT.mc_id=theurlist-github-buhollan)
 * [Vetur](https://marketplace.visualstudio.com/items?itemName=octref.vetur&WT.mc_id=theurlist-github-buhollan)
 * [VS Code Debugger for Chrome](https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome&WT.mc_id=theurlist-github-buhollan)
 * [Vue VS Code Extension Pack](https://marketplace.visualstudio.com/items?itemName=sdras.vue-vscode-extensionpack&WT.mc_id=theurlist-github-buhollan)
 * [Vue browser devtools](https://github.com/vuejs/vue-devtools)
+* [Application Insights for web pages](https://docs.microsoft.com/en-us/azure/azure-monitor/app/javascript)
 
 ## <a name="feconfigs" ></a> Frontend configurations
 
@@ -157,6 +164,7 @@ VUE_APP_BACKEND=[scheme_url_port]
 VUE_APP_OIDC_AUTHORITY=[Azure B2C Open ID config endpoint]
 VUE_APP_OIDC_CLIENT_ID=[Azure B2C Client Application ID]
 VUE_APP_OIDC_SCOPE=[Azure B2C Client Scope]
+VUE_APP_APPINSIGHTS_INSTRUMENTATIONKEY=[Azure Application Insights Instrumentation Key]
 ```
 
 ### Install Vue CLI globally
@@ -193,10 +201,10 @@ npm run build
 npm run lint
 ```
 
-### Running locally vs running on Azure 
+### Running locally vs running on Azure
 
 The code is optimised to be run in a local environment. If either the frontend or backend are run on Azure, there is one line of code that needs to be changed:
-In \frontend\src\services\api.service.ts change line 19 from 
+In \frontend\src\services\api.service.ts change line 19 from
 
 ```bash
 axios.defaults.withCredentials = false;
@@ -219,13 +227,16 @@ This should keep you out of CORS troubles
 ![localhost serve](docs/localhost_debugging.png)
 
 # Docker local development
+
 By default the front-end will be running in `development mode`, consequently make sure you setup the environment files as described [here](###-Modify-Environment-Variables).
+
 ```bash
 docker build -t linkylink-fe .
 docker run -it --rm -p 8080:8080 --name frontend linkylink-fe
 ```
 
 Alternatively, you can pass the environment variables to override any settings from the `.env.[mode]` files
+
 ```bash
 docker build -t linkylink-fe .
 docker run -it --rm -p 8080:8080 --name frontend \
@@ -233,5 +244,6 @@ docker run -it --rm -p 8080:8080 --name frontend \
 -e VUE_APP_OIDC_AUTHORITY="https://<b2c login subdomain>.b2clogin.com/testprodoh.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1_SignUp_SignIn" \
 -e VUE_APP_OIDC_CLIENT_ID="<client id>" \
 -e VUE_APP_OIDC_SCOPE="openid https://<b2c login subdomain>.onmicrosoft.com/api/UrlBundle.ReadWrite" \
+-e "VUE_APP_APPINSIGHTS_INSTRUMENTATIONKEY=[Azure Application Insights Instrumentation Key]" \
 linkylink-fe
 ```

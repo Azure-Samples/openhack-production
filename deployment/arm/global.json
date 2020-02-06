@@ -6,7 +6,12 @@
             "defaultValue": "",
             "type": "string"
         },
-        "regionScope": {
+        "apimNames": {
+            "defaultValue": [
+            ],
+            "type": "array"
+        },
+        "resourceGroupRegions": {
             "defaultValue": [
             ],
             "type": "array"
@@ -57,9 +62,9 @@
             "name": "[concat('nestedTemplate', copyIndex())]",
             "copy": {
                 "name": "apimlogger",
-                "count": "[length(parameters('regionScope'))]"
+                "count": "[length(parameters('resourceGroupRegions'))]"
             },
-            "resourceGroup": "[concat('rg-', parameters('regionScope')[copyIndex()])]",
+            "resourceGroup": "[parameters('resourceGroupRegions')[copyIndex()]]",
             "dependsOn": [
                 "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"
             ],
@@ -76,7 +81,7 @@
                         {
                             "type": "Microsoft.ApiManagement/service/loggers",
                             "apiVersion": "2019-01-01",
-                            "name": "[concat(concat('apim-', parameters('regionScope')[copyIndex()]), '/' , parameters('appInsightsName'))]",
+                            "name": "[concat(parameters('apimNames')[copyIndex()], '/' , parameters('appInsightsName'))]",
                             "properties": {
                                 "loggerType": "applicationInsights",
                                 "credentials": {
@@ -89,13 +94,13 @@
                         {
                             "type": "Microsoft.ApiManagement/service/diagnostics",
                             "apiVersion": "2019-01-01",
-                            "name": "[concat(concat('apim-', parameters('regionScope')[copyIndex()]), '/applicationinsights')]",
+                            "name": "[concat(parameters('apimNames')[copyIndex()], '/applicationinsights')]",
                             "dependsOn": [
-                                "[resourceId(concat('rg-', parameters('regionScope')[copyIndex()]), 'Microsoft.ApiManagement/service/loggers', concat('apim-', parameters('regionScope')[copyIndex()]), parameters('appInsightsName'))]"                            
+                                "[resourceId(parameters('resourceGroupRegions')[copyIndex()], 'Microsoft.ApiManagement/service/loggers', parameters('apimNames')[copyIndex()], parameters('appInsightsName'))]"
                             ],
                             "properties": {
                                 "alwaysLog": "allErrors",
-                                "loggerId": "[resourceId('Microsoft.ApiManagement/service/loggers', concat('apim-', parameters('regionScope')[copyIndex()]), parameters('appInsightsName'))]",
+                                "loggerId": "[resourceId('Microsoft.ApiManagement/service/loggers', parameters('apimNames')[copyIndex()], parameters('appInsightsName'))]",
                                 "sampling": {
                                     "samplingType": "fixed",
                                     "percentage": 100
@@ -287,35 +292,35 @@
             }
         },
         {
-            "type": "Microsoft.DocumentDB/databaseAccounts",
-            "name": "[parameters('cosmosdbName')]",
-            "apiVersion": "2019-08-01",
-            "kind": "GlobalDocumentDB",
-            "location": "[resourceGroup().location]",
-            "tags": {
-                "defaultExperience": "Core (SQL)"
-            },
-            "properties": {
-                "consistencyPolicy": {
-                    "defaultConsistencyLevel": "Session",
-                    "maxIntervalInSeconds": 5,
-                    "maxStalenessPrefix": 100
-                },
-                "copy": [
-                    {
-                        "name": "locations",
-                        "count": "[length(parameters('cosmosdbRegions'))]",
-                        "input": {
-                            "locationName": "[parameters('cosmosdbRegions')[copyIndex('locations')]]",
-                            "failoverPriority": "[copyIndex('locations')]",
-                            "isZoneRedundant": false
-                        }
-                    }
-                ],
-                "databaseAccountOfferType": "Standard",
-                "enableAutomaticFailover": true,
-                "enableMultipleWriteLocations": true
-            }
-        }
+            "type": "Microsoft.DocumentDB/databaseAccounts",
+            "name": "[parameters('cosmosdbName')]",
+            "apiVersion": "2019-08-01",
+            "kind": "GlobalDocumentDB",
+            "location": "[resourceGroup().location]",
+            "tags": {
+                "defaultExperience": "Core (SQL)"
+            },
+            "properties": {
+                "consistencyPolicy": {
+                    "defaultConsistencyLevel": "Session",
+                    "maxIntervalInSeconds": 5,
+                    "maxStalenessPrefix": 100
+                },
+                "copy": [
+                    {
+                        "name": "locations",
+                        "count": "[length(parameters('cosmosdbRegions'))]",
+                        "input": {
+                            "locationName": "[parameters('cosmosdbRegions')[copyIndex('locations')]]",
+                            "failoverPriority": "[copyIndex('locations')]",
+                            "isZoneRedundant": false
+                        }
+                    }
+                ],
+                "databaseAccountOfferType": "Standard",
+                "enableAutomaticFailover": true,
+                "enableMultipleWriteLocations": true
+            }
+        }
     ]
 }

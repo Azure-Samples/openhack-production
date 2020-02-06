@@ -37,13 +37,13 @@ namespace LinkyLink.Controllers
         /// </remarks>        
         // POST: api/OpenGraph
         [HttpPost]
-        public async Task<ActionResult<OpenGraphResult>> Post(IEnumerable<OpenGraphRequest> openGraphRequests)
+        public async Task<ActionResult<OpenGraphResult>> PostAsync(IEnumerable<OpenGraphRequest> openGraphRequests)
         {
             try
             {
                 if (openGraphRequests != null && openGraphRequests.Count() > 0)
                 {
-                    IEnumerable<OpenGraphResult> result = await _openGraphService.GetGraphResults(Request, openGraphRequests);
+                    IEnumerable<OpenGraphResult> result = await _openGraphService.GetGraphResultsAsync(Request, openGraphRequests);
                     return new OkObjectResult(result);
                 }
 

@@ -1,14 +1,11 @@
 ﻿using LinkyLink.Models;
 using Microsoft.AspNetCore.Http;
-using System;
 using System.Linq;
-using System.Security.Claims;
-using System.Security.Cryptography;
 
 namespace LinkyLink.Helpers
 {
     /// <summary>
-    /// This class handles the user`s identity and hashes the user email address if a user is authenticated by Twitter, Facebook, etc.
+    /// This class provides the method to read the identity of the authenticated user and extracts identity provider and email address.
     /// </summary>
     public class UserAuth
     {

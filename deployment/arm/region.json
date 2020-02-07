@@ -14,10 +14,6 @@
             "defaultValue": "",
             "type": "string"
         },
-        "appInsightsName": {
-            "defaultValue": "",
-            "type": "string"
-        },
         "apimName": {
             "defaultValue": "",
             "type": "string"
@@ -30,18 +26,6 @@
     "variables": {
     },
     "resources": [
-        {
-            "type": "microsoft.insights/components",
-            "apiVersion": "2015-05-01",
-            "name": "[parameters('appInsightsName')]",
-            "location": "[parameters('location')]",
-            "kind": "web",
-            "properties": {
-                "Application_Type": "web",
-                "Flow_Type": "Bluefield",
-                "Request_Source": "rest"
-            }
-        },
         {
             "type": "Microsoft.Web/serverfarms",
             "apiVersion": "2018-02-01",
@@ -438,58 +422,6 @@
                 ],
                 "responses": [
                 ]
-            }
-        },
-        {
-            "type": "Microsoft.ApiManagement/service/diagnostics",
-            "apiVersion": "2019-01-01",
-            "name": "[concat(parameters('apimName'), '/applicationinsights')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.ApiManagement/service', parameters('apimName'))]",
-                "[resourceId('Microsoft.ApiManagement/service/loggers', parameters('apimName'), parameters('appInsightsName'))]"
-            ],
-            "properties": {
-                "alwaysLog": "allErrors",
-                "loggerId": "[resourceId('Microsoft.ApiManagement/service/loggers', parameters('apimName'), parameters('appInsightsName'))]",
-                "sampling": {
-                    "samplingType": "fixed",
-                    "percentage": 100
-                }
-            }
-        },
-        {
-            "type": "Microsoft.ApiManagement/service/loggers",
-            "apiVersion": "2019-01-01",
-            "name": "[concat(parameters('apimName'), '/', parameters('appInsightsName'))]",
-            "dependsOn": [
-                "[resourceId('Microsoft.ApiManagement/service', parameters('apimName'))]",
-                "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"
-            ],
-            "properties": {
-                "loggerType": "applicationInsights",
-                "credentials": {
-                    "instrumentationKey": "[reference(resourceId('Microsoft.Insights/components', parameters('appInsightsName')), '2015-05-01').InstrumentationKey]"
-                },
-                "isBuffered": true,
-                "resourceId": "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"
-            }
-        },
-        {
-            "type": "Microsoft.ApiManagement/service/diagnostics/loggers",
-            "apiVersion": "2018-01-01",
-            "name": "[concat(parameters('apimName'), '/applicationinsights/', parameters('appInsightsName'))]",
-            "dependsOn": [
-                "[resourceId('Microsoft.ApiManagement/service/diagnostics', parameters('apimName'), 'applicationinsights')]",
-                "[resourceId('Microsoft.ApiManagement/service', parameters('apimName'))]",
-                "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"
-            ],
-            "properties": {
-                "loggerType": "applicationInsights",
-                "credentials": {
-                    "instrumentationKey": "[reference(resourceId('Microsoft.Insights/components', parameters('appInsightsName')), '2015-05-01').InstrumentationKey]"
-                },
-                "isBuffered": true,
-                "resourceId": "[resourceId('microsoft.insights/components', parameters('appInsightsName'))]"
             }
         },
         {

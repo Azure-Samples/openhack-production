@@ -102,6 +102,7 @@ globalScope="$businessUnit-$appName-$env-gbl"
 frontDoorName=$(createResourceName -p fd -u $businessUnit -a $appName -e $env -r gbl)
 frontDoorEndpoint="$frontDoorName.azurefd.net"
 cosmosdbName=$(createResourceName -p db -u $businessUnit -a $appName -e $env -r gbl)
+appInsightsName=$(createResourceName -p ai -u $businessUnit -a $appName -e $env -r gbl)
 
 # Regional configs
 if [[ ! -z ${region+x} ]]; then
@@ -109,5 +110,4 @@ if [[ ! -z ${region+x} ]]; then
     apimName=$(createResourceName -p apim -u $businessUnit -a $appName -e $env -r $region)
     appServicePlanName=$(createResourceName -p asp -u $businessUnit -a $appName -e $env -r $region)
     backendAppName=$(createResourceName -p backend -u $businessUnit -a $appName -e $env -r $region)
-    appInsightsName=$(createResourceName -p ai -u $businessUnit -a $appName -e $env -r $region)
 fi

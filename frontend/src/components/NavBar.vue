@@ -79,7 +79,6 @@
 import { Component, Prop, Vue } from "vue-property-decorator";
 import ProgressBar from "@/components/ProgressBar.vue";
 import UserMenu from "@/components/UserMenu.vue";
-import { UserManager } from "oidc-client";
 import User from "@/models/User";
 import config from "@/config";
 
@@ -92,28 +91,9 @@ import config from "@/config";
 export default class extends Vue {
   showMenu: boolean = false;
   showLoginModal: boolean = false;
-  userManager: UserManager;
 
   constructor() {
     super();
-    this.userManager = new UserManager({
-      automaticSilentRenew: true,
-      loadUserInfo: false,
-      authority: `https://${config.openId.domain}.b2clogin.com/${config.openId.domain}.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=${config.openId.policy}`,
-      client_id: config.openId.clientId,
-      scope: config.openId.scope,
-      prompt: "login",
-      redirect_uri: `${window.location.origin}/s/auth/openid`,
-      post_logout_redirect_uri: `${window.location.origin}/s/auth/openid`,
-      response_type: "id_token token",
-      metadata: {
-        issuer: `https://${config.openId.domain}.b2clogin.com/${config.openId.tenantId}/v2.0/`,
-        authorization_endpoint: `https://${config.openId.domain}.b2clogin.com/${config.openId.domain}.onmicrosoft.com/oauth2/v2.0/authorize?p=${config.openId.policy}`,
-        token_endpoint: `https://${config.openId.domain}.b2clogin.com/${config.openId.domain}.onmicrosoft.com/oauth2/v2.0/token?p=${config.openId.policy}`,
-        end_session_endpoint: `https://${config.openId.domain}.b2clogin.com/${config.openId.domain}.onmicrosoft.com/oauth2/v2.0/logout?p=${config.openId.policy}`,
-        jwks_uri: `https://${config.openId.domain}.b2clogin.com/${config.openId.domain}.onmicrosoft.com/discovery/v2.0/keys?p=${config.openId.policy}`
-      }
-    });
   }
 
   get currentUser(): User {
@@ -125,12 +105,12 @@ export default class extends Vue {
     this.$router.push("/s/edit");
   }
 
-  async login() {
-    await this.userManager.signinRedirect();
+  login() {
+    this.$store.dispatch("login");
   }
 
-  async logout() {
-    await this.userManager.signoutRedirect();
+  logout() {
+    this.$store.dispatch("logout");
   }
 
   async created() {

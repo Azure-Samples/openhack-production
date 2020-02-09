@@ -41,9 +41,8 @@ There are two configurations needed for the frontend to run, those are passed as
 
 - VUE_APP_BACKEND: this has the URL pointing to the backend endpoint.
 - VUE_APP_FRONTEND: this has the URL point to the frontend endpoint.
-- VUE_APP_OIDC_AUTHORITY: the configured Azure B2C Open ID endpoint.
 - VUE_APP_OIDC_CLIENT_ID: the configured Azure B2C Client Application ID.
-- VUE_APP_OIDC_SCOPE: the Azure B2C Client Scope.
+- VUE_APP_OIDC_SCOPE: the Azure B2C Client Scopes.
 - VUE_APP_APPINSIGHTS_INSTRUMENTATIONKEY: the configured Azure Application Insights instrumentation key.
 
 ## Build and run the frontend locally
@@ -58,9 +57,8 @@ There are two configurations needed for the frontend to run, those are passed as
 ```bash
 VUE_APP_BACKEND=http://localhost:[backend_port]
 VUE_APP_FRONTEND=http://localhost:[frontend_port]
-VUE_APP_OIDC_AUTHORITY=[Azure B2C Open ID config endpoint]
 VUE_APP_OIDC_CLIENT_ID=[Azure B2C Client Application ID]
-VUE_APP_OIDC_SCOPE=[Azure B2C Client Scope]
+VUE_APP_OIDC_SCOPE=[Azure B2C Client Scopes]
 VUE_APP_APPINSIGHTS_INSTRUMENTATIONKEY=[Azure Application Insights Instrumentation Key]
 ```
 

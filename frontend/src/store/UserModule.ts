@@ -65,12 +65,12 @@ export default class UserModule extends VuexModule {
     }
   }
 
-  @Action
+  @Action({ rawError: true })
   async login() {
     await AuthService.login();
   }
 
-  @Action
+  @Action({ rawError: true })
   async completeLogin() {
     try {
       await AuthService.completeLogin();
@@ -81,12 +81,12 @@ export default class UserModule extends VuexModule {
     }
   }
 
-  @Action
+  @Action({ rawError: true })
   async logout() {
     await AuthService.logout();
   }
 
-  @Action
+  @Action({ rawError: true })
   async completeLogout() {
     await AuthService.completeLogout();
   }

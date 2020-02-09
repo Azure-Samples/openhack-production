@@ -97,14 +97,22 @@ export default class extends Vue {
   constructor() {
     super();
     this.userManager = new UserManager({
+      automaticSilentRenew: true,
       loadUserInfo: false,
-      authority: config.openId.authority,
+      authority: `https://${config.openId.domain}.b2clogin.com/${config.openId.domain}.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=${config.openId.policy}`,
       client_id: config.openId.clientId,
       scope: config.openId.scope,
       prompt: "login",
       redirect_uri: `${window.location.origin}/s/auth/openid`,
       post_logout_redirect_uri: `${window.location.origin}/s/auth/openid`,
-      response_type: "id_token token"
+      response_type: "id_token token",
+      metadata: {
+        issuer: `https://${config.openId.domain}.b2clogin.com/${config.openId.tenantId}/v2.0/`,
+        authorization_endpoint: `https://${config.openId.domain}.b2clogin.com/${config.openId.domain}.onmicrosoft.com/oauth2/v2.0/authorize?p=${config.openId.policy}`,
+        token_endpoint: `https://${config.openId.domain}.b2clogin.com/${config.openId.domain}.onmicrosoft.com/oauth2/v2.0/token?p=${config.openId.policy}`,
+        end_session_endpoint: `https://${config.openId.domain}.b2clogin.com/${config.openId.domain}.onmicrosoft.com/oauth2/v2.0/logout?p=${config.openId.policy}`,
+        jwks_uri: `https://${config.openId.domain}.b2clogin.com/${config.openId.domain}.onmicrosoft.com/discovery/v2.0/keys?p=${config.openId.policy}`
+      }
     });
   }
 

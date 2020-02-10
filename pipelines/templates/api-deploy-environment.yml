@@ -8,11 +8,12 @@ parameters:
 jobs:
   - deployment: 
     environment: ${{ parameters.environment }}
-    displayName: Deploy API Backend
+    displayName: Validate ${{ parameters.environment }} Approval
     strategy:
       runOnce:
         deploy:
           steps:
+            - download: none  # skip the default Download Artifacts part of the task
             - bash: echo "Deploying ${{ parameters.environment }} environment"
               displayName: Check for Approval
   - job: setup

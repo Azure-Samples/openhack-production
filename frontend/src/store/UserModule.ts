@@ -2,6 +2,7 @@ import { Module, Mutation, Action, VuexModule } from "vuex-module-decorators";
 import User from "../models/User";
 import IUserList from "@/models/IUserList";
 import UserService from "@/services/user.service";
+import AuthService from "@/services/auth.service";
 
 @Module
 export default class UserModule extends VuexModule {
@@ -64,6 +65,32 @@ export default class UserModule extends VuexModule {
     }
   }
 
+  @Action({ rawError: true })
+  async login() {
+    await AuthService.login();
+  }
+
+  @Action({ rawError: true })
+  async completeLogin() {
+    try {
+      await AuthService.completeLogin();
+      const user = await UserService.me();
+      this.context.commit("_updateCurrentUser", user);
+    } catch (err) {
+      console.log("Invalid response from login flow")
+    }
+  }
+
+  @Action({ rawError: true })
+  async logout() {
+    await AuthService.logout();
+  }
+
+  @Action({ rawError: true })
+  async completeLogout() {
+    await AuthService.completeLogout();
+  }
+
   @Action({ commit: "_toggleProfileMenu" })
-  toggleProfileMenu() {}
+  toggleProfileMenu() { }
 }

@@ -1,7 +1,6 @@
 ﻿using LinkyLink.Controllers;
 using LinkyLink.Models;
 using LinkyLink.Service;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using System.Collections.Generic;
@@ -35,13 +34,6 @@ namespace LinkyLink.Tests
 
             // Assert
             Assert.IsType<BadRequestObjectResult>(result.Result);
-
-            BadRequestObjectResult badRequestResult = result.Result as BadRequestObjectResult;
-            Assert.IsType<ProblemDetails>(badRequestResult.Value);
-
-            ProblemDetails problemDetails = badRequestResult.Value as ProblemDetails;
-            Assert.Equal("Could not validate links", problemDetails.Title);
-            Assert.Equal(problemDetails.Status, StatusCodes.Status400BadRequest);
         }
     }
 }

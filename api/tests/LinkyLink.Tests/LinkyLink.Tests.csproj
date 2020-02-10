@@ -25,4 +25,8 @@
     <ProjectReference Include="..\..\src\LinkyLink\LinkyLink.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="TestResults\" />
+  </ItemGroup>
+
 </Project>

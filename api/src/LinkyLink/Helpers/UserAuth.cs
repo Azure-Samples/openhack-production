@@ -1,5 +1,6 @@
 ﻿using LinkyLink.Models;
 using Microsoft.AspNetCore.Http;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace LinkyLink.Helpers
@@ -7,6 +8,7 @@ namespace LinkyLink.Helpers
     /// <summary>
     /// This class provides the method to read the identity of the authenticated user and extracts identity provider and email address.
     /// </summary>
+
     public class UserAuth
     {
         private readonly IHttpContextAccessor _contextAccessor;

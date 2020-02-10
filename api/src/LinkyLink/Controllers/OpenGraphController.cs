@@ -47,25 +47,11 @@ namespace LinkyLink.Controllers
                     return new OkObjectResult(result);
                 }
 
-                ProblemDetails problemDetails = new ProblemDetails
-                {
-                    Title = "Could not validate links",
-                    Detail = "Payload must be a valid JSON object or array",
-                    Status = StatusCodes.Status400BadRequest,
-                    Type = "/linkylink/clientissue",
-                };
-                return new BadRequestObjectResult(problemDetails);
+                return BadRequest("Links cannot be validated. Payload must be a valid array.");
             }
             catch (Exception ex)
             {
-                ProblemDetails problemDetails = new ProblemDetails
-                {
-                    Title = "Could not validate links",
-                    Detail = ex.Message,
-                    Status = StatusCodes.Status400BadRequest,
-                    Type = "/linkylink/clientissue",
-                };
-                return new BadRequestObjectResult(problemDetails);
+                return BadRequest(ex);
             }
         }
     }

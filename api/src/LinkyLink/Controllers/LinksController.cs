@@ -111,16 +111,7 @@ namespace LinkyLink.Controllers
         {
             if (linkBundle.Links.Count() == 0)
             {
-                var problemDetails = new ProblemDetails()
-                {
-                    Title = "Payload is invalid",
-                    Detail = "No links are provided",
-                    Status = StatusCodes.Status400BadRequest,
-                    Type = "/linkylink/clientissue",
-                    Instance = Request.Path
-                };
-
-                return new BadRequestObjectResult(problemDetails);
+                return BadRequest("Invalid Payload. No Links are provided with LinkBundle.");
             }
 
             string userHandle = _linksService.GetUserAccountEmail();
@@ -133,7 +124,7 @@ namespace LinkyLink.Controllers
 
             if (!match.Success)
             {
-                return new BadRequestResult();
+                return BadRequest("Invalid Payload. Vanity Url name is invalid.");
             }
 
             try

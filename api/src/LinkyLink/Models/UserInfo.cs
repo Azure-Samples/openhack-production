@@ -1,8 +1,11 @@
-﻿namespace LinkyLink.Models
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace LinkyLink.Models
 {
     /// <summary>
     /// Data model class to represent user's identity provider and email.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public struct UserInfo
     {
         public string IDProvider { get; }

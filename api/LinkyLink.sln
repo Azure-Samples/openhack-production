@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LinkyLink", "src\LinkyLink\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LinkyLink.Tests", "tests\LinkyLink.Tests\LinkyLink.Tests.csproj", "{15A8A501-1B2F-43CB-989E-4DECEAB760B3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LinkyLink.Integration.Tests", "tests\LinkyLink.Integration.Tests\LinkyLink.Integration.Tests.csproj", "{1A171BFB-9C7D-41FD-B9D9-9858C032A0E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LinkyLink.Integration.Tests", "tests\LinkyLink.Integration.Tests\LinkyLink.Integration.Tests.csproj", "{1A171BFB-9C7D-41FD-B9D9-9858C032A0E4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -43,6 +43,7 @@ Update `appsettings.Development.json` file with your tenants configuration:
 "AzureAdB2C": {
   "Instance": "https://[YourTenantName].b2clogin.com/tfp/",
   "ClientId": "[The Azure B2C application client ID]",
+  "Name": "[YourTenantName]",
   "Domain": "[YourTenantName].onmicrosoft.com",
   "SignUpSignInPolicyId": "[Your Azure B2C policy name]" 
 },

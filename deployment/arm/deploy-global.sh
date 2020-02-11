@@ -67,6 +67,7 @@ echo "App Name: $appName"
 echo "Environment: $env"
 echo "Front Door: $frontDoorName"
 echo "Cosmos DB Name: $cosmosdbName"
+echo "Application Insights Name: $appInsightsName"
 echo
 
 # set -e fails and exit here if just let counter=0 is specified. Workaround is to add || true to the expression
@@ -75,6 +76,8 @@ let counter=0 || true
 frontendHostArray=()
 backendHostArray=()
 cosmosdbRegionArray=()
+resourceGroupRegionArray=()
+apimNameArray=()
 
 for region in ${regions[@]}; do
     # include common script to populate shared variables per region
@@ -90,15 +93,22 @@ for region in ${regions[@]}; do
     frontendHostArray+=("$primaryEndpoint")
 
     backendHostArray+=("apim-$regionScope.azure-api.net")
+    apimNameArray+=("apim-$regionScope")
+
     cosmosdbRegionArray+=("$region")
+    resourceGroupRegionArray+=("rg-$regionScope")
 done
 
 frontendHosts=$(toArmArray ${frontendHostArray[*]})
 backendHosts=$(toArmArray ${backendHostArray[*]})
 cosmosdbRegions=$(toArmArray ${cosmosdbRegionArray[*]})
+resourceGroupRegions=$(toArmArray ${resourceGroupRegionArray[*]})
+apimNames=$(toArmArray ${apimNameArray[*]})
 echo "Frontend Hosts: $frontendHosts"
 echo "Backend Hosts: $backendHosts"
-echo
+echo "Regional Resource Groups: $resourceGroupRegions"
+echo "Regional APIM Names: $apimNames"
+echo 
 
 echo "Creating global resource Group: $resourceGroupName"
 az group create \
@@ -112,6 +122,8 @@ az group deployment create \
     --resource-group $resourceGroupName \
     --template-file global.json \
     --parameters \
+    appInsightsName=$appInsightsName apimNames=$apimNames \
     frontDoorName=$frontDoorName frontDoorEndpoint=$frontDoorEndpoint \
     frontendHosts=$frontendHosts backendHosts=$backendHosts \
-    cosmosdbName=$cosmosdbName cosmosdbRegions=$cosmosdbRegions
+    cosmosdbName=$cosmosdbName cosmosdbRegions=$cosmosdbRegions \
+    resourceGroupRegions=$resourceGroupRegions

@@ -2,7 +2,6 @@
 using LinkyLink.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,7 +10,6 @@ namespace LinkyLink.Service
     /// <summary>
     /// This class uses Entity Framework Core to perform CRUD operations (Create, Read, Update, Delete) on the database.
     /// </summary>
-    [ExcludeFromCodeCoverage]
     public class LinksService : ILinksService
     {
         private readonly LinksContext _context;

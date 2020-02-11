@@ -47,11 +47,11 @@ namespace LinkyLink.Controllers
                     return new OkObjectResult(result);
                 }
 
-                return BadRequest("Links cannot be validated. Payload must be a valid array.");
+                return BadRequest("Links cannot be validated. Payload must be a valid json array.");
             }
             catch (Exception ex)
             {
-                return BadRequest(ex);
+                return BadRequest(String.Format("Links cannot be validated. The service returned exception {0}", ex.Message));
             }
         }
     }

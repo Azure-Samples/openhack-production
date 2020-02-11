@@ -16,7 +16,7 @@ namespace LinkyLink.Models
             cosmosContainerName = configuration.GetSection("CosmosSettings")["ContainerName"];
         }
 
-        public DbSet<LinkBundle> LinkBundle { get; set; }
+        public virtual DbSet<LinkBundle> LinkBundle { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

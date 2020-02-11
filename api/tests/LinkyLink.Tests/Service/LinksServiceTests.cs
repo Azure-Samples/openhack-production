@@ -1,5 +1,4 @@
-﻿using AutoFixture;
-using Castle.Core.Configuration;
+﻿using Castle.Core.Configuration;
 using LinkyLink.Helpers;
 using LinkyLink.Models;
 using LinkyLink.Service;

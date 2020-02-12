@@ -6,7 +6,8 @@ using System.Linq;
 namespace LinkyLink.Helpers
 {
     /// <summary>
-    /// This class provides the method to read the identity of the authenticated user and extracts identity provider and email address. This code is tested as part of the integration test.
+    /// This class provides the method to read the identity of the authenticated user and extracts identity provider and email address. 
+    /// This class is tested as part of Integration test and its difficult to test HttpContextAccessor in isolation thats why I excluded it from code coverage.
     /// </summary>
     [ExcludeFromCodeCoverage]
     public class UserAuth

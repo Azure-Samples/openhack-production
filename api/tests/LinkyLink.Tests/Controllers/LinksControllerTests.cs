@@ -32,7 +32,6 @@ namespace LinkyLink.Tests
         {
             // Arrange
             List<LinkBundle> list = new List<LinkBundle>();
-       
 
             LinkBundle linkBundle = new LinkBundle
             {
@@ -52,7 +51,7 @@ namespace LinkyLink.Tests
         }
 
         [Fact]
-        public async Task GetLinkBundleReturnsNotFoundIfLinkBundleDoesntExists()
+        public async Task GetLinkBundleReturnsNotFoundIfLinkBundleDoesntExist()
         {
             // Arrange 
             string vanityUrl = "samplelink";
@@ -85,7 +84,7 @@ namespace LinkyLink.Tests
         }
 
         [Fact]
-        public async Task GetLinkBundlesForUserReturnsNotFoundIfLinkBundleDoesntExists()
+        public async Task GetLinkBundlesForUserReturnsNotFoundIfLinkBundleDoesntExist()
         {
             // Arrange 
             string userId = "example@microsoft.com";
@@ -193,7 +192,6 @@ namespace LinkyLink.Tests
             _mockService.Verify(x => x.CreateLinkBundleAsync(It.IsAny<LinkBundle>()), Times.Once);
             
             Assert.IsType<CreatedAtActionResult>(result.Result);
-            
             Assert.Equal(linkBundle.Description, expectedLinkBundle.Description);
             Assert.Equal(linkBundle.UserId, expectedLinkBundle.UserId);
             Assert.Equal(linkBundle.VanityUrl, expectedLinkBundle.VanityUrl);
@@ -300,7 +298,8 @@ namespace LinkyLink.Tests
             _mockService.Setup(service => service.LinkBundleExistsAsync(linkBundle.Id))
                 .ReturnsAsync(true);
 
-            _mockService.Setup(r => r.CreateLinkBundleAsync(linkBundle)).Throws(new DbUpdateException());
+            _mockService.Setup(r => r.CreateLinkBundleAsync(linkBundle))
+                .Throws(new DbUpdateException());
 
             // Act
             ActionResult<LinkBundle> result = await _linksController.PostLinkBundleAsync(linkBundle);
@@ -320,14 +319,15 @@ namespace LinkyLink.Tests
                 Links = new List<Link> { new Link() }
             };
 
-            _mockService.Setup(r => r.CreateLinkBundleAsync(linkBundle)).Throws(new DbUpdateException());
+            _mockService.Setup(r => r.CreateLinkBundleAsync(linkBundle))
+                .Throws(new DbUpdateException());
 
             // Act, Assert
             Assert.ThrowsAsync<DbUpdateException>(() => _linksController.PostLinkBundleAsync(linkBundle));
         }
 
         [Fact]
-        public async Task DeleteLinkBundleAsyncReturnsUnAuthorizedIfMissingAuth()
+        public async Task DeleteLinkBundleReturnsUnAuthorizedIfMissingAuth()
         {
             // Arrange
             LinkBundle linkBundle = new LinkBundle
@@ -344,7 +344,7 @@ namespace LinkyLink.Tests
         }
 
         [Fact]
-        public async Task DeleteLinkBundleAsyncReturnsNotFoundIfLinkBundleDoesntExists()
+        public async Task DeleteLinkBundleReturnsNotFoundIfLinkBundleDoesntExist()
         {
             // Arrange 
             string userId = "example@microsoft.com";
@@ -399,7 +399,7 @@ namespace LinkyLink.Tests
         }
 
         [Fact]
-        public async Task PatchLinkBundleReturnsNotFoundIfLinkBundleDoesntExists()
+        public async Task PatchLinkBundleReturnsNotFoundIfLinkBundleDoesntExist()
         {
             // Arrange
             LinkBundle linkBundle = new LinkBundle

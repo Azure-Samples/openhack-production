@@ -1,8 +1,10 @@
 ﻿using LinkyLink.Controllers;
 using LinkyLink.Models;
 using LinkyLink.Service;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
@@ -24,7 +26,7 @@ namespace LinkyLink.Tests
         }
 
         [Fact]
-        public async Task OpenGraphReturnsBadRequestWhenEmptyPayload()
+        public async Task PostAsyncReturnsBadRequestWhenEmptyPayload()
         {
             // Arrange
             List<OpenGraphRequest> openGraphRequests = null;
@@ -34,6 +36,24 @@ namespace LinkyLink.Tests
 
             // Assert
             Assert.IsType<BadRequestObjectResult>(result.Result);
+        }
+
+        [Fact]
+        public async Task PostAsyncThrowsExceptionWhenOpenGraphAPIFails()
+        {
+            // Arrange
+            List<OpenGraphRequest> openGraphRequests = new List<OpenGraphRequest>();
+
+            OpenGraphRequest openGraphRequest = new OpenGraphRequest
+            {
+                Url = "www.microsoft.com",
+                Id = "1"
+            };
+
+            openGraphRequests.Add(openGraphRequest);
+
+            // Act, // Assert
+            Assert.ThrowsAsync<Exception>(() => _openGraphController.PostAsync(openGraphRequests));
         }
     }
 }

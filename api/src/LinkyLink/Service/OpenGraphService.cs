@@ -49,8 +49,9 @@ namespace LinkyLink.Service
                         var titleTag = doc.DocumentNode.SelectSingleNode("//head/title");
                         return new OpenGraphResult(id, graph, descriptionMetaTag, titleTag);
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
+                        // Todo - Add logging
                     }
                 }
             }

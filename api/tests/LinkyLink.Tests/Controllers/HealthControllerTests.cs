@@ -15,6 +15,7 @@ namespace LinkyLink.Tests
         {
             _healthController = new HealthController();
         }
+
         [Fact]
         public void PingReturnsOk()
         {

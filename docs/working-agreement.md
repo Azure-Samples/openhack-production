@@ -13,7 +13,7 @@ A **Working Agreement** is a living document representing the principles and e
 
 The team follows the [SCRUM](<https://en.wikipedia.org/wiki/Scrum_(software_development)>) agile development process with weekly sprints.
 
-### The Scrum Leader will
+### The Scrum Leader
 
 - The team will have a rotating scrum leader.
 - Drive standup/planning/retro meetings and hold the team accountable for attendance and participation.

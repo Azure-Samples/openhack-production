@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ namespace LinkyLink.Controllers
     /// Manages endpoints for openid configuration pass through
     /// </summary>
     [Route("api/[controller]")]
+    [ExcludeFromCodeCoverage]
     public class OpenIdController : Controller
     {
         private IConfigurationSection azureAdConfig;

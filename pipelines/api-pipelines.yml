@@ -8,6 +8,8 @@ trigger:
     include:
       - api/*
       - pipelines/api-pipelines.yml
+      - pipelines/templates/api-build.yml
+      - pipelines/templates/api-deploy-environment.yml
 
 pr:
   autoCancel: true
@@ -18,6 +20,8 @@ pr:
     include:
       - api/*
       - pipelines/api-pipelines.yml
+      - pipelines/templates/api-build.yml
+      - pipelines/templates/api-deploy-environment.yml
 
 pool:
   vmImage: "ubuntu-latest"

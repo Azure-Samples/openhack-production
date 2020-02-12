@@ -8,6 +8,8 @@ trigger:
     include:
       - deployment/*
       - pipelines/deploy-infrastructure.yml
+      - pipelines/templates/iac-deploy-environment.yml
+
 
 pr: none
 

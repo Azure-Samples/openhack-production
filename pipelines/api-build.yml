@@ -1,16 +1,5 @@
 name: api-build
 
-pr:
-  autoCancel: true
-  branches:
-    include:
-      - master
-  paths:
-    include:
-      - api/*
-      - pipelines/api-build.yml
-      - pipelines/templates/api-build.yml
-
 pool:
   vmImage: "ubuntu-latest"
 

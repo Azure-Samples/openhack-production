@@ -1,16 +1,5 @@
 name: $(Date:yyyyMMdd)$(Rev:.r) # build numbering format
 
-# only works for GitHub
-pr:
-  autoCancel: true
-  branches:
-    include:
-      - master
-  paths:
-    include:
-      - frontend/*
-      - pipelines/frontend-build.yml
-
 variables:
   - group: prodoh-urlist-common
   - group: prodoh-urlist-dev

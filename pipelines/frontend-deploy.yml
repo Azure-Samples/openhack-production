@@ -1,4 +1,4 @@
-name: frontend-pipeline
+name: frontend-deploy
 
 trigger:
   branches:
@@ -7,21 +7,13 @@ trigger:
   paths:
     include:
       - frontend/*
-      - pipelines/frontend-pipeline.yml
+      - pipelines/frontend-build.yml
+      - pipelines/frontend-deploy.yml
       - pipelines/templates/frontend-build.yml
       - pipelines/templates/frontend-deploy-environment.yml
+      - pipelines/templates/deployment-gate.yml
 
-pr:
-  autoCancel: true
-  branches:
-    include:
-      - master
-  paths:
-    include:
-      - frontend/*
-      - pipelines/frontend-pipeline.yml
-      - pipelines/templates/frontend-build.yml
-      - pipelines/templates/frontend-deploy-environment.yml
+pr: none
 
 variables:
   - group: prodoh-urlist-common
@@ -32,7 +24,6 @@ pool:
 stages:
   - stage: Development
     displayName: Development
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
     variables:
       - group: prodoh-urlist-dev
     jobs:

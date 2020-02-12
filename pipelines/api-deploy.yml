@@ -1,4 +1,4 @@
-name: api-pipeline
+name: api-deploy
 
 trigger:
   branches:
@@ -7,21 +7,13 @@ trigger:
   paths:
     include:
       - api/*
-      - pipelines/api-pipelines.yml
+      - pipelines/api-build.yml
+      - pipelines/api-deploy.yml
       - pipelines/templates/api-build.yml
       - pipelines/templates/api-deploy-environment.yml
+      - pipelines/templates/deployment-gate.yml
 
-pr:
-  autoCancel: true
-  branches:
-    include:
-      - master
-  paths:
-    include:
-      - api/*
-      - pipelines/api-pipelines.yml
-      - pipelines/templates/api-build.yml
-      - pipelines/templates/api-deploy-environment.yml
+pr: none
 
 pool:
   vmImage: "ubuntu-latest"
@@ -38,7 +30,6 @@ stages:
   - stage: Development
     displayName: Development
     dependsOn: BuildAndValidate
-    condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
     variables:
       - group: prodoh-urlist-dev
     jobs:

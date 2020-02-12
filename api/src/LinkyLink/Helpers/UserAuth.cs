@@ -7,7 +7,7 @@ namespace LinkyLink.Helpers
 {
     /// <summary>
     /// This class provides the method to read the identity of the authenticated user and extracts identity provider and email address. 
-    /// This class is tested as part of Integration test and its difficult to test HttpContextAccessor in isolation thats why I excluded it from code coverage.
+    /// This class is tested as part of Integration test and it's difficult to test HttpContextAccessor in isolation that's why this class is excluded from code coverage.
     /// </summary>
     [ExcludeFromCodeCoverage]
     public class UserAuth

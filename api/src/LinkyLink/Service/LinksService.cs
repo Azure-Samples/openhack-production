@@ -35,7 +35,7 @@ namespace LinkyLink.Service
         public async Task<LinkBundle> FindLinkBundleAsync(string vanityUrl)
         {
             return await _context.LinkBundle
-               .SingleAsync(b => b.VanityUrl == vanityUrl.ToLower());
+               .SingleOrDefaultAsync(b => b.VanityUrl == vanityUrl.ToLower());
         }
 
         public async Task<IEnumerable<LinkBundle>> FindLinkBundlesForUserAsync(string userId)

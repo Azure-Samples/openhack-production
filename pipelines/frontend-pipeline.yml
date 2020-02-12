@@ -8,6 +8,8 @@ trigger:
     include:
       - frontend/*
       - pipelines/frontend-pipeline.yml
+      - pipelines/templates/frontend-build.yml
+      - pipelines/templates/frontend-deploy-environment.yml
 
 pr:
   autoCancel: true
@@ -18,6 +20,8 @@ pr:
     include:
       - frontend/*
       - pipelines/frontend-pipeline.yml
+      - pipelines/templates/frontend-build.yml
+      - pipelines/templates/frontend-deploy-environment.yml
 
 variables:
   - group: prodoh-urlist-common

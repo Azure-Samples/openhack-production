@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
 using LinkyLink.Helpers;
@@ -16,6 +17,7 @@ using Microsoft.OpenApi.Models;
 
 namespace LinkyLink
 {
+    [ExcludeFromCodeCoverage]
     public class Startup
     {
         readonly string _CORSPolicyName = "OHCORSPolicyName";

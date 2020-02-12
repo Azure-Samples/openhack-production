@@ -1,9 +1,11 @@
 ﻿using HtmlAgilityPack;
 using OpenGraphNet;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace LinkyLink.Models
 {
+    [ExcludeFromCodeCoverage]
     public class OpenGraphResult
     {
         public OpenGraphResult() { }

@@ -1,8 +1,11 @@
-﻿namespace LinkyLink.Models
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace LinkyLink.Models
 {
     /// <summary>
     /// Data model class to represent Link in a Link Bundle.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class Link
     {
         public string Id { get; set; }

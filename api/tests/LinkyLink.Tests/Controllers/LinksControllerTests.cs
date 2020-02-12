@@ -3,6 +3,7 @@ using LinkyLink.Models;
 using LinkyLink.Service;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,30 @@ namespace LinkyLink.Tests
         }
 
         [Fact]
-        public async Task GetLinkBundleReturnsNotFoundIfLinkBundleDoesntExists()
+        public async Task GetLinkBundlesReturnsAllLinkBundles()
+        {
+            // Arrange
+            List<LinkBundle> list = new List<LinkBundle>();
+
+            LinkBundle linkBundle = new LinkBundle
+            {
+                VanityUrl = "samplelink"
+            };
+
+            list.Add(linkBundle);
+
+            _mockService.Setup(service => service.AllLinkBundlesAsync())
+                .ReturnsAsync(list);
+
+            // Act
+            IEnumerable<LinkBundle> result = await _linksController.GetLinkBundlesAsync();
+
+            // Assert
+            Assert.Equal(1, result.Count());
+        }
+
+        [Fact]
+        public async Task GetLinkBundleReturnsNotFoundIfLinkBundleDoesntExist()
         {
             // Arrange 
             string vanityUrl = "samplelink";
@@ -60,7 +84,7 @@ namespace LinkyLink.Tests
         }
 
         [Fact]
-        public async Task GetLinkBundlesForUserReturnsNotFoundIfLinkBundleDoesntExists()
+        public async Task GetLinkBundlesForUserReturnsNotFoundIfLinkBundleDoesntExist()
         {
             // Arrange 
             string userId = "example@microsoft.com";
@@ -168,7 +192,6 @@ namespace LinkyLink.Tests
             _mockService.Verify(x => x.CreateLinkBundleAsync(It.IsAny<LinkBundle>()), Times.Once);
             
             Assert.IsType<CreatedAtActionResult>(result.Result);
-            
             Assert.Equal(linkBundle.Description, expectedLinkBundle.Description);
             Assert.Equal(linkBundle.UserId, expectedLinkBundle.UserId);
             Assert.Equal(linkBundle.VanityUrl, expectedLinkBundle.VanityUrl);
@@ -227,7 +250,84 @@ namespace LinkyLink.Tests
         }
 
         [Fact]
-        public async Task DeleteLinkBundleAsyncReturnsUnAuthorizedIfMissingAuth()
+        public async Task PostLinkBundleReturnsBadRequestIfVanityUrlNameIsInvalid()
+        {
+            // Arrange
+            LinkBundle linkBundle = new LinkBundle
+            {
+                UserId = "example@microsoft.com",
+                VanityUrl = "name@",
+                Links = new List<Link> { new Link() }
+            };
+
+            // Act
+            ActionResult<LinkBundle> result = await _linksController.PostLinkBundleAsync(linkBundle);
+
+            // Assert
+            Assert.IsType<BadRequestObjectResult>(result.Result);
+        }
+
+        [Fact]
+        public async Task PostLinkBundleReturnsBadRequestIfLinksAreNotProvided()
+        {
+            // Arrange
+            LinkBundle linkBundle = new LinkBundle
+            {
+                UserId = "example@microsoft.com",
+                VanityUrl = string.Empty
+            };
+
+            // Act
+            ActionResult<LinkBundle> result = await _linksController.PostLinkBundleAsync(linkBundle);
+
+            // Assert
+            Assert.IsType<BadRequestObjectResult>(result.Result);
+        }
+
+        [Fact]
+        public async Task PostLinkBundleReturnsConflictIfRecordExists()
+        {
+            // Arrange
+            LinkBundle linkBundle = new LinkBundle
+            {
+                UserId = "example@microsoft.com",
+                VanityUrl = string.Empty,
+                Links = new List<Link> { new Link() }
+            };
+
+            _mockService.Setup(service => service.LinkBundleExistsAsync(linkBundle.Id))
+                .ReturnsAsync(true);
+
+            _mockService.Setup(r => r.CreateLinkBundleAsync(linkBundle))
+                .Throws(new DbUpdateException());
+
+            // Act
+            ActionResult<LinkBundle> result = await _linksController.PostLinkBundleAsync(linkBundle);
+
+            // Assert
+            Assert.IsType<ConflictResult>(result.Result);
+        }
+
+        [Fact]
+        public async Task PostLinkBundleThrowsDBUpdateException()
+        {
+            // Arrange
+            LinkBundle linkBundle = new LinkBundle
+            {
+                UserId = "example@microsoft.com",
+                VanityUrl = string.Empty,
+                Links = new List<Link> { new Link() }
+            };
+
+            _mockService.Setup(r => r.CreateLinkBundleAsync(linkBundle))
+                .Throws(new DbUpdateException());
+
+            // Act, Assert
+            Assert.ThrowsAsync<DbUpdateException>(() => _linksController.PostLinkBundleAsync(linkBundle));
+        }
+
+        [Fact]
+        public async Task DeleteLinkBundleReturnsUnAuthorizedIfMissingAuth()
         {
             // Arrange
             LinkBundle linkBundle = new LinkBundle
@@ -244,7 +344,7 @@ namespace LinkyLink.Tests
         }
 
         [Fact]
-        public async Task DeleteLinkBundleAsyncReturnsNotFoundIfLinkBundleDoesntExists()
+        public async Task DeleteLinkBundleReturnsNotFoundIfLinkBundleDoesntExist()
         {
             // Arrange 
             string userId = "example@microsoft.com";
@@ -296,6 +396,28 @@ namespace LinkyLink.Tests
 
             // Assert
             Assert.IsType<UnauthorizedResult>(result.Result);
+        }
+
+        [Fact]
+        public async Task PatchLinkBundleReturnsNotFoundIfLinkBundleDoesntExist()
+        {
+            // Arrange
+            LinkBundle linkBundle = new LinkBundle
+            {
+                UserId = "example@microsoft.com",
+                VanityUrl = "samplelink"
+            };
+
+            _mockService.Setup(service => service.GetUserAccountEmail())
+                .Returns("example@microsoft.com");
+
+            JsonPatchDocument<LinkBundle> patchReqDocument = new JsonPatchDocument<LinkBundle>();
+
+            // Act
+            ActionResult<LinkBundle> result = await _linksController.PatchLinkBundleAsync(linkBundle.VanityUrl, patchReqDocument);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result.Result);
         }
 
         [Fact]

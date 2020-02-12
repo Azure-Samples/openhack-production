@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace LinkyLink.Models
 {
     /// <summary>
     /// Data model class to represent a Link Bundle.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class LinkBundle
     {
         public LinkBundle()

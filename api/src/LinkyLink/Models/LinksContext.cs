@@ -1,11 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using System.Diagnostics.CodeAnalysis;
 
 namespace LinkyLink.Models
 {
     /// <summary>
     /// This class coordinates Entity Framework Core functionality (Create, Read, Update, Delete) for the LinkBundle data model.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class LinksContext : DbContext
     {
         private readonly string cosmosContainerName;
@@ -14,7 +16,7 @@ namespace LinkyLink.Models
             cosmosContainerName = configuration.GetSection("CosmosSettings")["ContainerName"];
         }
 
-        public DbSet<LinkBundle> LinkBundle { get; set; }
+        public virtual DbSet<LinkBundle> LinkBundle { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

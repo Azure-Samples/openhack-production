@@ -55,5 +55,39 @@ namespace LinkyLink.Tests
             // Act, // Assert
             Assert.ThrowsAsync<Exception>(() => _openGraphController.PostAsync(openGraphRequests));
         }
+
+        [Fact]
+        public async Task PostAsyncReturnsOpenGraphAPI()
+        {
+            // Arrange
+            List<OpenGraphRequest> openGraphRequests = new List<OpenGraphRequest>()
+            {
+                new OpenGraphRequest
+                {
+                    Url = "www.microsoft.com",
+                
+                    Id = "1"
+                }
+            };
+     
+            IEnumerable<OpenGraphResult> resultList = new List<OpenGraphResult>()
+            {
+                new OpenGraphResult
+                {
+                    Id = "1",
+                    Title = "Microsoft",
+                    Description = "Microsoft"
+                }
+            };
+
+            Mock<HttpRequest> request = new Mock<HttpRequest>();
+            _mockService.Setup(x => x.GetGraphResultsAsync(request.Object, openGraphRequests)).Returns(Task.FromResult(resultList));
+
+            // Act
+            ActionResult<OpenGraphResult> result = await _openGraphController.PostAsync(openGraphRequests);
+
+            // Assert
+            Assert.IsType<OkObjectResult>(result.Result);
+        }
     }
 }

@@ -16,6 +16,7 @@ jobs:
 
       - task: DotNetCoreCLI@2
         displayName: Run Unit Tests
+        condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
         inputs:
           command: test
           projects: '**/LinkyLink.Tests/*.csproj'
@@ -26,16 +27,19 @@ jobs:
           dotnet tool install -g dotnet-reportgenerator-globaltool
           reportgenerator -reports:$(Agent.TempDirectory)/**/coverage.cobertura.xml -targetdir:$(Build.SourcesDirectory)/coverlet/reports -reporttypes:"Cobertura"
         displayName: Create Code coverage report
+        condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
 
       - task: PublishCodeCoverageResults@1
         displayName: Publish Code Coverage
+        condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
         inputs:
           codeCoverageTool: Cobertura
           summaryFileLocation: $(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml 
-          failIfCoverageEmpty: true 
+          failIfCoverageEmpty: true
 
       - task: BuildQualityChecks@6
         displayName: Validate Code Coverage Quality
+        condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
         inputs:
           checkCoverage: true
           coverageFailOption: 'fixed'
@@ -44,6 +48,7 @@ jobs:
 
       - task: DotNetCoreCLI@2
         displayName: Package Build Artifacts
+        condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
         inputs:
           command: publish
           arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'

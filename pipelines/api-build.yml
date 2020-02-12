@@ -1,0 +1,13 @@
+name: api-build
+
+pool:
+  vmImage: "ubuntu-latest"
+
+variables:
+  - group: prodoh-urlist-common
+
+stages:
+  - stage: BuildAndValidate
+    displayName: Build & Validate
+    jobs:
+      - template: templates/api-build.yml

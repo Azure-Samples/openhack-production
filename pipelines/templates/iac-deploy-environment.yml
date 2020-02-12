@@ -6,15 +6,10 @@ parameters:
   regions: []
 
 jobs:
-  - deployment: 
-    environment: ${{ parameters.environment }}
-    displayName: Deploy Infrastructure
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-            - bash: echo "Deploying ${{ parameters.environment }} environment"
-              displayName: Check for Approval
+  - template: deployment-gate.yml
+    parameters:
+      environment: ${{ parameters.environment }}
+      
   - job: setup
     displayName: Initialize
     variables:

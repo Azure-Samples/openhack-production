@@ -6,16 +6,10 @@ parameters:
   regions: []
 
 jobs:
-  - deployment: 
-    environment: ${{ parameters.environment }}
-    displayName: Validate ${{ parameters.environment }} Approval
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-            - download: none  # skip the default Download Artifacts part of the task
-            - bash: echo "Deploying ${{ parameters.environment }} environment"
-              displayName: Check for Approval
+  - template: deployment-gate.yml
+    parameters:
+      environment: ${{ parameters.environment }}
+
   - job: BuildArtifacts
     displayName: Build environment artifacts
     steps:

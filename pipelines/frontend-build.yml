@@ -1,0 +1,22 @@
+name: $(Date:yyyyMMdd)$(Rev:.r) # build numbering format
+
+variables:
+  - group: prodoh-urlist-common
+  - group: prodoh-urlist-dev
+
+pool:
+  vmImage: "ubuntu-latest"
+
+steps:
+  - task: Npm@1
+    displayName: Install Dependencies
+    inputs:
+      workingDir: "./frontend"
+      command: "install"
+
+  - task: Bash@3
+    displayName: Build frontend
+    inputs:
+      workingDirectory: "./frontend"
+      targetType: "inline"
+      script: "npm run build"

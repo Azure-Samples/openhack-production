@@ -9,7 +9,7 @@ trigger:
       - deployment/*
       - pipelines/deploy-infrastructure.yml
       - pipelines/templates/iac-deploy-environment.yml
-
+      - pipelines/templates/deployment-gate.yml
 
 pr: none
 

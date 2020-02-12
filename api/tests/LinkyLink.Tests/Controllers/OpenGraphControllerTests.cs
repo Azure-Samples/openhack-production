@@ -57,7 +57,7 @@ namespace LinkyLink.Tests
         }
 
         [Fact]
-        public async Task PostAsyncReturnsOpenGraphAPI()
+        public async Task PostAsyncReturnsOpenGraphAPIResults()
         {
             // Arrange
             List<OpenGraphRequest> openGraphRequests = new List<OpenGraphRequest>()
@@ -65,7 +65,6 @@ namespace LinkyLink.Tests
                 new OpenGraphRequest
                 {
                     Url = "www.microsoft.com",
-                
                     Id = "1"
                 }
             };

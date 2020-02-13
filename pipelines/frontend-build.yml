@@ -1,5 +1,7 @@
 name: $(Date:yyyyMMdd)$(Rev:.r) # build numbering format
 
+trigger: none
+
 variables:
   - group: prodoh-urlist-common
   - group: prodoh-urlist-dev

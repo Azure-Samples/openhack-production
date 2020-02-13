@@ -101,7 +101,8 @@ done
 
 frontendHosts=$(toArmArray ${frontendHostArray[*]})
 backendHosts=$(toArmArray ${backendHostArray[*]})
-cosmosdbRegions=$(toArmArray ${cosmosdbRegionArray[*]})
+# replicate cosmosdb data to one region only
+cosmosdbRegions=$(toArmArray ${cosmosdbRegionArray[0]})
 resourceGroupRegions=$(toArmArray ${resourceGroupRegionArray[*]})
 apimNames=$(toArmArray ${apimNameArray[*]})
 echo "Frontend Hosts: $frontendHosts"

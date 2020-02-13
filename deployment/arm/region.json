@@ -36,7 +36,7 @@
                 "tier": "Standard",
                 "size": "S1",
                 "family": "S",
-                "capacity": 2
+                "capacity": 1
             },
             "kind": "app",
             "properties": {

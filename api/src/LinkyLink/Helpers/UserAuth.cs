@@ -7,7 +7,7 @@ namespace LinkyLink.Helpers
 {
     /// <summary>
     /// This class provides the method to read the identity of the authenticated user and extracts identity provider and email address. 
-    /// This class is tested as part of Integration test and it's difficult to test HttpContextAccessor in isolation that's why this class is excluded from code coverage.
+    /// This class is tested as part of the integration test hence excluded from code coverage.
     /// </summary>
     [ExcludeFromCodeCoverage]
     public class UserAuth
@@ -24,7 +24,6 @@ namespace LinkyLink.Helpers
             if (_contextAccessor.HttpContext.User.Identity.IsAuthenticated)
             {
                 var identities = _contextAccessor.HttpContext.User.Identities;
-
                 if (identities.Any())
                 {
                     var primaryIdentity = identities.First();

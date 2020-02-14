@@ -51,7 +51,6 @@ namespace LinkyLink.Service
                     }
                     catch (Exception)
                     {
-                        // Todo - Add logging
                     }
                 }
             }

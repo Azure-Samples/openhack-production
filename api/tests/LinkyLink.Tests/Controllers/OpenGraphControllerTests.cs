@@ -42,15 +42,14 @@ namespace LinkyLink.Tests
         public async Task PostAsyncThrowsExceptionWhenOpenGraphAPIFails()
         {
             // Arrange
-            List<OpenGraphRequest> openGraphRequests = new List<OpenGraphRequest>();
-
-            OpenGraphRequest openGraphRequest = new OpenGraphRequest
+            List<OpenGraphRequest> openGraphRequests = new List<OpenGraphRequest>()
             {
-                Url = "www.microsoft.com",
-                Id = "1"
+                new OpenGraphRequest
+                {
+                    Url = "www.microsoft.com",
+                    Id = "1"
+                }
             };
-
-            openGraphRequests.Add(openGraphRequest);
 
             // Act, // Assert
             Assert.ThrowsAsync<Exception>(() => _openGraphController.PostAsync(openGraphRequests));

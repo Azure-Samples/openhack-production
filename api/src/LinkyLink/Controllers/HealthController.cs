@@ -4,7 +4,7 @@ using System;
 namespace LinkyLink.Controllers
 {
     /// <summary>
-    /// The class handles health checks for the backend API
+    /// This class handles health checks for the backend API
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]

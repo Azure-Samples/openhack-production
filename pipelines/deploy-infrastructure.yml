@@ -27,7 +27,8 @@ stages:
     jobs:
     - template: templates/iac-deploy-environment.yml
       parameters:
-        subscription: $(azureSubscription)
+        serviceConnection: $(serviceConnection)
+        subscriptionId: $(subscriptionId)
         businessUnit: $(businessUnit)
         appName: $(appName)
         environment: dev
@@ -41,7 +42,8 @@ stages:
     jobs:
     - template: templates/iac-deploy-environment.yml
       parameters:
-        subscription: $(azureSubscription)
+        serviceConnection: $(serviceConnection)
+        subscriptionId: $(subscriptionId)
         businessUnit: $(businessUnit)
         appName: $(appName)
         environment: staging
@@ -56,7 +58,8 @@ stages:
     jobs:
     - template: templates/iac-deploy-environment.yml
       parameters:
-        subscription: $(azureSubscription)
+        serviceConnection: $(serviceConnection)
+        subscriptionId: $(subscriptionId)
         businessUnit: $(businessUnit)
         appName: $(appName)
         environment: prod

@@ -9,6 +9,7 @@ cd "$parent_path"
 ##########################################################################################################################################################################################
 #- Purpose: Script is used to deploy the global resources for the Urlist app
 #- Parameters are:
+#- [-s] subscription - The subscription where the resources will reside.
 #- [-u] businessUnit - The business unit used for resource naming convention.
 #- [-a] appName - The application name used for resource naming convention.
 #- [-e] env - The environment to deploy (ex: dev | test | qa | prod).
@@ -21,17 +22,19 @@ cd "$parent_path"
 function usage() {
     echo
     echo "Arguments:"
+    echo -e "\t-s\t Sets the subscription"
     echo -e "\t-u\t Sets the business unit"
     echo -e "\t-a\t Sets the app name"
     echo -e "\t-e\t Sets the environment"
     echo -e "\t-r\t Sets the regions (Comma delimited values)"
     echo
     echo "Example:"
-    echo -e "\tbash deploy.sh -u $(whoami) -a urlist -e test -r westus,eastus,centralus"
+    echo -e "\tbash deploy.sh -s c77dad45-b62f-467d-bad4-8e00a807c0a2  -u $(whoami) -a urlist -e test -r westus,eastus,centralus"
 }
 
-while getopts "u:a:e:r:hq" opt; do
+while getopts "s:u:a:e:r:hq" opt; do
     case $opt in
+    s) subscription=$OPTARG ;;
     u) businessUnit=$OPTARG ;;
     a) appName=$OPTARG ;;
     e) env=$OPTARG ;;
@@ -86,7 +89,7 @@ for region in ${regions[@]}; do
     storageActName="$(generateStorageAccountName -u $businessUnit -a $appName -e $env -r $region)"
 
     # fetch the regional primary endpoint for the static website hosted in blob storage
-    primaryEndpoint=$(az storage account show --name $storageActName --query 'primaryEndpoints.web')
+    primaryEndpoint=$(az storage account show --subscription $subscription --name $storageActName --query 'primaryEndpoints.web')
     # the frontendHost needs to be the domain name, using sed to extract that from the URL
     # also removing the additional quotes az returns with the URL
     primaryEndpoint=$(echo $primaryEndpoint | sed -e 's|^[^/]*//||' -e 's|/.*$||' -e 's/"//g')
@@ -113,15 +116,19 @@ echo
 
 echo "Creating global resource Group: $resourceGroupName"
 az group create \
+    --subscription $subscription \
     --name $resourceGroupName \
-    --location ${regions[0]}
+    --location ${regions[0]} \
+    --output jsonc
 
 echo
 echo "Deploying global resources to $resourceGroupName"
 az group deployment create \
     --name "Urlist-global-$(timestamp)" \
     --resource-group $resourceGroupName \
+    --subscription $subscription \
     --template-file global.json \
+    --output table \
     --parameters \
     appInsightsName=$appInsightsName apimNames=$apimNames \
     frontDoorName=$frontDoorName frontDoorEndpoint=$frontDoorEndpoint \

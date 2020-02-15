@@ -1,5 +1,5 @@
 parameters:
-  subscription: ""
+  serviceConnection: ""
   businessUnit: "prodoh"
   appName: "urlist"
   environment: ""
@@ -50,7 +50,7 @@ jobs:
       - task: AzureCLI@2
         displayName: Deploy to Storage Account
         inputs:
-          azureSubscription: ${{ parameters.subscription }}
+          azureSubscription: ${{ parameters.serviceConnection }}
           scriptType: "bash"
           scriptLocation: "inlineScript"
           inlineScript: |

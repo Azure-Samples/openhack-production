@@ -4,6 +4,7 @@
 #- Purpose: Script is used to deploy the Urlist app
 #- Support deploying to multiple regions as well as required global resources
 #- Parameters are:
+#- [-s] subscription - The subscription where the resources will reside.
 #- [-u] businessUnit - The business unit used for resource naming convention.
 #- [-a] appName - The application name used for resource naming convention.
 #- [-e] env - The environment to deploy (ex: dev | test | qa | prod).
@@ -23,6 +24,7 @@ cd "$parent_path"
 function usage() {
     echo
     echo "Arguments:"
+    echo -e "\t-s\t Sets the subscription"
     echo -e "\t-u \t Sets the business unit (required)"
     echo -e "\t-a \t Sets the app name (required)"
     echo -e "\t-e \t Sets the environment (required)"
@@ -45,8 +47,9 @@ function join() {
     printf "%s" "${@/#/$d}"
 }
 
-while getopts "u:a:e:r:hq" opt; do
+while getopts "s:u:a:e:r:hq" opt; do
     case $opt in
+    s) subscription=$OPTARG ;;
     u) businessUnit=$OPTARG ;;
     a) appName=$OPTARG ;;
     e) env=$OPTARG ;;
@@ -63,7 +66,7 @@ while getopts "u:a:e:r:hq" opt; do
 done
 
 # Validation
-if [[ $# -eq 0 || -z $businessUnit || -z $appName || -z $env || -z $regions ]]; then
+if [[ $# -eq 0 || -z $subscription || -z $businessUnit || -z $appName || -z $env || -z $regions ]]; then
     echo "Required parameters are missing"
     usage
     exit 1
@@ -72,6 +75,7 @@ fi
 # Deploy scale unit per region
 for region in ${regions[@]}; do
     bash deploy-region.sh \
+        -s $subscription \
         -u $businessUnit \
         -a $appName \
         -e $env \
@@ -80,6 +84,7 @@ done
 
 # Deploy global resources
 bash deploy-global.sh \
+    -s $subscription \
     -u $businessUnit \
     -a $appName \
     -e $env \

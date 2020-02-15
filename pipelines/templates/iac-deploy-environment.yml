@@ -1,5 +1,6 @@
 parameters:
-  subscription: ""
+  subscriptionId: ""
+  serviceConnection: ""
   businessUnit: "prodoh"
   appName: "urlist"
   environment: ""
@@ -38,11 +39,11 @@ jobs:
       - task: AzureCLI@2
         displayName: Deploy Region ($(region))
         inputs:
-          azureSubscription: ${{ parameters.subscription }}
+          azureSubscription: ${{ parameters.serviceConnection }}
           scriptType: "bash"
           scriptLocation: "scriptPath"
           scriptPath: "./deployment/arm/deploy-region.sh"
-          arguments: "-u ${{ parameters.businessUnit }} -a ${{ parameters.appName }} -e ${{ parameters.environment }} -r $(region) }}"
+          arguments: "-s ${{ parameters.subscriptionId}} -u ${{ parameters.businessUnit }} -a ${{ parameters.appName }} -e ${{ parameters.environment }} -r $(region) }}"
 
   - job: DeployGlobalResourceGroup
     displayName: Deploy Global Resources
@@ -54,8 +55,8 @@ jobs:
       - task: AzureCLI@2
         displayName: Deploy ARM Template
         inputs:
-          azureSubscription: ${{ parameters.subscription }}
+          azureSubscription: ${{ parameters.serviceConnection }}
           scriptType: "bash"
           scriptLocation: "scriptPath"
           scriptPath: "./deployment/arm/deploy-global.sh"
-          arguments: "-u ${{ parameters.businessUnit }} -a ${{ parameters.appName }} -e ${{ parameters.environment }} -r $(regionList)"
+          arguments: "-s ${{ parameters.subscriptionId}} -u ${{ parameters.businessUnit }} -a ${{ parameters.appName }} -e ${{ parameters.environment }} -r $(regionList)"

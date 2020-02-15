@@ -29,7 +29,7 @@ stages:
     jobs:
       - template: templates/frontend-deploy-environment.yml
         parameters:
-          subscription: $(azureSubscription)
+          serviceConnection: $(serviceConnection)
           businessUnit: $(businessUnit)
           appName: $(appName)
           environment: dev
@@ -44,7 +44,7 @@ stages:
     jobs:
       - template: templates/frontend-deploy-environment.yml
         parameters:
-          subscription: $(azureSubscription)
+          serviceConnection: $(serviceConnection)
           businessUnit: $(businessUnit)
           appName: $(appName)
           environment: staging
@@ -60,7 +60,7 @@ stages:
     jobs:
       - template: templates/frontend-deploy-environment.yml
         parameters:
-          subscription: $(azureSubscription)
+          serviceConnection: $(serviceConnection)
           businessUnit: $(businessUnit)
           appName: $(appName)
           environment: prod

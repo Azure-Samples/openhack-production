@@ -1,5 +1,5 @@
 parameters:
-  subscription: ""
+  serviceConnection: ""
   businessUnit: "prodoh"
   appName: "urlist"
   environment: ""
@@ -64,7 +64,7 @@ jobs:
         displayName: Deploy to Staging Slot
         inputs:
           ConnectionType: 'AzureRM'
-          azureSubscription: ${{ parameters.subscription }}
+          azureSubscription: ${{ parameters.serviceConnection }}
           appType: 'apiApp'
           ResourceGroupName: $(resourceGroupName)
           WebAppName: $(backendWebAppName)
@@ -95,7 +95,7 @@ jobs:
       - task: AzureAppServiceManage@0
         displayName: Swap Staging and Production Slots
         inputs:
-          azureSubscription: ${{ parameters.subscription }}
+          azureSubscription: ${{ parameters.serviceConnection }}
           action: Swap Slots
           ResourceGroupName: $(resourceGroupName)
           WebAppName: $(backendWebAppName)

@@ -8,15 +8,7 @@ description: "Add 150 character max description"
 urlFragment: "update-this-to-unique-url-stub"
 ---
 
-# Official Microsoft Sample
-
-<!-- 
-Guidelines on README format: https://review.docs.microsoft.com/help/onboard/admin/samples/concepts/readme-template?branch=master
-
-Guidance on onboarding samples to docs.microsoft.com/samples: https://review.docs.microsoft.com/help/onboard/admin/samples/process/onboarding?branch=master
-
-Taxonomies for products and languages: https://review.docs.microsoft.com/new-hope/information-architecture/metadata/taxonomies?branch=master
--->
+# Production Fundamentals OpenHack Sample Application
 
 This is a replica of the Urlist website but re-architected to use Azure AppService to host the backend instead of using Azure Functions. The original project repository can be found here https://github.com/the-urlist
 
@@ -37,7 +29,7 @@ Outline the file contents of the repository. It helps users navigate the codebas
 | `frontend`        | The frontend code base implemented using VUE and Typescript |
 | `deployment`      | This folder holds deployment scripts to setup infrastructure. |
 | `pipelines`       | This folder holds YAML files to create Azure pipelines to deploy the project |
-| `docs`            | This folder holds relevant documenation about the project |
+| `docs`            | This folder holds relevant documentation about the project |
 | `.gitignore`      | Define what to ignore at commit time.      |
 | `CHANGELOG.md`    | List of changes to the sample.             |
 | `CONTRIBUTING.md` | Guidelines for contributing to the sample. |
@@ -59,7 +51,7 @@ You need to have the following available
 
 ## Running the sample
 
-Once the pipelines are setup and had successfully deployed the project, find your Azure Frontdoor endpoint and use it to test the website.
+Once the pipelines are setup and had successfully deployed the project, find your Azure Front Door endpoint and use it to test the website.
 
 ## Contributing
 

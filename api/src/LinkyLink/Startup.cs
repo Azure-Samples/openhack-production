@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Microsoft.ApplicationInsights.Extensibility;
 
 namespace LinkyLink
 {
@@ -39,6 +40,7 @@ namespace LinkyLink
             services.AddTransient<ILinksService, LinksService>();
             services.AddTransient<IOpenGraphService, OpenGraphService>();
             services.AddSingleton<UserAuth>();
+            services.AddSingleton<ITelemetryInitializer, AppInsightsTelemetryInitializer>();
 
             // Add CORS policy to enable all origins
             // this is added just in case the OH participants

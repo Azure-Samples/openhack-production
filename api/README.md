@@ -48,13 +48,13 @@ Update `appsettings.Development.json` file with your tenants configuration:
   "ClientId": "[The Azure B2C application client ID]",
   "Name": "[YourTenantName]",
   "Domain": "[YourTenantName].onmicrosoft.com",
-  "SignUpSignInPolicyId": "[Your Azure B2C policy name]" 
+  "SignUpSignInPolicyId": "[Your Azure B2C policy name]"
 },
 ```
 
 ### Run from your favorite terminal
 
-Set the `ASPNETCORE_ENVIRONMENT` environment variable.  To 
+Set the `ASPNETCORE_ENVIRONMENT` environment variable. To
 
 ```bash
 export ASPNETCORE_ENVIRONMENT=Development
@@ -88,11 +88,11 @@ Alternatively, start a debugging session in `Visual Studio` or `Visual Studio Co
 
 ### Run from Visual Studio
 
-From Visual studio choose the startup project as `LinkyLink`.  Then from the debug start menu choose one of the following:
+From Visual studio choose the startup project as `LinkyLink`. Then from the debug start menu choose one of the following:
 
 #### IIS Express
 
-Will start the Rest API from an IIS Express instance on a random port.
+VS will start the Rest API from an IIS Express instance on a random port.
 
 #### LinkLink
 
@@ -134,6 +134,7 @@ If everything was setup correctly, you should see a response that resembles the 
 - Select `Send Request` for any of the endpoints
 
 ![REST Client](docs/rest_client.png)
+
 </details>
 
 ### Try out the API using the Swagger UI
@@ -143,13 +144,13 @@ If everything was setup correctly, you should see a response that resembles the 
 
 ### Swagger API Documentation
 
-- The API uses [Swagger](https://swagger.io/) for API Documentation.  You can view the swagger documentation by navigating to: `https://localhost:<port>/swagger`
+- The API uses [Swagger](https://swagger.io/) for API Documentation. You can view the swagger documentation by navigating to: `https://localhost:<port>/swagger`
 
 ![swagger](docs/swagger.png)
 
 #### Misc. Notes
 
-- [Swagger](https://swagger.io/) XML Comments have been enabled to provide better API Documentation.  This means that warnings will be generated for public undocumented public types and members.  By default, this project disables warnings.  Documentation to enable warnings can be found [here](https://docs.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-swashbuckle?view=aspnetcore-3.1&tabs=visual-studio-code)
+- [Swagger](https://swagger.io/) XML Comments have been enabled to provide better API Documentation. This means that warnings will be generated for public undocumented public types and members. By default, this project disables warnings. Documentation to enable warnings can be found [here](https://docs.microsoft.com/en-us/aspnet/core/tutorials/getting-started-with-swashbuckle?view=aspnetcore-3.1&tabs=visual-studio-code)
 
 </details>
 
@@ -174,21 +175,21 @@ Before running integration tests you must update the settings within the `appset
 ### Set Environment Variables
 
 ```bash
-# The base address of the environment to test
-export INTTEST_AzureAdB2C__BaseAddress= 
+# The base/host address of the environment to test
+export INTTEST_AzureAdB2C__BaseAddress=
 # The client ID of your test application within Azure B2C
-export INTTEST_AzureAdB2C__ClientId= 
+export INTTEST_AzureAdB2C__ClientId=
 # The Azure B2C authority endpoint
-export INTTEST_AzureAdB2C__Authority= 
+export INTTEST_AzureAdB2C__Authority=
 # The scope to set on your access token
-export INTTEST_AzureAdB2C__Scope= 
+export INTTEST_AzureAdB2C__Scope=
 # The username of your test user account
-export INTTEST_AzureAdB2C__Username= 
+export INTTEST_AzureAdB2C__Username=
 # The password of your test user account
-export INTTEST_AzureAdB2C__Password= 
+export INTTEST_AzureAdB2C__Password=
 ```
 
-### Run tests with dotnet CLI
+### Run tests with .Net CLI
 
 ```bash
 dotnet test api/tests/LinkyLink.Integration.Tests/LinkyLink.Integration.Tests.csproj
@@ -201,16 +202,17 @@ This is an alternative local development option. The container sets the ASPNETCO
 ```bash
 docker build -t linkylink .
 docker run -p 5000:80 -it linkylink
-curl http://localhost:5000/api/links/postman-test
+curl <http://localhost:5000/api/links/postman-test>
+
 ```
 
 ### Setup certificate for HTTPS
 
-If you want to get everything working with HTTPS, you can follow the instructions in this [doc](https://docs.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-3.1). In essence, you need to mount a drive containing your development certifcate into the container.
+If you want to get everything working with HTTPS, you can follow the instructions in this [doc](https://docs.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-3.1). In essence, you need to mount a drive containing your development certificate into the container.
 
 ## Troubleshooting local development certificate issues
 
-By default the application runs under HTTPS.  If you have not previously trusted a .NET Core localhost development certificate you will need to generate and trust your a local development certificate otherwise you will receive warnings from your browser.
+By default the application runs under HTTPS. If you have not previously trusted a .NET Core localhost development certificate you will need to generate and trust your a local development certificate otherwise you will receive warnings from your browser.
 
 For detailed instructions you can review the [Troubleshooting Guide](https://docs.microsoft.com/en-us/aspnet/core/security/enforcing-ssl?view=aspnetcore-2.2&tabs=visual-studio#trust-the-aspnet-core-https-development-certificate-on-windows-and-macos) or follow the steps below.
 
@@ -240,10 +242,10 @@ dotnet dev-certs https -ep %USERPROFILE%\.aspnet\https\aspnet.pfx -p <PASSWORD>
 
 #### Install Certificate into your Trust Root Certificates Store
 
-Install the certificate with the command below.  When prompted enter the password you used in the previous step
+Install the certificate with the command below. When prompted enter the password you used in the previous step
 
 ```bash
-# Run from your Windows HOST OS in an elevated command prompt 
+# Run from your Windows HOST OS in an elevated command prompt
 certutil -importPFX "Root" "%USERPROFILE%\.aspnet\https\aspnet.pfx"
 ```
 
@@ -251,7 +253,7 @@ certutil -importPFX "Root" "%USERPROFILE%\.aspnet\https\aspnet.pfx"
 
 #### Set environment variables for .NET Core runtime
 
-Tell the .NET Core runtime what certificate to use.  User the same password you created in the previous steps and point to the location on your windows host where the certificate was exported to.
+Tell the .NET Core runtime what certificate to use. User the same password you created in the previous steps and point to the location on your windows host where the certificate was exported to.
 
 ```bash
 # Run from your WSL Terminal
@@ -260,5 +262,5 @@ export ASPNETCORE_Kestrel__Certificates__Default__Path=/mnt/c/Users/<USERNAME>/.
 ```
 
 > These environment variables will only be available in your current terminal session.  
-To set them globally add them to your WSL `~/.bashrc` file
+> To set them globally add them to your WSL `~/.bashrc` file
 > You may need to close all tabs and restart your browser for the certificate changes to take effect

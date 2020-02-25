@@ -10,14 +10,14 @@ urlFragment: "update-this-to-unique-url-stub"
 
 # Production Fundamentals OpenHack Sample Application
 
-This is a replica of the Urlist website but re-architected to use Azure AppService to host the backend instead of using Azure Functions. The original project repository can be found here https://github.com/the-urlist
+This is a replica of the Urlist website but re-architected to use Azure AppService to host the backend instead of using Azure Functions. The original project repository can be found here <https://github.com/the-urlist>
 
 Please [check here](docs/Infrastructure.md) to view and read about the architecture.
 
 ## Glossary
 
-* Vanity URL: is a descriptive, human-readable, an easy to remember URL that is typically created to simplify sharing a long and hard-to-remember URLs.
-* Link Bundle: a bundle/list of URLs that the user associate with a vanity URL using the Urlist application.
+- Vanity URL: is a descriptive, human-readable, an easy to remember URL that is typically created to simplify sharing a long and hard-to-remember URLs.
+- Link Bundle: a bundle/list of URLs that the user associated with a vanity URL using the Urlist application.
 
 ## Contents
 
@@ -40,14 +40,14 @@ Outline the file contents of the repository. It helps users navigate the codebas
 
 You need to have the following available
 
-* An Azure subscription
-* Check out the [API folder for backend prerequisites](api/README.md)
-* Check out the [Frontend folder for frontend prerequisites](frontend/README.md)
+- An Azure subscription
+- Check out the [API folder for backend prerequisites](api/README.md)
+- Check out the [Frontend folder for frontend prerequisites](frontend/README.md)
 
 ## Setup
 
-* Check out the [deployment folder](deployment/README.md) to setup the Azure infrastructure automatically.
-* Check out the [pipelines folder](pipelines/README.md) to create the needed pipelines to automate deployments and infrastructure updates.
+- Check out the [deployment folder](deployment/README.md) to setup the Azure infrastructure automatically.
+- Check out the [pipelines folder](pipelines/README.md) to create the needed pipelines to automate deployments and infrastructure updates.
 
 ## Running the sample
 
@@ -57,7 +57,7 @@ Once the pipelines are setup and had successfully deployed the project, find you
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
 Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
-the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
+the rights to use your contribution. For details, visit <https://cla.opensource.microsoft.com>
 
 When you submit a pull request, a CLA bot will automatically determine whether you need to provide
 a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions

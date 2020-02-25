@@ -13,7 +13,7 @@ namespace LinkyLink.Service
     public class LinksService : ILinksService
     {
         private readonly LinksContext _context;
-        
+
         private readonly UserAuth _userAuth;
 
         public LinksService(LinksContext linksContext, UserAuth userAuth)
@@ -27,9 +27,14 @@ namespace LinkyLink.Service
             return await _context.LinkBundle.AnyAsync(a => a.Id == id);
         }
 
-        public async Task<IEnumerable<LinkBundle>> AllLinkBundlesAsync()
+        public async Task<IEnumerable<LinkBundle>> AllLinkBundlesAsync(QueryOptions queryOptions = null)
         {
-            return await _context.LinkBundle.ToListAsync();
+            queryOptions = queryOptions ?? QueryOptions.Default;
+
+            return await _context.LinkBundle
+                .Skip(queryOptions.Skip)
+                .Take(queryOptions.Top)
+                .ToListAsync();
         }
 
         public async Task<LinkBundle> FindLinkBundleAsync(string vanityUrl)
@@ -38,10 +43,14 @@ namespace LinkyLink.Service
                .SingleOrDefaultAsync(b => b.VanityUrl == vanityUrl.ToLower());
         }
 
-        public async Task<IEnumerable<LinkBundle>> FindLinkBundlesForUserAsync(string userId)
+        public async Task<IEnumerable<LinkBundle>> FindLinkBundlesForUserAsync(string userId, QueryOptions queryOptions = null)
         {
+            queryOptions = queryOptions ?? QueryOptions.Default;
+
             return await _context.LinkBundle
                 .Where(c => c.UserId == userId)
+                .Skip(queryOptions.Skip)
+                .Take(queryOptions.Top)
                 .ToListAsync();
         }
 

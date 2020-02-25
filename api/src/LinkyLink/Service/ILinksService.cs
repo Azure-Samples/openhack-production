@@ -8,11 +8,11 @@ namespace LinkyLink.Service
     {
         Task<bool> LinkBundleExistsAsync(string id);
 
-        Task<IEnumerable<LinkBundle>> AllLinkBundlesAsync();
+        Task<IEnumerable<LinkBundle>> AllLinkBundlesAsync(QueryOptions queryOptions = null);
 
         Task<LinkBundle> FindLinkBundleAsync(string vanityUrl);
 
-        Task<IEnumerable<LinkBundle>> FindLinkBundlesForUserAsync(string userId);
+        Task<IEnumerable<LinkBundle>> FindLinkBundlesForUserAsync(string userId, QueryOptions queryOptions = null);
 
         Task CreateLinkBundleAsync(LinkBundle linkBundle);
 

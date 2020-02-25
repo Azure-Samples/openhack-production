@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using MockQueryable.Moq;
 using Moq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -24,12 +26,17 @@ namespace LinkyLink.Tests.Service
         private readonly Mock<UserAuth> _mockUserAuth;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly LinksService _linksService;
+        private readonly List<LinkBundle> _sourceList;
+        private readonly Mock<DbSet<LinkBundle>> _mockSourceList;
 
         public LinksServiceTests()
         {
+            _sourceList = new List<LinkBundle>();
+            _mockSourceList = _sourceList.AsQueryable().BuildMockDbSet();
             _httpContextAccessor = new HttpContextAccessor();
             _mockUserAuth = new Mock<UserAuth>(_httpContextAccessor);
             _mockLinksContext = new Mock<LinksContext>(new DbContextOptionsBuilder<LinksContext>().Options, new ConfigurationBuilder().Build());
+            _mockLinksContext.Setup(m => m.LinkBundle).Returns(_mockSourceList.Object);
             _linksService = new LinksService(_mockLinksContext.Object, _mockUserAuth.Object);
         }
 
@@ -39,7 +46,7 @@ namespace LinkyLink.Tests.Service
             // Arrange
             var linkBundles = new List<LinkBundle>
             {
-                new LinkBundle { VanityUrl = "samplelink" }            
+                new LinkBundle { VanityUrl = "samplelink" }
             };
 
             var MockSet = new Mock<DbSet<LinkBundle>>();
@@ -70,6 +77,30 @@ namespace LinkyLink.Tests.Service
             await _linksService.RemoveLinkBundleAsync(linkBundles[0]);
 
             Assert.Equal(0, linkBundles.Count);
+        }
+
+        [Fact]
+        public async Task GetAllLinkBundlesWithPaging()
+        {
+            for (var i = 1; i <= 100; i++)
+            {
+                _sourceList.Add(new LinkBundle
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Description = $"Link Bundle {i}",
+                    VanityUrl = $"link-bundle-{i}"
+                });
+            }
+
+            var queryOptions = new QueryOptions
+            {
+                Skip = 10,
+                Top = 10
+            };
+
+            var results = (await _linksService.AllLinkBundlesAsync(queryOptions)).ToList();
+            Assert.Equal(queryOptions.Top, results.Count());
+            Assert.Equal("Link Bundle 11", results[0].Description);
         }
     }
 }

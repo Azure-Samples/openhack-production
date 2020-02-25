@@ -40,11 +40,11 @@ namespace LinkyLink.Tests
 
             list.Add(linkBundle);
 
-            _mockService.Setup(service => service.AllLinkBundlesAsync())
+            _mockService.Setup(service => service.AllLinkBundlesAsync(QueryOptions.Default))
                 .ReturnsAsync(list);
 
             // Act
-            IEnumerable<LinkBundle> result = await _linksController.GetLinkBundlesAsync();
+            IEnumerable<LinkBundle> result = await _linksController.GetLinkBundlesAsync(QueryOptions.Default);
 
             // Assert
             Assert.Equal(1, result.Count());
@@ -55,10 +55,10 @@ namespace LinkyLink.Tests
         {
             // Arrange 
             string vanityUrl = "samplelink";
-            
+
             // Act
             ActionResult<LinkBundle> result = await _linksController.GetLinkBundleAsync(vanityUrl);
-           
+
             // Assert
             Assert.IsType<NotFoundResult>(result.Result);
         }
@@ -93,7 +93,7 @@ namespace LinkyLink.Tests
                 .Returns(userId);
 
             // Act
-            ActionResult<LinkBundle> result = await _linksController.GetLinkBundlesForUserAsync(userId);
+            ActionResult<LinkBundle> result = await _linksController.GetLinkBundlesForUserAsync(userId, QueryOptions.Default);
 
             // Assert
             Assert.IsType<NotFoundResult>(result.Result);
@@ -117,11 +117,11 @@ namespace LinkyLink.Tests
                             Id = "sample"
                         }
                     }
-                },                
+                },
                 new LinkBundle
                 {
                     UserId = userId,
-                    VanityUrl = "samplelink1",      
+                    VanityUrl = "samplelink1",
                     Links = new List<Link>
                     {
                         new Link
@@ -131,15 +131,15 @@ namespace LinkyLink.Tests
                     }
                 }
             };
-            
+
             _mockService.Setup(service => service.GetUserAccountEmail())
                 .Returns(userId);
 
-            _mockService.Setup(service => service.FindLinkBundlesForUserAsync(userId))
+            _mockService.Setup(service => service.FindLinkBundlesForUserAsync(userId, QueryOptions.Default))
                 .ReturnsAsync(linkBundles);
 
             // Act
-            ActionResult<LinkBundle> result = await _linksController.GetLinkBundlesForUserAsync(userId);
+            ActionResult<LinkBundle> result = await _linksController.GetLinkBundlesForUserAsync(userId, QueryOptions.Default);
 
             // Assert
             Assert.IsType<OkObjectResult>(result.Result);
@@ -156,7 +156,7 @@ namespace LinkyLink.Tests
             };
 
             // Act
-            ActionResult<LinkBundle> result = await _linksController.GetLinkBundlesForUserAsync(linkBundle.UserId);
+            ActionResult<LinkBundle> result = await _linksController.GetLinkBundlesForUserAsync(linkBundle.UserId, QueryOptions.Default);
 
             // Assert
             Assert.IsType<UnauthorizedResult>(result.Result);
@@ -167,16 +167,16 @@ namespace LinkyLink.Tests
         {
             // Arrange
             LinkBundle expectedLinkBundle = null;
-            
+
             LinkBundle linkBundle = new LinkBundle
             {
                 UserId = "example@microsoft.com",
                 VanityUrl = "samplelink",
                 Description = "sampledescription",
-                Links = new List<Link>    
-                {    
-                    new Link    
-                    { 
+                Links = new List<Link>
+                {
+                    new Link
+                    {
                         Id = "sample"
                     }
                 }
@@ -190,7 +190,7 @@ namespace LinkyLink.Tests
 
             // Assert
             _mockService.Verify(x => x.CreateLinkBundleAsync(It.IsAny<LinkBundle>()), Times.Once);
-            
+
             Assert.IsType<CreatedAtActionResult>(result.Result);
             Assert.Equal(linkBundle.Description, expectedLinkBundle.Description);
             Assert.Equal(linkBundle.UserId, expectedLinkBundle.UserId);

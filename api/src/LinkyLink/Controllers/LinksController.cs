@@ -31,9 +31,9 @@ namespace LinkyLink.Controllers
         /// List all the LinkBundles.
         /// </summary>
         [HttpGet]
-        public async Task<IEnumerable<LinkBundle>> GetLinkBundlesAsync()
+        public async Task<IEnumerable<LinkBundle>> GetLinkBundlesAsync([FromQuery]QueryOptions queryOptions)
         {
-            return await _linksService.AllLinkBundlesAsync();
+            return await _linksService.AllLinkBundlesAsync(queryOptions);
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace LinkyLink.Controllers
         /// </summary>
         // GET: api/Links/User/{userId}
         [HttpGet("user/{userId}")]
-        public async Task<ActionResult<LinkBundle>> GetLinkBundlesForUserAsync(string userId)
+        public async Task<ActionResult<LinkBundle>> GetLinkBundlesForUserAsync(string userId, [FromQuery]QueryOptions queryOptions)
         {
             string userHandle = _linksService.GetUserAccountEmail();
 
@@ -67,7 +67,7 @@ namespace LinkyLink.Controllers
                 return Unauthorized();
             }
 
-            var linkBundlesForUser = await _linksService.FindLinkBundlesForUserAsync(userId);
+            var linkBundlesForUser = await _linksService.FindLinkBundlesForUserAsync(userId, queryOptions);
 
             if (!linkBundlesForUser.Any())
             {
@@ -234,7 +234,7 @@ namespace LinkyLink.Controllers
         private void ValidateVanityUrl(LinkBundle linkDocument)
         {
             string characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            
+
             if (string.IsNullOrWhiteSpace(linkDocument.VanityUrl))
             {
                 var code = new char[7];

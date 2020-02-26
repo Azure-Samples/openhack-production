@@ -9,7 +9,7 @@
 
 Currently, the Urlist configuration of the Azure AD B2C tenant requires a manual setup process and script automation is not currently supported.  Setup requires the configuration of applications, identity providers & user flows.
 
-# Applications
+## Applications
 
 Each application within an organization has unique setup requirements and custom authentication constraints.
 
@@ -17,11 +17,11 @@ Each application within an organization has unique setup requirements and custom
 
 The following applications are required for the Urlist tenant configuration:
 
-## Production OpenHack API
+### Production OpenHack API
 
 The primary application used within single sign-on flows from frontend.
 
-### Configuration
+#### Configuration
 
 - Allow implicit flow **(true)**
 - Native Client **(false)**
@@ -32,18 +32,20 @@ The primary application used within single sign-on flows from frontend.
   - UrlBundle.Read
   - UrlBundle.ReadAll
 
-## ROPC Console App
+### ROPC Console App
 
 This app is used for integration testing and supports Resource owner password credentials (ROPC).  You can read more about [ROPC](https://docs.microsoft.com/en-us/azure/active-directory-b2c/configure-ropc?tabs=applications) in the official documentation.
 
-### Configuration
+#### Configuration
 
 - Allow implicit flow **(true)**
 - Native Client **(true**)
 - Redirect URIs
   - urn:ietf:wg:oauth:2.0:oob
 
-# Identity Providers
+---
+
+## Identity Providers
 
 Azure AD B2C supports many popular identity providers out of the box. Additional Identity providers can also be configured as long as it supports OpenID Connect (OIDC).
 
@@ -57,7 +59,9 @@ The Urlist application is currently configured to support the following provider
 1. [Twitter](https://docs.microsoft.com/en-us/azure/active-directory-b2c/identity-provider-twitter)
 1. Local Accounts - Custom username/password managed by Azure AD B2C
 
-# User Flows
+---
+
+## User Flows
 
 User flows support various common user interactions including sign-in, registration, profile editing, password reset & more. Additionally, they support configuration to customize the user attributes and claims required by your applications for requested id and access tokens.
 
@@ -65,15 +69,15 @@ User flows support various common user interactions including sign-in, registrat
 
 The Urlist application primarily utilizes a combined sign-in / sign-up flow.
 
-## B2C_1_SignUp_SignIn
+### B2C_1_SignUp_SignIn
 
 This flow is used for the sign-in, sign-up & sign-out experience integrated into the Urlist frontend application
 
-### Identity Providers
+#### Identity Providers
 
 All identity providers listed above are enabled for this user flow.
 
-### Configuration
+#### Configuration
 
 Azure AD B2C allows for easy testing by running the user flow from the Azure portal.  Click the `Run user flow` button to launch the configuration pane and execute your flow.
 
@@ -91,73 +95,75 @@ After running through the user flow and signing in with a configured identity pr
 
 ![Signed in to application](images/azure-b2c-signed-in.png)
 
-# Integrating with your application code
+---
+
+## Integrating with your application code
 
 When integrating your applications to leverage Azure AD B2C you will likely be asked for 1 ore more configuration elements. The following configuration elements are commonly used within many applications.
 
-## Tenant Name
+### Tenant Name
 
 The top-level tenant name, typically the first section of your tenant domain.
 
-```
+```text
 testprodoh
 ```
 
-## Tenant Domain
+### Tenant Domain
 
 The fully qualified tenant domain hostname.
 
 Example
 
-```
+```text
 testprodoh.onmicrosoft.com
 ```
 
-## ClientID
+### ClientID
 
 The client id (GUID) of the application configured within Azure AD B2C.
 
-## Policy ID / User Flow
+### Policy ID / User Flow
 
 The name of the policy/user-flow to use.
 
 Example
 
-```
+```text
 B2C_1_SignUp_SignIn`
 ```
 
-## Scopes
+### Scopes
 
 One or many fully qualified application scopes.  These scopes can be found in the `Published Scopes` or `Expose an API` section of the Azure AD applications.
 
 Example
 
-```
+```text
 https://testprodoh.onmicrosoft.com/api/UrlBundle.ReadWrite
 ```
 
-## Other
+### Other
 
 Some applications may require concatenating some of the above elements.  For example, the full Authority URL is needed to integrate ROPC from a console application to the backend REST API.
 
 Example
 
-```
+```text
 https://{TenantName}.b2clogin.com/tfp/{TenantDomain}/{UserFlow}
 ```
 
-## Open ID Connect (OIDC) Configuration Endpoint
+### Open ID Connect (OIDC) Configuration Endpoint
 
 This URL can be found when `Running a user flow` described above at the top of the `Run User Flow` configuration blade. It should look like the following:
 
-```
+```text
 https://{TenantName}.b2clogin.com/{TenantDomain}/v2.0/.well-known/openid-configuration?p={UserFlow}
 ```
 
 Other common configuration elements used within OIDC / OAuth flows are also exposed in the OIDC configuration JSON that is returned from the above URL.
 
-```
+```text
 GET https://testprodoh.b2clogin.com/testprodoh.onmicrosoft.com/v2.0/.well-known/openid-configuration?p=B2C_1_SignUp_SignIn
 ```
 

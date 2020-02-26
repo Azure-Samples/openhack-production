@@ -1,18 +1,31 @@
 ---
 page_type: sample
 languages:
-- csharp
+  - csharp
 products:
-- dotnet
-description: "Add 150 character max description"
-urlFragment: "update-this-to-unique-url-stub"
+  - dotnet
+description: Add 150 character max description
+urlFragment: update-this-to-unique-url-stub
 ---
-
 # Production Fundamentals OpenHack Sample Application
 
 This is a replica of the Urlist website but re-architected to use Azure AppService to host the backend instead of using Azure Functions. The original project repository can be found here <https://github.com/the-urlist>
 
 Please [check here](docs/Infrastructure.md) to view and read about the architecture.
+
+---
+
+## Table Of Contents
+
+<!-- toc -->
+- [Glossary](#glossary)
+- [Contents](#contents)
+- [Prerequisites](#prerequisites)
+- [Setup](#setup)
+- [Running the sample](#running-the-sample)
+- [Contributing](#contributing)
+
+<!-- tocstop -->
 
 ## Glossary
 
@@ -43,6 +56,10 @@ You need to have the following available
 - An Azure subscription
 - Check out the [API folder for backend prerequisites](api/README.md)
 - Check out the [Frontend folder for frontend prerequisites](frontend/README.md)
+
+## Linting
+
+Please see [the Linting guide](./LINTING.md) to set up your environment.
 
 ## Setup
 

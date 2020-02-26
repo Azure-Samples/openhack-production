@@ -1,0 +1,22 @@
+{
+  "name": "urlist",
+  "version": "1.0.0",
+  "description": "urlist app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "markdownlint -c .markdownlint.json -i **/node_modules/** ./",
+    "lint:fix": "markdownlint -f -c .markdownlint.json -i **/node_modules/** ./"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@ssh.dev.azure.com:v3/cseeest/OpenHack/Managing_Prod_Env"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "jsonlint": "^1.6.3",
+    "markdownlint-cli": "^0.21.0"
+  }
+}

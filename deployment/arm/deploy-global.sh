@@ -71,7 +71,6 @@ echo "Environment: $env"
 echo "Front Door: $frontDoorName"
 echo "Cosmos DB Name: $cosmosdbName"
 echo "Application Insights Name: $appInsightsName"
-echo
 
 # set -e fails and exit here if just let counter=0 is specified. Workaround is to add || true to the expression
 let counter=0 || true
@@ -79,8 +78,6 @@ let counter=0 || true
 frontendHostArray=()
 backendHostArray=()
 cosmosdbRegionArray=()
-resourceGroupRegionArray=()
-apimNameArray=()
 
 for region in ${regions[@]}; do
     # include common script to populate shared variables per region
@@ -94,35 +91,29 @@ for region in ${regions[@]}; do
     # also removing the additional quotes az returns with the URL
     primaryEndpoint=$(echo $primaryEndpoint | sed -e 's|^[^/]*//||' -e 's|/.*$||' -e 's/"//g')
     frontendHostArray+=("$primaryEndpoint")
-
     backendHostArray+=("apim-$regionScope.azure-api.net")
-    apimNameArray+=("apim-$regionScope")
-
     cosmosdbRegionArray+=("$region")
-    resourceGroupRegionArray+=("rg-$regionScope")
 done
 
 frontendHosts=$(toArmArray ${frontendHostArray[*]})
 backendHosts=$(toArmArray ${backendHostArray[*]})
 # replicate cosmosdb data to one region only
 cosmosdbRegions=$(toArmArray ${cosmosdbRegionArray[0]})
-resourceGroupRegions=$(toArmArray ${resourceGroupRegionArray[*]})
-apimNames=$(toArmArray ${apimNameArray[*]})
 echo "Frontend Hosts: $frontendHosts"
 echo "Backend Hosts: $backendHosts"
-echo "Regional Resource Groups: $resourceGroupRegions"
-echo "Regional APIM Names: $apimNames"
 echo 
 
 echo "Creating global resource Group: $resourceGroupName"
+echo 
 az group create \
     --subscription $subscription \
     --name $resourceGroupName \
     --location ${regions[0]} \
-    --output jsonc
+    --output table
 
 echo
 echo "Deploying global resources to $resourceGroupName"
+echo 
 az group deployment create \
     --name "Urlist-global-$(timestamp)" \
     --resource-group $resourceGroupName \
@@ -130,8 +121,29 @@ az group deployment create \
     --template-file global.json \
     --output table \
     --parameters \
-    appInsightsName=$appInsightsName apimNames=$apimNames \
     frontDoorName=$frontDoorName frontDoorEndpoint=$frontDoorEndpoint \
     frontendHosts=$frontendHosts backendHosts=$backendHosts \
     cosmosdbName=$cosmosdbName cosmosdbRegions=$cosmosdbRegions \
-    resourceGroupRegions=$resourceGroupRegions
+    appInsightsName=$appInsightsName
+
+# deploy api management logger in each region
+for region in ${regions[@]}; do
+    # include common script to populate shared variables per region
+    source common-script.sh
+
+    regionalResourceGroupName="rg-$regionScope"
+
+    echo
+    echo "Deploying api managment logger to $regionalResourceGroupName"
+    echo
+    az group deployment create \
+        --name "Urlist-global-$(timestamp)" \
+        --resource-group $regionalResourceGroupName \
+        --subscription $subscription \
+        --template-file apim-logger.json \
+        --output table \
+        --parameters \
+        appInsightsName=$appInsightsName \
+        apimName=$apimName \
+        resourceGroupName=$resourceGroupName
+done

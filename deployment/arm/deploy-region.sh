@@ -77,14 +77,16 @@ echo "Region: $region"
 echo
 
 echo "Creating Regional Resource Group: $resourceGroupName"
+echo
 az group create \
     --subscription $subscription \
     --name $resourceGroupName \
     --location $region \
-    --output jsonc
+    --output table
     
 echo
 echo "Deploying regional resources to $resourceGroupName"
+echo
 az group deployment create \
     --name "Urlist-$region-$(timestamp)" \
     --resource-group $resourceGroupName \

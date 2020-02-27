@@ -315,7 +315,7 @@
                 "displayName": "GET",
                 "description": "Get API health",
                 "method": "GET",
-                "urlTemplate": "/",
+                "urlTemplate": "/*",
                 "templateParameters": [
                 ],
                 "responses": [

@@ -31,9 +31,10 @@ namespace LinkyLink.Controllers
         /// List all the LinkBundles.
         /// </summary>
         [HttpGet]
-        public async Task<IEnumerable<LinkBundle>> GetLinkBundlesAsync([FromQuery]QueryOptions queryOptions)
+        public async Task<ActionResult<LinkBundle>> GetLinkBundlesAsync([FromQuery]QueryOptions queryOptions)
         {
-            return await _linksService.AllLinkBundlesAsync(queryOptions);
+            var linkBundles = await _linksService.AllLinkBundlesAsync(queryOptions);
+            return Ok(linkBundles);
         }
 
         /// <summary>
@@ -81,7 +82,7 @@ namespace LinkyLink.Controllers
                 description = d.Description,
                 linkCount = d.Links.Count.ToString()
             });
-            return new OkObjectResult(results);
+            return Ok(results);
         }
 
         /// <summary>

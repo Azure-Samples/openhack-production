@@ -44,7 +44,7 @@ namespace LinkyLink.Controllers
                 if (openGraphRequests != null && openGraphRequests.Count() > 0)
                 {
                     IEnumerable<OpenGraphResult> result = await _openGraphService.GetGraphResultsAsync(Request, openGraphRequests);
-                    return new OkObjectResult(result);
+                    return Ok(result);
                 }
 
                 return BadRequest("Invalid Payload. Payload must be a valid json array.");

@@ -31,23 +31,14 @@ namespace LinkyLink.Tests
         public async Task GetLinkBundlesReturnsAllLinkBundles()
         {
             // Arrange
-            List<LinkBundle> list = new List<LinkBundle>();
-
-            LinkBundle linkBundle = new LinkBundle
-            {
-                VanityUrl = "samplelink"
-            };
-
-            list.Add(linkBundle);
-
             _mockService.Setup(service => service.AllLinkBundlesAsync(QueryOptions.Default))
-                .ReturnsAsync(list);
+                .ReturnsAsync(It.IsAny<IEnumerable<LinkBundle>>);
 
             // Act
-            IEnumerable<LinkBundle> result = await _linksController.GetLinkBundlesAsync(QueryOptions.Default);
+            var result = await _linksController.GetLinkBundlesAsync(QueryOptions.Default);
 
             // Assert
-            Assert.Equal(1, result.Count());
+            Assert.IsType<OkObjectResult>(result.Result);
         }
 
         [Fact]

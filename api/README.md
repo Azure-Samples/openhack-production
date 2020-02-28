@@ -7,6 +7,20 @@ The backend for this project is built as a .Net Core API using .NET Core. All th
 - [.NET Core](https://dotnet.microsoft.com)
 - [Azure Cosmos DB](https://azure.microsoft.com/services/cosmos-db)
 
+---
+
+## Table Of Contents
+
+<!-- toc -->
+
+- [Build and run the ASP.NET Core backend locally](#build-and-run-the-aspnet-core-backend-locally)
+- [Using the API](#using-the-api)
+- [Testing](#testing)
+- [Docker local development](#docker-local-development)
+- [Troubleshooting local development certificate issues](#troubleshooting-local-development-certificate-issues)
+
+<!-- tocstop -->
+
 ## Build and run the ASP.NET Core backend locally
 
 ### Get the prerequisites

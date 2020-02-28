@@ -9,6 +9,19 @@
 
 Currently, the Urlist configuration of the Azure AD B2C tenant requires a manual setup process and script automation is not currently supported.  Setup requires the configuration of applications, identity providers & user flows.
 
+---
+
+## Table Of Contents
+
+<!-- toc -->
+
+- [Applications](#applications)
+- [Identity Providers](#identity-providers)
+- [User Flows](#user-flows)
+- [Integrating with your application code](#integrating-with-your-application-code)
+
+<!-- tocstop -->
+
 ## Applications
 
 Each application within an organization has unique setup requirements and custom authentication constraints.

@@ -2,6 +2,20 @@
 
 A **Working Agreement** is a living document representing the principles and expected behavior of everyone involved in the project; it is not meant to be exhaustive nor complete. The team should be accountable to these standards and revisit, review, and revise as needed. The agreement is signed off by everyone.
 
+---
+
+## Table Of Contents
+
+<!-- toc -->
+
+- [Working Together](#working-together)
+- [Development Process](#development-process)
+- [Coding Together](#coding-together)
+- [Automated Testing](#automated-testing)
+- [Deployment](#deployment)
+
+<!-- tocstop -->
+
 ## Working Together
 
 - Attend all planning and standup meetings whenever possible. If we will not be able to attend a meeting, we will let the Scrum Leader and/or Product Manager as soon as possible.

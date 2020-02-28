@@ -1,6 +1,22 @@
 # Infrastructure
 
-The Urlist application is a relatively simple application that uses a robust and scalable infrastructure. The following demonstrates how using Azure services include Front door, API Management and other PaaS offerings we can quickly and easily deploy a global footprint with fast edge access and global data replication using Cosmos DB.
+The Urlist application is a relatively simple application that uses a robust and scalable infrastructure. The following demonstrates how using Azure services include Front door, API Management and other PaaS offerings we can quickly and easily deploy a global footprint with fast edge access and global data replication using Cosmos DB
+
+---
+
+## Table Of Contents
+
+<!-- toc -->
+
+- [Azure Infrastructure](#azure-infrastructure)
+- [Naming Conventions](#naming-conventions)
+- [Azure FrontDoor](#azure-frontdoor)
+- [Cosmos DB](#cosmos-db)
+- [API Management](#api-management)
+- [Monitor & App Insights](#monitor--app-insights)
+- [Azure AD B2C](#azure-ad-b2c)
+
+<!-- tocstop -->
 
 ## Azure Infrastructure
 

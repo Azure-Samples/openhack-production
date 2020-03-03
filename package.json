@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "markdownlint -c .markdownlint.json -i **/node_modules/** ./",
-    "lint:fix": "markdownlint -f -c .markdownlint.json -i **/node_modules/** ./"
+    "lint": "markdownlint '**/*.md' --config .markdownlint.json --ignore '**/node_modules/**' ",
+    "lint:fix": "markdownlint --fix '**/*.md' --config .markdownlint.json --ignore '**/node_modules/**' "
   },
   "repository": {
     "type": "git",
@@ -18,5 +18,9 @@
   "devDependencies": {
     "jsonlint": "^1.6.3",
     "markdownlint-cli": "^0.22.0"
+  },
+  "engines": {
+    "node": ">=10.19.0",
+    "npm": ">=6.13.4"
   }
 }

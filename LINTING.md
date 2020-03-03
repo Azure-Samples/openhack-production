@@ -7,11 +7,12 @@ For each PR, there's a build to validate that all markdown files are following c
 ## Table Of Contents
 
 <!-- toc -->
+
 - [Pre-req](#pre-req)
 - [Linting manually](#linting-manually)
 - [Vscode Extension](#vscode-extension)
 - [Fixing lint errors](#fixing-lint-errors)
-<!-- tocstop -->
+  <!-- tocstop -->
 
 ## Pre-req
 
@@ -36,7 +37,7 @@ npm run lint
 It is recommended that you install the [markdownlint](https://github.com/DavidAnson/vscode-markdownlint/blob/master/README.md#rules)
 extension.
 
-This extension will highlight rule violation as you edit the files.  
+This extension will highlight rule violation as you edit the files.
 
 ## Fixing lint errors
 

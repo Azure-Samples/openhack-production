@@ -23,7 +23,7 @@ The backend for this project is built as a .Net Core API using .NET Core. All th
 
 ## Build and run the ASP.NET Core backend locally
 
-### Get the prerequisites
+### Prerequisites
 
 - Install the [.NET Core 3.1 SDK](https://dotnet.microsoft.com/download). This repo is pinned to use version 3.1.x of the SDK.
 - Install [Visual Studio](https://visualstudio.microsoft.com/) or [Visual Studio Code](https://code.visualstudio.com/) or [Visual Studio Community edition](https://visualstudio.microsoft.com/vs)
@@ -50,9 +50,11 @@ cp appsettings.sample.json appsettings.Development.json
 
 Update the `appsettings.Development.json` file with your Cosmos DB Uri and Primary Key in the `ServiceEndpoint` & `AuthKey` settings respectively. You dont need to worry about setting up the database as it will be created automatically for you when you create your first link-bundle through the frontend.
 
+You can find the the value for `ServiceEndpoint` & `AuthKey` from the Cosmos DB resource in Azure portal or from Azure DevOps variable group (Pipelines/Library/Variable groups).
+
 ### Setup Azure AD B2C Configuration
 
-This application requires Azure Active Directory B2C for authentication/authorization. Each API request performs JWT validation from your Azure B2C tenant.
+This application requires [Azure Active Directory B2C](../docs/AzureADB2C.md) for authentication/authorization. Each API request performs JWT validation from your Azure B2C tenant.
 
 Update `appsettings.Development.json` file with your tenants configuration:
 
@@ -130,6 +132,8 @@ To test out the API locally you can use your favorite tooling or try out some of
 
 - Run `Save Bundle` to add some data to Cosmos DB. The structure (collection, documents, etc.) in the database will be created for you if it does not exist yet. Next run `Get bundle for vanity url` to retrieve the entry you just created.
 
+> Note: Change the vanityUrl value to a unique name before running 'Save Bundle' and use the same vanityUrl name to run `Get bundle for vanity url`.
+
 ![postman](docs/postman_localhost.png)
 
 If everything was setup correctly, you should see a response that resembles the following.
@@ -172,7 +176,7 @@ If everything was setup correctly, you should see a response that resembles the 
 
 ### Running unit tests
 
-Unit tests validate the individual components of the API
+Unit tests validate the individual components of the API.
 
 ```bash
 dotnet test api/tests/LinkyLink.Tests/LinkyLink.Tests.csproj

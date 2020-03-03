@@ -49,24 +49,25 @@ Outline the file contents of the repository. It helps users navigate the codebas
 | `README.md`       | This README file.                          |
 | `LICENSE`         | The license for the sample.                |
 
-## Prerequisites
-
-You need to have the following available
-
-- An Azure subscription
-- Check out the [API folder for backend prerequisites](api/README.md)
-- Check out the [Frontend folder for frontend prerequisites](frontend/README.md)
-
-## Linting
-
-Please see [the Linting guide](./LINTING.md) to set up your environment.
-
 ## Setup
 
-- Check out the [deployment folder](deployment/README.md) to setup the Azure infrastructure automatically.
-- Check out the [pipelines folder](pipelines/README.md) to create the needed pipelines to automate deployments and infrastructure updates.
+You need to have an Azure subscription available to setup the Urlist application and it's infrastructure.
 
-## Running the sample
+### Infrastructure
+
+- Refer to the [deployment guide](deployment/README.md) to setup the Azure infrastructure automatically.
+- Refer to the [pipelines guide](pipelines/README.md) to create the needed pipelines to automate deployments and infrastructure updates.
+
+### Urlist Application
+
+- Refer to the [backend guide](api/README.md) to setup the backend service.
+- Refer to the [frontend guide](frontend/README.md/) to setup the frontend service.
+
+### Linting
+
+Refer to the [linting guide](./LINTING.md) to set up the environment.
+
+## Running the Application
 
 Once the pipelines are setup and had successfully deployed the project, find your Azure Front Door endpoint and use it to test the website.
 

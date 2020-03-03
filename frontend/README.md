@@ -63,7 +63,6 @@ The frontend for this project is built with the following libraries and framewor
 There are a few configurations needed for the frontend app to run, those are passed as [VUE environment configs](https://cli.vuejs.org/guide/mode-and-env.html)
 
 - `VUE_APP_BACKEND`: this has the URL pointing to the backend endpoint.
-
 - `VUE_APP_FRONTEND`: this has the URL point to the frontend endpoint.
 - `VUE_APP_OIDC_CLIENT_ID`: the configured Azure B2C Client Application ID.
 - `VUE_APP_OIDC_SCOPE`: the Azure B2C Client Scopes.

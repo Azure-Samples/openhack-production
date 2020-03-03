@@ -58,7 +58,7 @@ All projects are under [Git](https://git-scm.com/) for source control using a [m
 
 ## Automated Testing
 
-Automated test suites are run as part of the continuous integration (CI) pipelines. Any test failures will fail your builds. It's expected that all new changes to the codebase include new or updated Unit Tests (UT) to validate the code changes, the CI pipelines are gated with a UT code coverage check.
+Automated test suites are run as part of the continuous integration (CI) pipelines. Any test failures will fail your builds. It's expected that all new changes to the codebase include new or updated Unit Tests (UT) to validate the code changes. The CI pipelines are gated with a UT code coverage check. The current code coverage threshold is 76%. It's expected to maintain this code coverage threshold otherwise it will fail your builds.
 
 ## Deployment
 

@@ -44,7 +44,7 @@ jobs:
           checkCoverage: true
           coverageFailOption: 'fixed'
           coverageType: 'lines'
-          coverageThreshold: '66'
+          coverageThreshold: '76'
 
       - task: DotNetCoreCLI@2
         displayName: Package Build Artifacts

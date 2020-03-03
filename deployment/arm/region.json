@@ -4,23 +4,58 @@
     "parameters": {
         "location": {
             "defaultValue": "",
-            "type": "string"
-        },
-        "backendAppName": {
-            "defaultValue": "",
-            "type": "string"
+            "type": "string",
+            "metadata": {
+                "description": "Location for all resources"
+            }
         },
         "appServicePlanName": {
             "defaultValue": "",
-            "type": "string"
+            "type": "string",
+            "metadata": {
+                "description": "The name of the azure application service plan resource"
+            }
+        },
+        "backendAppName": {
+            "defaultValue": "",
+            "type": "string",
+            "metadata": {
+                "description": "The name of the azure application service resource"
+            }
+        },
+        "appServicePlanSkuResourceType": {
+            "type": "string",
+            "defaultValue": "S1",
+            "metadata": {
+                "description": "The resource type in App Service Plan, by default is Standard S1"
+            },
+            "allowedValues": [
+                "S1",
+                "P1V2",
+                "P2V2",
+                "P3V2"
+            ]
+        },
+        "appServicePlanSkuResourceCount": {
+            "type": "int",
+            "defaultValue": 1,
+            "metadata": {
+                "description": "The resource count in App Service Plan, by default is 1"
+            }
         },
         "apimName": {
             "defaultValue": "",
-            "type": "string"
+            "type": "string",
+            "metadata": {
+                "description": "The name of the API Management resource"
+            }
         },
         "storageActName": {
             "defaultValue": "",
-            "type": "string"
+            "type": "string",
+            "metadata": {
+                "description": "The name of the storage account resource"
+            }
         }
     },
     "variables": {
@@ -32,11 +67,8 @@
             "name": "[parameters('appServicePlanName')]",
             "location": "[parameters('location')]",
             "sku": {
-                "name": "S1",
-                "tier": "Standard",
-                "size": "S1",
-                "family": "S",
-                "capacity": 1
+                "name": "[parameters('appServicePlanSkuResourceType')]",
+                "capacity": "[parameters('appServicePlanSkuResourceCount')]"
             },
             "kind": "app",
             "properties": {

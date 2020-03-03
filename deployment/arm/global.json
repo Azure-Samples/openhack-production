@@ -1,37 +1,83 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2019-08-01/deploymentTemplate.json#",
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
         "appInsightsName": {
             "defaultValue": "",
-            "type": "string"
+            "type": "string",
+            "metadata": {
+                "description": "The name of the application insights resource"
+            }
         },
         "frontDoorName": {
             "defaultValue": "",
-            "type": "string"
+            "type": "string",
+            "metadata": {
+                "description": "The name of the frontdoor resource"
+            }
         },
         "frontDoorEndpoint": {
             "defaultValue": "",
-            "type": "string"
+            "type": "string",
+            "metadata": {
+                "description": "The endpoint of the frontdoor resource"
+            }
         },
         "frontendHosts": {
             "defaultValue": [
             ],
-            "type": "array"
+            "type": "array",
+            "metadata": {
+                "description": "The list of hostnames of the frontend. Must be an IP address or FQDN"
+            }
         },
         "backendHosts": {
             "defaultValue": [
             ],
-            "type": "array"
+            "type": "array",
+            "metadata": {
+                "description": "The list of hostnames of the backend. Must be an IP address or FQDN"
+            }
         },
-        "cosmosdbName": {
-            "type": "string"
+        "cosmosdbAccountName": {
+            "type": "string",
+            "metadata": {
+                "description": "Cosmos DB account name, max length 44 characters"
+            }
         },
         "cosmosdbRegions": {
             "defaultValue": [
             ],
-            "type": "array"
+            "type": "array",
+            "metadata": {
+                "description": "The list of replica regions for the Cosmos DB account"
+            }
+        },
+        "cosmosdbConsistencyLevel": {
+            "type": "string",
+            "defaultValue": "Session",
+            "allowedValues": [
+                "Eventual",
+                "ConsistentPrefix",
+                "Session",
+                "BoundedStaleness",
+                "Strong"
+            ],
+            "metadata": {
+                "description": "The default consistency level of the Cosmos DB account"
+            }
+        },
+        "cosmosdbThroughput": {
+            "type": "int",
+            "defaultValue": 400,
+            "metadata": {
+                "description": "The throughput for the Cosmos DB container with dedicated throughput"
+            }
         }
+    },
+    "variables": {
+        "cosmosDatabaseName": "linkylinkdb",
+        "cosmosContainerName": "linkbundles"
     },
     "resources": [
         {
@@ -228,7 +274,7 @@
         },
         {
             "type": "Microsoft.DocumentDB/databaseAccounts",
-            "name": "[parameters('cosmosdbName')]",
+            "name": "[parameters('cosmosdbAccountName')]",
             "apiVersion": "2019-08-01",
             "kind": "GlobalDocumentDB",
             "location": "[resourceGroup().location]",
@@ -237,7 +283,7 @@
             },
             "properties": {
                 "consistencyPolicy": {
-                    "defaultConsistencyLevel": "Session",
+                    "defaultConsistencyLevel": "[parameters('cosmosdbConsistencyLevel')]",
                     "maxIntervalInSeconds": 5,
                     "maxStalenessPrefix": 100
                 },
@@ -255,6 +301,58 @@
                 "databaseAccountOfferType": "Standard",
                 "enableAutomaticFailover": true,
                 "enableMultipleWriteLocations": true
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
+            "name": "[concat(parameters('cosmosdbAccountName'), '/', variables('cosmosDatabaseName'))]",
+            "apiVersion": "2019-08-01",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosdbAccountName'))]"
+            ],
+            "properties": {
+                "resource": {
+                    "id": "[variables('cosmosDatabaseName')]"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
+            "apiVersion": "2019-12-12",
+            "name": "[concat(parameters('cosmosdbAccountName'), '/', variables('cosmosDatabaseName'), '/', variables('cosmosContainerName'))]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', parameters('cosmosdbAccountName'), variables('cosmosDatabaseName'))]"
+            ],
+            "properties": {
+                "resource": {
+                    "id": "[variables('cosmosContainerName')]",
+                    "indexingPolicy": {
+                        "indexingMode": "consistent",
+                        "includedPaths": [
+                            {
+                                "path": "/*"
+                            }
+                        ],
+                        "excludedPaths": [
+                            {
+                                "path": "/\"_etag\"/?"
+                            }
+                        ]
+                    },
+                    "partitionKey": {
+                        "paths": [
+                            "/UserId"
+                        ],
+                        "kind": "Hash"
+                    },
+                    "conflictResolutionPolicy": {
+                        "mode": "LastWriterWins",
+                        "conflictResolutionPath": "/_ts"
+                    }
+                },
+                "options": {
+                    "throughput": "[parameters('cosmosdbThroughput')]"
+                }
             }
         }
     ]

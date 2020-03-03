@@ -93,8 +93,13 @@ az group deployment create \
     --subscription $subscription \
     --template-file region.json \
     --output table \
-    --parameters location=$region apimName=$apimName appServicePlanName=$appServicePlanName \
-    backendAppName=$backendAppName storageActName=$storageActName
+    --parameters location=$region \
+    apimName=$apimName \
+    appServicePlanName=$appServicePlanName \
+    appServicePlanSkuResourceType="S1" \
+    appServicePlanSkuResourceCount=1 \
+    backendAppName=$backendAppName \
+    storageActName=$storageActName
 
 echo
 echo "Configuring blob storage for static website hosting"

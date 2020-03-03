@@ -121,10 +121,15 @@ az group deployment create \
     --template-file global.json \
     --output table \
     --parameters \
-    frontDoorName=$frontDoorName frontDoorEndpoint=$frontDoorEndpoint \
-    frontendHosts=$frontendHosts backendHosts=$backendHosts \
-    cosmosdbName=$cosmosdbName cosmosdbRegions=$cosmosdbRegions \
-    appInsightsName=$appInsightsName
+    frontDoorName=$frontDoorName \
+    frontDoorEndpoint=$frontDoorEndpoint \
+    frontendHosts=$frontendHosts \
+    backendHosts=$backendHosts \
+    cosmosdbAccountName=$cosmosdbName \
+    cosmosdbRegions=$cosmosdbRegions \
+    cosmosdbConsistencyLevel="Session" \
+    cosmosdbThroughput=400 \
+    appInsightsName=$appInsightsName 
 
 # deploy api management logger in each region
 for region in ${regions[@]}; do

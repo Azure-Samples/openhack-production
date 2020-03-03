@@ -4,15 +4,24 @@
     "parameters": {
         "apimName": {
             "defaultValue": "",
-            "type": "string"
+            "type": "string",
+            "metadata": {
+                "description": "The name of the api management resource"
+            }
         },
         "appInsightsName": {
             "defaultValue": "",
-            "type": "string"
+            "type": "string",
+            "metadata": {
+                "description": "The name of the application insights resource"
+            }
         },
         "resourceGroupName": {
             "defaultValue": "",
-            "type": "string"
+            "type": "string",
+            "metadata": {
+                "description": "The name of the resource group to deploy resources to"
+            }
         }
     },
     "resources": [

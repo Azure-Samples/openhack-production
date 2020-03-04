@@ -17,13 +17,15 @@ namespace LinkyLink.Integration.Tests
     public class LinkApiTests : IntegrationTest, IDisposable
     {
         private readonly HttpClient client;
+        private readonly string baseAddress;
         private readonly AzureAdB2C b2cConfig;
 
         public LinkApiTests()
         {
+            this.baseAddress = this.Configuration.GetValue<string>("BaseAddress");
             this.b2cConfig = this.Configuration.GetSection("AzureAdB2C").Get<AzureAdB2C>();
 
-            this.ValidateConfigurationItem(() => this.b2cConfig.BaseAddress, nameof(this.b2cConfig.BaseAddress));
+            this.ValidateConfigurationItem(() => this.baseAddress, "BaseAddress");
             this.ValidateConfigurationItem(() => this.b2cConfig.Authority, nameof(this.b2cConfig.Authority));
             this.ValidateConfigurationItem(() => this.b2cConfig.ClientId, nameof(this.b2cConfig.ClientId));
             this.ValidateConfigurationItem(() => this.b2cConfig.Scope, nameof(this.b2cConfig.Scope));
@@ -32,7 +34,7 @@ namespace LinkyLink.Integration.Tests
 
             this.client = new HttpClient
             {
-                BaseAddress = new Uri(this.b2cConfig.BaseAddress)
+                BaseAddress = new Uri(this.baseAddress)
             };
         }
 

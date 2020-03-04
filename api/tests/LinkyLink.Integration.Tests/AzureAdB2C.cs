@@ -11,8 +11,6 @@ namespace LinkyLink.Integration.Tests
         [JsonProperty]
         public string Authority { get; set; }
         [JsonProperty]
-        public string BaseAddress { get; set; }
-        [JsonProperty]
         public string Username { get; set; }
         [JsonProperty]
         public string Password { get; set; }

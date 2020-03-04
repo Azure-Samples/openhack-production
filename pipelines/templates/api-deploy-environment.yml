@@ -90,7 +90,7 @@ jobs:
           projects: '**/LinkyLink.Integration.Tests/*.csproj'
           arguments: -c $(BuildConfiguration)
         env:
-          INTTEST_AzureAdB2C__BaseAddress: 'https://backend-${{ parameters.businessUnit }}-${{ parameters.appName }}-${{ parameters.environment }}-$(region)-staging.azurewebsites.net'
+          INTTEST_BaseAddress: 'https://backend-${{ parameters.businessUnit }}-${{ parameters.appName }}-${{ parameters.environment }}-$(region)-staging.azurewebsites.net'
       
       - task: AzureAppServiceManage@0
         displayName: Swap Staging and Production Slots

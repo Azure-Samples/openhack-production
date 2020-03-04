@@ -193,8 +193,8 @@ Before running integration tests you must update the settings within the `appset
 ### Set Environment Variables
 
 ```bash
-# The base/host address of the environment to test
-export INTTEST_AzureAdB2C__BaseAddress=
+# The host address of the deployed environment (dev/staging/prod) to test
+export INTTEST_BaseAddress=
 # The client ID of your test application within Azure B2C
 export INTTEST_AzureAdB2C__ClientId=
 # The Azure B2C authority endpoint

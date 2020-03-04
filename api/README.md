@@ -13,7 +13,8 @@ The backend for this project is built as a .Net Core API using .NET Core. All th
 
 <!-- toc -->
 
-- [Build and run the ASP.NET Core backend locally](#build-and-run-the-aspnet-core-backend-locally)
+- [Configure app settings](#configure-app-settings)
+- [Build and run locally](#build-and-run-locally)
 - [Using the API](#using-the-api)
 - [Testing](#testing)
 - [Docker local development](#docker-local-development)
@@ -21,20 +22,9 @@ The backend for this project is built as a .Net Core API using .NET Core. All th
 
 <!-- tocstop -->
 
-## Build and run the ASP.NET Core backend locally
+---
 
-### Prerequisites
-
-- Install the [.NET Core 3.1 SDK](https://dotnet.microsoft.com/download). This repo is pinned to use version 3.1.x of the SDK.
-- Install [Visual Studio](https://visualstudio.microsoft.com/) or [Visual Studio Code](https://code.visualstudio.com/) or [Visual Studio Community edition](https://visualstudio.microsoft.com/vs)
-- Install the [C# extension for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=ms-vscode.csharp)
-- The infrastructure is setup and available as described [here](../docs/Infrastructure.md)
-
-#### Optional
-
-- Install [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
-- Install [Postman](https://www.getpostman.com/)
-- Install [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
+## Configure app settings
 
 Copy the contents of the `appsettings.sample.json` into the `appsettings.Development.json` file:
 
@@ -48,9 +38,11 @@ cp appsettings.sample.json appsettings.Development.json
 
 ### Setup Database
 
-Update the `appsettings.Development.json` file with your Cosmos DB Uri and Primary Key in the `ServiceEndpoint` & `AuthKey` settings respectively. You dont need to worry about setting up the database as it will be created automatically for you when you create your first link-bundle through the frontend.
+Update the `appsettings.Development.json` file with your Cosmos DB Uri and Primary Key in the `ServiceEndpoint` & `AuthKey` settings respectively.
 
-You can find the the value for `ServiceEndpoint` & `AuthKey` from the Cosmos DB resource in Azure portal or from Azure DevOps variable group (Pipelines/Library/Variable groups).
+You can find the the value for `ServiceEndpoint` & `AuthKey` from the Cosmos DB resource in Azure portal or from Azure DevOps variable group (Pipelines -> Library -> Variable groups).
+
+  > Cosmos DB database and container has already been created as part of deploying cosmos db resource in the global resource group
 
 ### Setup Azure AD B2C Configuration
 
@@ -67,6 +59,25 @@ Update `appsettings.Development.json` file with your tenants configuration:
   "SignUpSignInPolicyId": "[Your Azure B2C policy name]"
 },
 ```
+
+---
+
+## Build and run locally
+
+If you prefer to use Docker, we have provided [setup instructions below](#docker-local-development)
+
+### Get the prerequisites
+
+- Install the [.NET Core 3.1 SDK](https://dotnet.microsoft.com/download). This repo is pinned to use version 3.1.x of the SDK.
+- Install [Visual Studio](https://visualstudio.microsoft.com/) or [Visual Studio Code](https://code.visualstudio.com/) or [Visual Studio Community edition](https://visualstudio.microsoft.com/vs)
+- Install the [C# extension for Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=ms-vscode.csharp)
+- The infrastructure is setup and available as described [here](../docs/Infrastructure.md)
+
+#### Optional
+
+- Install [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10)
+- Install [Postman](https://www.getpostman.com/)
+- Install [REST Client](https://marketplace.visualstudio.com/items?itemName=humao.rest-client)
 
 ### Run from your favorite terminal
 
@@ -114,9 +125,16 @@ VS will start the Rest API from an IIS Express instance on a random port.
 
 Will start the Rest API from a console app on port `5001` similar to calling `dotnet run` from your your terminal.
 
+---
+
 ## Using the API
 
 To test out the API locally you can use your favorite tooling or try out some of our favorites.
+
+> Note: Change the `vanityUrl` value to a unique name before running `Save Bundle` and use the same vanityUrl name to run `Get bundle` for vanity url.
+
+- Run `Save Bundle` to add some data to Cosmos DB. The structure (collection, documents, etc.) in the database will be created for you if it does not exist yet.
+- Next run `Get bundle for vanity url` to retrieve the entry you just created.
 
 ### Try out the API with Postman
 
@@ -128,13 +146,9 @@ To test out the API locally you can use your favorite tooling or try out some of
 - Set your environment to `Localhost`
 - Turn off Postman SSL Verification
 
-![postman](docs/postman-disable-ssl-verification.png)
+  ![postman](docs/postman-disable-ssl-verification.png)
 
-- Run `Save Bundle` to add some data to Cosmos DB. The structure (collection, documents, etc.) in the database will be created for you if it does not exist yet. Next run `Get bundle for vanity url` to retrieve the entry you just created.
-
-> Note: Change the vanityUrl value to a unique name before running 'Save Bundle' and use the same vanityUrl name to run `Get bundle for vanity url`.
-
-![postman](docs/postman_localhost.png)
+  ![postman](docs/postman_localhost.png)
 
 If everything was setup correctly, you should see a response that resembles the following.
 
@@ -151,7 +165,7 @@ If everything was setup correctly, you should see a response that resembles the 
 - Follow the instructions in the `Run the ASP.Net Core Web API backend` section of this README to start the backend
 - Select `Send Request` for any of the endpoints
 
-![REST Client](docs/rest_client.png)
+  ![REST Client](docs/rest_client.png)
 
 </details>
 
@@ -164,7 +178,7 @@ If everything was setup correctly, you should see a response that resembles the 
 
 - The API uses [Swagger](https://swagger.io/) for API Documentation. You can view the swagger documentation by navigating to: `https://localhost:<port>/swagger`
 
-![swagger](docs/swagger.png)
+  ![swagger](docs/swagger.png)
 
 #### Misc. Notes
 
@@ -172,11 +186,13 @@ If everything was setup correctly, you should see a response that resembles the 
 
 </details>
 
+---
+
 ## Testing
 
 ### Running unit tests
 
-Unit tests validate the individual components of the API.
+Unit tests validate the individual components of the API
 
 ```bash
 dotnet test api/tests/LinkyLink.Tests/LinkyLink.Tests.csproj
@@ -188,9 +204,25 @@ Integration tests validate the APIs against a running system.
 
 The integration tests require a special configuration that uses a [resource owner password credentials (ROPC) flow in Azure AD B2C](https://docs.microsoft.com/en-us/azure/active-directory-b2c/configure-ropc?tabs=applications). The ROPC client application only works with local user accounts. Social logins are not supported.
 
-Before running integration tests you must update the settings within the `appsettings.json` of the integration test project or set environment variables for the following:
+#### Configuration
 
-### Set Environment Variables
+Before running integration tests you must update the settings within the `appsettings.json` of the integration test project or set environment variables.
+
+##### Appsettings
+
+Copy the contents of the `appsettings.sample.json` into the `appsettings.json` file and fill in the missing values.
+
+```bash
+# Navigate to the test directory
+cd api/tests/LinkyLink.Integration.Tests
+
+# Copy sample .env settings
+cp appsettings.sample.json appsettings.json
+
+# FILL IN THE missing values
+```
+
+##### Environment Variables
 
 ```bash
 # The host address of the deployed environment (dev/staging/prod) to test
@@ -207,26 +239,74 @@ export INTTEST_AzureAdB2C__Username=
 export INTTEST_AzureAdB2C__Password=
 ```
 
-### Run tests with .Net CLI
+#### Run tests with .Net CLI
 
 ```bash
+cd ../../../
 dotnet test api/tests/LinkyLink.Integration.Tests/LinkyLink.Integration.Tests.csproj
 ```
+
+---
 
 ## Docker local development
 
 This is an alternative local development option. The container sets the ASPNETCORE environment to `Development`, so make sure you have a `appsettings.Development.json` created and configured before building the container image.
 
+### Setup certificate for HTTPS
+
+By default, https is not set up for container. In essence, you need to mount a drive containing your development certificate into the container.
+
+We have provided [sample commands](#with-https) below to set up https.
+
+For more details, see this doc on [Hosting ASP.NET Core images with Docker over HTTPS](https://docs.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-3.1)
+
+### Usage
+
+#### Without HTTPS
+
 ```bash
 docker build -t linkylink .
 docker run -p 5000:80 -it linkylink
-curl <http://localhost:5000/api/links/postman-test>
-
+curl http://localhost:5000/api/links/postman-test
 ```
 
-### Setup certificate for HTTPS
+#### With HTTPS
 
-If you want to get everything working with HTTPS, you can follow the instructions in this [doc](https://docs.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-3.1). In essence, you need to mount a drive containing your development certificate into the container.
+Here's a sample script for running on `MacOS`. For other OS, you'll have to make some modifications by following this [guide](https://docs.microsoft.com/en-us/aspnet/core/security/docker-https?view=aspnetcore-3.1)
+
+<details>
+<summary>Expand to see commands</summary>
+
+```bash
+# remove existing certificate
+dotnet dev-certs https --clean
+
+# generate cert - the password use here must match the one provided below
+dotnet dev-certs https -ep ${HOME}/.aspnet/https/aspnetapp.pfx -p "password"
+
+# trust cert
+dotnet dev-certs https --trust
+
+# build image
+docker build -t linkylink .
+
+# run contaienr
+docker run --rm -it \
+  --name api \
+  -p 5000:80 -p 5001:443 \
+  -e ASPNETCORE_URLS="https://+;http://+" \
+  -e ASPNETCORE_HTTPS_PORT=5001 \
+  -e ASPNETCORE_Kestrel__Certificates__Default__Password="password" \
+  -e ASPNETCORE_Kestrel__Certificates__Default__Path=/https/aspnetapp.pfx \
+  -v ${HOME}/.aspnet/https:/https/ \
+  linkylink
+
+curl http://localhost:5000/api/links/postman-test
+```
+
+</details>
+
+---
 
 ## Troubleshooting local development certificate issues
 

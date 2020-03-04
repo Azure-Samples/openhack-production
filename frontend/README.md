@@ -3,13 +3,16 @@
 ## Table Of Contents
 
 <!-- toc -->
+
 - [UI Views](#ui-views)
 - [Dependencies](#dependencies)
 - [Frontend configurations](#frontend-configurations)
 - [Build and run the frontend locally](#build-and-run-the-frontend-locally)
 - [Debugging the application](#debugging-the-application)
 - [Docker local development](#docker-local-development)
-<!-- tocstop -->
+  <!-- tocstop -->
+
+---
 
 ## UI Views
 
@@ -19,25 +22,25 @@ The frontend has the following views:
 
 This is the first page you would see when visiting the frontend. You can start the process of creating a link-bundles from here.
 
-  ![Homepage picture](docs/Images/Homepage.png)
+![Homepage picture](docs/Images/Homepage.png)
 
 ### Edit view
 
 This is the page where you would create your lists.
 
-  ![Edit picture](docs/Images/Edit_page.png)
+![Edit picture](docs/Images/Edit_page.png)
 
 ### User view
 
 This page would list all list-bundles created for a signed-in user.
 
-  ![Manage lists picture](docs/Images/Manage_lists_page.png)
+![Manage lists picture](docs/Images/Manage_lists_page.png)
 
 ### List view
 
 This page is used to view the list-bundle for a given vanity URL.
 
-  ![View list picture](docs/Images/View_page.png)
+![View list picture](docs/Images/View_page.png)
 
 ---
 
@@ -58,34 +61,29 @@ The frontend for this project is built with the following libraries and framewor
 - [Vue VS Code Extension Pack](https://marketplace.visualstudio.com/items?itemName=sdras.vue-vscode-extensionpack&WT.mc_id=theurlist-github-buhollan)
 - [Vue browser devtools](https://github.com/vuejs/vue-devtools)
 
+---
+
 ## Frontend configurations
 
 There are a few configurations needed for the frontend app to run, those are passed as [VUE environment configs](https://cli.vuejs.org/guide/mode-and-env.html)
 
-- `VUE_APP_BACKEND`: this has the URL pointing to the backend endpoint.
-- `VUE_APP_FRONTEND`: this has the URL point to the frontend endpoint.
-- `VUE_APP_OIDC_CLIENT_ID`: the configured Azure B2C Client Application ID.
-- `VUE_APP_OIDC_SCOPE`: the Azure B2C Client Scopes.
-- `VUE_APP_APPINSIGHTS_INSTRUMENTATIONKEY`: the configured Azure Application Insights instrumentation key.
-
-## Build and run the frontend locally
-
-### Modify VUE environment configs
-
-- Follow the guide on how to run the Backend locally. You can find the README [here](../api/README.md)
+- Follow the [backend README guide](../api/README.md) on how to run the Backend locally.
 
 - Once the Backend has started, you will want to get the port the Backend uses _(local port may change depending upon the IDE being used)_.
-- Follow the authentication setup guide, [here](../docs/AzureADB2C.md), to identify the needed value for the OpenID Connect (OIDC) configurations needed.
-- Create a local configuration file the root of the `frontend` folder called `.env.development.local` and add the needed configs as described [above](#Frontend-configurations), something like the following:
 
-```bash
-# .env.development.local
-VUE_APP_BACKEND=http://localhost:[backend_port] (default is 5000)
-VUE_APP_FRONTEND=http://localhost:[frontend_port] (default is 8080)
-VUE_APP_OIDC_CLIENT_ID=[Azure B2C Client Application ID]
-VUE_APP_OIDC_SCOPE=[Azure B2C Client Scopes]
-VUE_APP_APPINSIGHTS_INSTRUMENTATIONKEY=[Azure Application Insights Instrumentation Key]
-```
+- You can find the values for the `OpenID` configuration from Azure DevOps variable groups (Pipelines -> Library -> Variable groups).
+
+  > You can learn more about OpenID Connect (OIDC) [here](../docs/AzureADB2C.md).
+
+- Copy the sample `.env` and fill in the missing values
+
+  ```bash
+  cp .env.sample.local .env.development.local
+  ```
+
+---
+
+## Build and run the frontend locally
 
 ### Setup NPM for the frontend
 
@@ -123,13 +121,18 @@ npm run build
 npm run lint
 ```
 
+---
+
 ## Debugging the application
 
 - Follow the instructions in the [Build and run the frontend locally](##-build-and-run-the-frontend-locally) to start application
+
 - In Chrome, open the Chrome Developer Tools
 - Select `Source` then expand `webpack` then expand the `.` folder then expand `src` and find the TypeScript file that you would like to debug and `double-click` the line in the TypeScript file that you are interested in. See the screenshot below as an example:
 
-![localhost serve](docs/Images/localhost_debugging.png)
+  ![localhost serve](docs/Images/localhost_debugging.png)
+
+---
 
 ## Docker local development
 

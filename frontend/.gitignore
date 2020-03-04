@@ -8,6 +8,8 @@ dist
 **/.env.development
 **/.env.production
 
+!**/.env.sample.local
+
 # Log files
 npm-debug.log*
 yarn-debug.log*

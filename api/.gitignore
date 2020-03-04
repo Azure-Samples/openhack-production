@@ -364,3 +364,5 @@ MigrationBackup/
 .DS_Store
 local.settings.json
 **.Development.json
+**/appsettings.json
+**/.env

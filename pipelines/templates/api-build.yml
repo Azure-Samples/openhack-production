@@ -5,21 +5,29 @@ jobs:
       - task: UseDotNet@2
         displayName: Dotnet version 3.1.100
         inputs:
-          version: '3.1.100'
+          version: "3.1.100"
+
+      - task: Bash@3
+        displayName: Copy appsettings.json
+        inputs:
+          targetType: inline
+          workingDirectory: api/tests/LinkyLink.Integration.Tests
+          script: |
+            cp appsettings.sample.json appsettings.json
 
       - task: DotNetCoreCLI@2
         displayName: Build API
         inputs:
           command: build
-          projects: '**/*.csproj'
-          arguments: '--configuration Release'
+          projects: "**/*.csproj"
+          arguments: "--configuration Release"
 
       - task: DotNetCoreCLI@2
         displayName: Run Unit Tests
         condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
         inputs:
           command: test
-          projects: '**/LinkyLink.Tests/*.csproj'
+          projects: "**/LinkyLink.Tests/*.csproj"
           arguments: -c $(BuildConfiguration) --collect:"XPlat Code Coverage"
 
       # Generate the report using ReportGenerator (https://github.com/danielpalme/ReportGenerator)
@@ -34,7 +42,7 @@ jobs:
         condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
         inputs:
           codeCoverageTool: Cobertura
-          summaryFileLocation: $(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml 
+          summaryFileLocation: $(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml
           failIfCoverageEmpty: true
 
       - task: BuildQualityChecks@6
@@ -42,23 +50,22 @@ jobs:
         condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
         inputs:
           checkCoverage: true
-          coverageFailOption: 'fixed'
-          coverageType: 'lines'
-          coverageThreshold: '76'
+          coverageFailOption: "fixed"
+          coverageType: "lines"
+          coverageThreshold: "76"
 
       - task: DotNetCoreCLI@2
         displayName: Package Build Artifacts
         condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
         inputs:
           command: publish
-          arguments: '--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+          arguments: "--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory)"
           zipAfterPublish: True
 
       - task: PublishBuildArtifacts@1
         displayName: Publish Build Artifacts
         condition: and(succeeded(), ne(variables['Build.Reason'], 'PullRequest'))
         inputs:
-          pathtoPublish: '$(Build.ArtifactStagingDirectory)' 
-          artifactName: 'drop'
-          publishLocation: 'Container'
-
+          pathtoPublish: "$(Build.ArtifactStagingDirectory)"
+          artifactName: "drop"
+          publishLocation: "Container"

@@ -14,6 +14,8 @@ cd "$parent_path"
 #- [-a] appName - The application name used for resource naming convention.
 #- [-e] env - The environment to deploy (ex: dev | test | qa | prod).
 #- [-r] region - The Azure region to deploy to (ex: westus | eastus | centralus | etc).
+#- [-t] appServicePlanSkuResourceType - The app service plan SKU resource type.
+#- [-p] appServicePlanSkuResourceCount - The app service plan SKU resource count.
 ###########################################################################################################################################################################################
 
 #######################################################
@@ -27,18 +29,22 @@ function usage() {
     echo -e "\t-a\t Sets the app name"
     echo -e "\t-e\t Sets the environment"
     echo -e "\t-r\t Sets the region"
+    echo -e "\t-t\t Sets the app service plan SKU resource type"
+    echo -e "\t-p\t Sets the app service plan SKU resource count"
     echo
     echo "Example:"
-    echo -e "\tbash deploy.sh -s c77dad45-b62f-467d-bad4-8e00a807c0a2 -u $(whoami) -a urlist -e test -r westus"
+    echo -e "\tbash deploy.sh -s c77dad45-b62f-467d-bad4-8e00a807c0a2 -u $(whoami) -a urlist -e test -r westus -t S1 -p 1"
 }
 
-while getopts "s:u:a:e:r:hq" opt; do
+while getopts "s:u:a:e:r:t:p:hq" opt; do
     case $opt in
     s) subscription=$OPTARG ;;
     u) businessUnit=$OPTARG ;;
     a) appName=$OPTARG ;;
     e) env=$OPTARG ;;
     r) region=$OPTARG ;;
+    t) appServicePlanSkuResourceType=$OPTARG ;;
+    p) appServicePlanSkuResourceCount=$OPTARG ;;
     :)
         echo "Error: -${OPTARG} requires a value"
         exit 1
@@ -49,6 +55,9 @@ while getopts "s:u:a:e:r:hq" opt; do
         ;;
     esac
 done
+
+: ${appServicePlanSkuResourceType:="S1"}
+: ${appServicePlanSkuResourceCount:=1}
 
 # Validation
 if [[ $# -eq 0 || -z $subscription || -z $businessUnit || -z $appName || -z $env || -z $region ]]; then
@@ -74,6 +83,8 @@ echo "App Name: $appName"
 echo "Storage Account Name: $storageActName"
 echo "Environment: $env"
 echo "Region: $region"
+echo "App Service Plan SKU Resource Type: $appServicePlanSkuResourceType"
+echo "App Service Plan SKU Resource Count: $appServicePlanSkuResourceCount"
 echo
 
 echo "Creating Regional Resource Group: $resourceGroupName"
@@ -96,8 +107,8 @@ az group deployment create \
     --parameters location=$region \
     apimName=$apimName \
     appServicePlanName=$appServicePlanName \
-    appServicePlanSkuResourceType="S1" \
-    appServicePlanSkuResourceCount=1 \
+    appServicePlanSkuResourceType=$appServicePlanSkuResourceType \
+    appServicePlanSkuResourceCount=$appServicePlanSkuResourceCount \
     backendAppName=$backendAppName \
     storageActName=$storageActName
 

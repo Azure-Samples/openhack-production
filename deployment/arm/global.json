@@ -53,20 +53,6 @@
                 "description": "The list of replica regions for the Cosmos DB account"
             }
         },
-        "cosmosdbConsistencyLevel": {
-            "type": "string",
-            "defaultValue": "Session",
-            "allowedValues": [
-                "Eventual",
-                "ConsistentPrefix",
-                "Session",
-                "BoundedStaleness",
-                "Strong"
-            ],
-            "metadata": {
-                "description": "The default consistency level of the Cosmos DB account"
-            }
-        },
         "cosmosdbThroughput": {
             "type": "int",
             "defaultValue": 400,
@@ -283,7 +269,7 @@
             },
             "properties": {
                 "consistencyPolicy": {
-                    "defaultConsistencyLevel": "[parameters('cosmosdbConsistencyLevel')]",
+                    "defaultConsistencyLevel": "Session",
                     "maxIntervalInSeconds": 5,
                     "maxStalenessPrefix": 100
                 },

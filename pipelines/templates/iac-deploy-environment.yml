@@ -4,6 +4,9 @@ parameters:
   businessUnit: "prodoh"
   appName: "urlist"
   environment: ""
+  cosmosdbThroughput: 400
+  appServicePlanSkuResourceType: "S1"
+  appServicePlanSkuResourceCount: 1
   regions: []
 
 jobs:
@@ -43,7 +46,13 @@ jobs:
           scriptType: "bash"
           scriptLocation: "scriptPath"
           scriptPath: "./deployment/arm/deploy-region.sh"
-          arguments: "-s ${{ parameters.subscriptionId}} -u ${{ parameters.businessUnit }} -a ${{ parameters.appName }} -e ${{ parameters.environment }} -r $(region) }}"
+          arguments: "-s ${{ parameters.subscriptionId }} \
+          -u ${{ parameters.businessUnit }} \
+          -a ${{ parameters.appName }} \
+          -e ${{ parameters.environment }} \
+          -r $(region) \
+          -p ${{ parameters.appServicePlanSkuResourceCount }} \
+          -t ${{ parameters.appServicePlanSkuResourceType }}"
 
   - job: DeployGlobalResourceGroup
     displayName: Deploy Global Resources
@@ -59,4 +68,9 @@ jobs:
           scriptType: "bash"
           scriptLocation: "scriptPath"
           scriptPath: "./deployment/arm/deploy-global.sh"
-          arguments: "-s ${{ parameters.subscriptionId}} -u ${{ parameters.businessUnit }} -a ${{ parameters.appName }} -e ${{ parameters.environment }} -r $(regionList)"
+          arguments: "-s ${{ parameters.subscriptionId}} \
+          -u ${{ parameters.businessUnit }} \
+          -a ${{ parameters.appName }} \
+          -e ${{ parameters.environment }} \
+          -r $(regionList) \
+          -c ${{ parameters.cosmosdbThroughput }}"

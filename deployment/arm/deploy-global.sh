@@ -14,6 +14,7 @@ cd "$parent_path"
 #- [-a] appName - The application name used for resource naming convention.
 #- [-e] env - The environment to deploy (ex: dev | test | qa | prod).
 #- [-r] regions - A comma delimted list of regions to deploy to (ex: westus,eastus,centralus).
+#- [-c] cosmosdbThroughput - The cosmos database throughput.
 ###########################################################################################################################################################################################
 
 #######################################################
@@ -27,18 +28,20 @@ function usage() {
     echo -e "\t-a\t Sets the app name"
     echo -e "\t-e\t Sets the environment"
     echo -e "\t-r\t Sets the regions (Comma delimited values)"
+    echo -e "\t-c\t Sets the cosmos db throughput"
     echo
     echo "Example:"
-    echo -e "\tbash deploy.sh -s c77dad45-b62f-467d-bad4-8e00a807c0a2  -u $(whoami) -a urlist -e test -r westus,eastus,centralus"
+    echo -e "\tbash deploy.sh -s c77dad45-b62f-467d-bad4-8e00a807c0a2  -u $(whoami) -a urlist -e test -r westus,eastus,centralus -c 400"
 }
 
-while getopts "s:u:a:e:r:hq" opt; do
+while getopts "s:u:a:e:r:c:hq" opt; do
     case $opt in
     s) subscription=$OPTARG ;;
     u) businessUnit=$OPTARG ;;
     a) appName=$OPTARG ;;
     e) env=$OPTARG ;;
     r) regions=(${OPTARG//,/ }) ;;
+    c) cosmosdbThroughput=$OPTARG ;;
     :)
         echo "Error: -${OPTARG} requires a value"
         exit 1
@@ -49,6 +52,8 @@ while getopts "s:u:a:e:r:hq" opt; do
         ;;
     esac
 done
+
+: ${cosmosdbThroughput:=400}
 
 # Validation
 if [[ $# -eq 0 || -z $businessUnit || -z $appName || -z $env || -z $regions ]]; then
@@ -71,6 +76,7 @@ echo "Environment: $env"
 echo "Front Door: $frontDoorName"
 echo "Cosmos DB Name: $cosmosdbName"
 echo "Application Insights Name: $appInsightsName"
+echo "Cosmos DB Throughput: $cosmosdbThroughput"
 
 # set -e fails and exit here if just let counter=0 is specified. Workaround is to add || true to the expression
 let counter=0 || true
@@ -127,8 +133,7 @@ az group deployment create \
     backendHosts=$backendHosts \
     cosmosdbAccountName=$cosmosdbName \
     cosmosdbRegions=$cosmosdbRegions \
-    cosmosdbConsistencyLevel="Session" \
-    cosmosdbThroughput=400 \
+    cosmosdbThroughput=$cosmosdbThroughput \
     appInsightsName=$appInsightsName 
 
 # deploy api management logger in each region

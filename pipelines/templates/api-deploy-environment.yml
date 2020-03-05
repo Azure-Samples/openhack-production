@@ -9,7 +9,7 @@ jobs:
   - template: deployment-gate.yml
     parameters:
       environment: ${{ parameters.environment }}
-      
+
   - job: setup
     displayName: Initialize
     variables:
@@ -38,15 +38,15 @@ jobs:
       - task: UseDotNet@2
         displayName: Dotnet version 3.1.100
         inputs:
-          version: '3.1.100'
+          version: "3.1.100"
 
       - task: DownloadBuildArtifacts@0
         displayName: Download Build Artifacts
         inputs:
-          buildType: 'current'
-          downloadType: 'single'
-          artifactName: 'drop'
-          downloadPath: '$(Build.ArtifactStagingDirectory)'
+          buildType: "current"
+          downloadType: "single"
+          artifactName: "drop"
+          downloadPath: "$(Build.ArtifactStagingDirectory)"
 
       - task: Bash@3
         displayName: Create Resource Names
@@ -63,18 +63,17 @@ jobs:
       - task: AzureRMWebAppDeployment@4
         displayName: Deploy to Staging Slot
         inputs:
-          ConnectionType: 'AzureRM'
+          ConnectionType: "AzureRM"
           azureSubscription: ${{ parameters.serviceConnection }}
-          appType: 'apiApp'
+          appType: "apiApp"
           ResourceGroupName: $(resourceGroupName)
           WebAppName: $(backendWebAppName)
           deployToSlotOrASE: true
           SlotName: staging
-          packageForLinux: '$(Build.ArtifactStagingDirectory)/**/*.zip'  
-          appSettings: 
-            -CosmosSettings:ServiceEndpoint $(COSMOSDB_ENDPOINT) 
-            -CosmosSettings:AuthKey $(COSMOSDB_AUTHKEY) 
-            -CosmosSettings:DatabaseName linkylinkdb 
+          packageForLinux: "$(Build.ArtifactStagingDirectory)/**/*.zip"
+          appSettings: -CosmosSettings:ServiceEndpoint $(COSMOSDB_ENDPOINT)
+            -CosmosSettings:AuthKey $(COSMOSDB_AUTHKEY)
+            -CosmosSettings:DatabaseName linkylinkdb
             -CosmosSettings:ContainerName linkbundles
             -AzureAdB2C:Instance $(AZUREADB2C_INSTANCE)
             -AzureAdB2C:ClientId $(AZUREADB2C_CLIENTID)
@@ -83,15 +82,23 @@ jobs:
             -AzureAdB2C:SignUpSignInPolicyId $(AZUREADB2C_POLICYID)
             -ApplicationInsights:InstrumentationKey $(APPINSIGHTS_INSTRUMENTATIONKEY)
 
+      - task: Bash@3
+        displayName: Copy appsettings.json
+        inputs:
+          targetType: inline
+          workingDirectory: api/tests/LinkyLink.Integration.Tests
+          script: |
+            cp appsettings.sample.json appsettings.json
+
       - task: DotNetCoreCLI@2
         displayName: Validation Tests
         inputs:
           command: test
-          projects: '**/LinkyLink.Integration.Tests/*.csproj'
+          projects: "**/LinkyLink.Integration.Tests/*.csproj"
           arguments: -c $(BuildConfiguration)
         env:
-          INTTEST_BaseAddress: 'https://backend-${{ parameters.businessUnit }}-${{ parameters.appName }}-${{ parameters.environment }}-$(region)-staging.azurewebsites.net'
-      
+          INTTEST_BaseAddress: "https://backend-${{ parameters.businessUnit }}-${{ parameters.appName }}-${{ parameters.environment }}-$(region)-staging.azurewebsites.net"
+
       - task: AzureAppServiceManage@0
         displayName: Swap Staging and Production Slots
         inputs:

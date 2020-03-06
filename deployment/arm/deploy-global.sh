@@ -155,5 +155,10 @@ for region in ${regions[@]}; do
         --parameters \
         appInsightsName=$appInsightsName \
         apimName=$apimName \
-        resourceGroupName=$resourceGroupName
+        resourceGroupName=$resourceGroupName &
 done
+
+# Wait till all regional updates are complete
+wait
+
+echo "Global deployment completed"

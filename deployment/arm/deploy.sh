@@ -87,6 +87,7 @@ fi
 
 # Deploy scale unit per region
 for region in ${regions[@]}; do
+    # The '&' allows the commands to run in parallel
     bash deploy-region.sh \
         -s $subscription \
         -u $businessUnit \
@@ -94,8 +95,11 @@ for region in ${regions[@]}; do
         -e $env \
         -r $region \
         -t $appServicePlanSkuResourceType \
-        -p $appServicePlanSkuResourceCount
+        -p $appServicePlanSkuResourceCount &
 done
+
+# Wait for the regions to complete
+wait
 
 # Deploy global resources
 bash deploy-global.sh \

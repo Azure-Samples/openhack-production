@@ -4,43 +4,13 @@
 
 <!-- toc -->
 
-- [UI Views](#ui-views)
 - [Dependencies](#dependencies)
 - [Frontend configurations](#frontend-configurations)
 - [Build and run the frontend locally](#build-and-run-the-frontend-locally)
 - [Debugging the application](#debugging-the-application)
 - [Docker local development](#docker-local-development)
+- [UI Views](#ui-views)
   <!-- tocstop -->
-
----
-
-## UI Views
-
-The frontend has the following views:
-
-### Homepage view
-
-This is the first page you would see when visiting the frontend. You can start the process of creating a link-bundles from here.
-
-![Homepage picture](docs/Images/Homepage.png)
-
-### Edit view
-
-This is the page where you would create your lists.
-
-![Edit picture](docs/Images/Edit_page.png)
-
-### User view
-
-This page would list all list-bundles created for a signed-in user.
-
-![Manage lists picture](docs/Images/Manage_lists_page.png)
-
-### List view
-
-This page is used to view the list-bundle for a given vanity URL.
-
-![View list picture](docs/Images/View_page.png)
 
 ---
 
@@ -48,6 +18,7 @@ This page is used to view the list-bundle for a given vanity URL.
 
 The frontend for this project is built with the following libraries and frameworks:
 
+- [Node 10+](https://nodejs.org/en/) / [NPM 6+](https://www.npmjs.com/get-npm)
 - [TypeScript](https://www.typescriptlang.org/)
 - [Vue.js](https://github.com/vuejs/vue) / [Vue CLI](https://github.com/vuejs/vue-cli)
 - [Vuelidate](https://github.com/vuelidate/vuelidate)
@@ -85,6 +56,8 @@ There are a few configurations needed for the frontend app to run, those are pas
 
 ## Build and run the frontend locally
 
+If you prefer to use Docker, we have provided [setup instructions below](#docker-local-development)
+
 ### Setup NPM for the frontend
 
 ```bash
@@ -95,7 +68,8 @@ cd frontend
 npm install -g @vue/cli
 
 # Install npm packages for frontend project
-npm install
+# IMPORTANT: you'll need 'npm 6+'
+npm ci
 ```
 
 ### Serve development build
@@ -106,6 +80,8 @@ npm run serve
 ```
 
 ![localhost serve](docs/Images/localhost_serve.png)
+
+To see other view of the app, take a look in [UI Views](#ui-views)
 
 ### Create production optimized build
 
@@ -125,7 +101,7 @@ npm run lint
 
 ## Debugging the application
 
-- Follow the instructions in the [Build and run the frontend locally](##-build-and-run-the-frontend-locally) to start application
+- Follow the instructions in the [Build and run the frontend locally](#build-and-run-the-frontend-locally) to start application
 
 - In Chrome, open the Chrome Developer Tools
 - Select `Source` then expand `webpack` then expand the `.` folder then expand `src` and find the TypeScript file that you would like to debug and `double-click` the line in the TypeScript file that you are interested in. See the screenshot below as an example:
@@ -136,7 +112,7 @@ npm run lint
 
 ## Docker local development
 
-By default the front-end will be running in `development mode`, consequently make sure you setup the environment files as described [here](###-Modify-Vue-Environment-Configs).
+By default the front-end will be running in `development mode`, consequently make sure you setup the environment files as described [above](#frontend-configurations).
 
 ```bash
 docker build -t linkylink-fe .
@@ -155,3 +131,36 @@ docker run -it --rm -p 8080:8080 --name frontend \
 -e "VUE_APP_APPINSIGHTS_INSTRUMENTATIONKEY=[Azure Application Insights Instrumentation Key]" \
 linkylink-fe
 ```
+
+---
+
+## UI Views
+
+<details>
+<summary>Expand to see the different views of the app</summary>
+
+### Homepage view
+
+This is the first page you would see when visiting the frontend. You can start the process of creating a link-bundles from here.
+
+![Homepage picture](docs/Images/Homepage.png)
+
+### Edit view
+
+This is the page where you would create your lists.
+
+![Edit picture](docs/Images/Edit_page.png)
+
+### User view
+
+This page would list all list-bundles created for a signed-in user.
+
+![Manage lists picture](docs/Images/Manage_lists_page.png)
+
+### List view
+
+This page is used to view the list-bundle for a given vanity URL.
+
+![View list picture](docs/Images/View_page.png)
+
+</details>

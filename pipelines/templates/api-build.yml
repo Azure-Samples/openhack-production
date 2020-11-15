@@ -45,7 +45,7 @@ jobs:
           summaryFileLocation: $(Build.SourcesDirectory)/coverlet/reports/Cobertura.xml
           failIfCoverageEmpty: true
 
-      - task: BuildQualityChecks@6
+      - task: BuildQualityChecks@7
         displayName: Validate Code Coverage Quality
         condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
         inputs:

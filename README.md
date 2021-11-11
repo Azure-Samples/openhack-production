@@ -39,7 +39,7 @@ Outline the file contents of the repository. It helps users navigate the codebas
 | File/folder       | Description                                |
 |-------------------|--------------------------------------------|
 | `api`             | The backend code base implemented using .Net Core. |
-| `frontend`        | The frontend code base implemented using VUE and Typescript |
+| `frontend`        | The frontend code base implemented using VUE and TypeScript |
 | `deployment`      | This folder holds deployment scripts to setup infrastructure. |
 | `pipelines`       | This folder holds YAML files to create Azure pipelines to deploy the project |
 | `docs`            | This folder holds relevant documentation about the project |

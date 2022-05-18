@@ -19,7 +19,7 @@ namespace LinkyLink.Controllers
         {
             var status = new
             {
-                Status = "OK",
+                Status = "OK - Hello",
                 Timestamp = DateTime.UtcNow
             };
 

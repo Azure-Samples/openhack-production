@@ -10,7 +10,7 @@
   "dependencies": {
     "axios": "^0.18.1",
     "cuid": "^2.1.6",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "oidc-client": "^1.10.1",
     "typescript-debounce-decorator": "0.0.17",
     "v-tooltip": "^2.0.2",
